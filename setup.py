@@ -43,7 +43,7 @@ setup(
     #version='1.5.0',
     
     use_scm_version=True,
-    setup_requires=[setuptools_scm],
+    setup_requires=['setuptools_scm'],
     
     description='A python package for performing geometric calculations in 3D',
     long_description=long_description,
