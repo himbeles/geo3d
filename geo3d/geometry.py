@@ -33,11 +33,11 @@ class Frame:
                 <tr><td>'''
             + _html_table_from_matrix(self.rot)
             + '</td><td>'
-            + _html_table_from_vector(R.from_dcm(self.rot).as_euler('xyz', degrees=True))
+            + _html_table_from_vector(R.from_dcm(self.rot).as_euler('xyz', degrees=True), indices=['θx','θy','θz'])
             + '</td><td>'
-            + _html_table_from_vector(R.from_dcm(self.rot).as_euler('XYZ', degrees=True))
+            + _html_table_from_vector(R.from_dcm(self.rot).as_euler('XYZ', degrees=True), indices=['θx','θy','θz'])
             + '</td><td>'
-            + _html_table_from_vector(self.trans)
+            + _html_table_from_vector(self.trans, indices=['x','y','z'])
             + '</td></tr></table>'
         )
         return html
@@ -49,7 +49,7 @@ unit_frame = Frame(np.identity(3), np.zeros(3))
 
 class Vector:
     def __init__(self, v):
-        self.vec = normalize(v)
+        self.vec = np.array(v)
     
     def express_in_frame(self, new_frame, original_frame=unit_frame):
         """
@@ -59,14 +59,7 @@ class Vector:
     
     def _repr_html_(self):
         html = (
-            '''
-            <table>
-                <tr>
-                    <th>vector</th>
-                </tr>
-                <tr><td>'''
-            + _html_table_from_vector(self.vec)
-            + '</td></tr></table>'
+            _html_table_from_vector(self.vec, indices=['x','y','z'])
         )
         return html
     
@@ -75,6 +68,12 @@ class Vector:
 
     def __array__(self):
         return self.vec
+
+    def __getitem__(self,key):
+        return self.vec[key]
+
+    def normalize(self):
+        return normalize(self.vec)
 
 class Point:
     def __init__(self, p):
@@ -88,14 +87,7 @@ class Point:
     
     def _repr_html_(self):
         html = (
-            '''
-            <table>
-                <tr>
-                    <th>point</th>
-                </tr>
-                <tr><td>'''
-            + _html_table_from_vector(self.p)
-            + '</td></tr></table>'
+            _html_table_from_vector(self.p, indices=['x','y','z'])
         )
         return html
 
@@ -104,6 +96,9 @@ class Point:
 
     def __array__(self):
         return self.p
+
+    def __getitem__(self,key):
+        return self.p[key]
 
 def construct_frame(new_x, new_y, new_z, origin=[0,0,0]):
     """
@@ -184,6 +179,10 @@ def _html_table_from_matrix(mat):
     '</tr><tr>'.join(
     '<td>{}</td>'.format('</td><td>'.join('{:1.8f}'.format(_) for _ in row)) 
         for row in mat))
-def _html_table_from_vector(vec):
-    return '<table><tr><td>{}</td></tr></table>'.format(
-    '</td></tr><tr><td>'.join('{:1.5f}'.format(_) for _ in vec))
+def _html_table_from_vector(vec, indices=None):
+    if indices is None:
+        return '<table><tr><td>{}</td></tr></table>'.format(
+        '</td></tr><tr><td>'.join('{:1.5f}'.format(_) for _ in vec))
+    else: 
+        return '<table><tr><td>{}</td></tr></table>'.format(
+        '</td></tr><tr><td>'.join('{}</td><td>{:1.5f}'.format(_[0],_[1]) for _ in zip(indices, vec)))
