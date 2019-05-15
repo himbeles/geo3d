@@ -7,9 +7,9 @@ arcsec_in_degrees = 1/3600
 
 def normalize(vec):
     """2-norm normalize the given vector"""
-    return vec/np.linalg.norm(vec)
+    return np.array(vec)/np.linalg.norm(np.array(vec))
 
-class Frame():
+class Frame:
     def __init__(self, rot, trans):
         self.rot = rot
         self.trans = trans
@@ -21,20 +21,8 @@ class Frame():
         print("translation\n", self.trans)
         
     def _repr_html_(self):
-        def html_table_from_matrix(mat):
-            return '<table><tr>{}</tr></table>'.format(
-            '</tr><tr>'.join(
-            '<td>{}</td>'.format('</td><td>'.join('{:1.8f}'.format(_) for _ in row)) 
-                for row in mat))
-        def html_table_from_vector(vec):
-            return '<table><tr><td>{}</td></tr></table>'.format(
-            '</td></tr><tr><td>'.join('{:1.5f}'.format(_) for _ in vec))
-                
         html = (
             '''
-            <style>
-                th {text-align: left;}
-            </style>
             <table>
                 <tr>
                     <th>rotation matrix</th>
@@ -43,28 +31,86 @@ class Frame():
                     <th>translation<br></th>
                 </tr>
                 <tr><td>'''
-            + html_table_from_matrix(self.rot)
+            + _html_table_from_matrix(self.rot)
             + '</td><td>'
-            + html_table_from_vector(R.from_dcm(self.rot).as_euler('xyz', degrees=True))
+            + _html_table_from_vector(R.from_dcm(self.rot).as_euler('xyz', degrees=True))
             + '</td><td>'
-            + html_table_from_vector(R.from_dcm(self.rot).as_euler('XYZ', degrees=True))
+            + _html_table_from_vector(R.from_dcm(self.rot).as_euler('XYZ', degrees=True))
             + '</td><td>'
-            + html_table_from_vector(self.trans)
+            + _html_table_from_vector(self.trans)
             + '</td></tr></table>'
         )
         return html
     
     def euler_angles(self, *args, **kwargs):
         return R.from_dcm(self.rot).as_euler(*args, **kwargs)
-        
+
 unit_frame = Frame(np.identity(3), np.zeros(3))
+
+class Vector:
+    def __init__(self, v):
+        self.vec = normalize(v)
+    
+    def express_in_frame(self, new_frame, original_frame=unit_frame):
+        """
+        express vector given in original frame in the new frame
+        """
+        return express_vector_in_frame(self.vec, new_frame, original_frame)
+    
+    def _repr_html_(self):
+        html = (
+            '''
+            <table>
+                <tr>
+                    <th>vector</th>
+                </tr>
+                <tr><td>'''
+            + _html_table_from_vector(self.vec)
+            + '</td></tr></table>'
+        )
+        return html
+    
+    def as_array(self):
+        return self.vec
+
+    def __array__(self):
+        return self.vec
+
+class Point:
+    def __init__(self, p):
+        self.p = np.array(p)
+    
+    def express_in_frame(self, new_frame, original_frame=unit_frame):
+        """
+        express point given in original frame in the new frame
+        """
+        return express_point_in_frame(self.p, new_frame, original_frame)
+    
+    def _repr_html_(self):
+        html = (
+            '''
+            <table>
+                <tr>
+                    <th>point</th>
+                </tr>
+                <tr><td>'''
+            + _html_table_from_vector(self.p)
+            + '</td></tr></table>'
+        )
+        return html
+
+    def as_array(self):
+        return self.p
+
+    def __array__(self):
+        return self.p
 
 def construct_frame(new_x, new_y, new_z, origin=[0,0,0]):
     """
     transformation matrix into a new coordinate system where the new x,y,z axes are given by the provided vectors,
     and the origin is given. 
     """
-    rot = np.stack([np.array(new_x), np.array(new_y), np.array(new_z)], 1)
+    rot = np.stack([normalize(new_x), normalize(new_y), normalize(new_z)], 1)
     trans = np.array(origin)
     return Frame(rot, trans)
 
@@ -122,7 +168,7 @@ def express_vector_in_frame(vector, new_frame, original_frame=unit_frame):
     express vector given in old frame in the new frame
     """
     trafo = trafo_between_frames(original_frame, new_frame) 
-    return normalize(np.array(vector)@trafo.rot)
+    return Vector(np.array(vector)@trafo.rot)
 
 def rotate_vector(rot, vec):
     vec = np.array(vec)
@@ -132,3 +178,12 @@ def rotate_vector(rot, vec):
         return normalize(rot@vec)
     else:
         raise Exception('rot is not a rotation object or matrix.')
+
+def _html_table_from_matrix(mat):
+    return '<table><tr>{}</tr></table>'.format(
+    '</tr><tr>'.join(
+    '<td>{}</td>'.format('</td><td>'.join('{:1.8f}'.format(_) for _ in row)) 
+        for row in mat))
+def _html_table_from_vector(vec):
+    return '<table><tr><td>{}</td></tr></table>'.format(
+    '</td></tr><tr><td>'.join('{:1.5f}'.format(_) for _ in vec))
