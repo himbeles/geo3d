@@ -45,6 +45,17 @@ class Frame:
     def euler_angles(self, *args, **kwargs):
         return R.from_dcm(self.rot).as_euler(*args, **kwargs)
 
+    def express_in_frame(self, frameA):
+        """
+        construct trafo T between frameA and frameB such that 
+        vB = vA.(T.rot) + T.trans
+        where vA, vB represent the same vector expressed in different corrdinate systems
+
+        return the trafo as frame
+        """
+        return trafo_between_frames(frameA, self)
+
+
 unit_frame = Frame(np.identity(3), np.zeros(3))
 
 class Vector:
