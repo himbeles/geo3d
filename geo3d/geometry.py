@@ -167,7 +167,7 @@ def express_point_in_frame(point, new_frame, original_frame=unit_frame):
     express point given in old frame in the new frame
     """
     trafo = trafo_between_frames(original_frame, new_frame) 
-    return (np.array(point) - trafo.trans)@trafo.rot
+    return Point((np.array(point) - trafo.trans)@trafo.rot)
 
 def express_vector_in_frame(vector, new_frame, original_frame=unit_frame):
     """
