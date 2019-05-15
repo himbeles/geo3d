@@ -52,7 +52,7 @@ setup(
     url='',
 
     # Author details
-    author='luis',
+    author='himbeles',
     author_email='lri@me.com',
 
     # Choose your license
