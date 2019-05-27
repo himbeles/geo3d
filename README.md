@@ -7,7 +7,7 @@ A python package for performing geometric calculations in 3D.
 To install all requirements, including the ones for unit testing and documentation.
 
 ```sh
-pip install -e .[dev]
+pip install --user -e .[dev]
 ```
 
 ## Testing
