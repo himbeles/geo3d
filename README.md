@@ -3,7 +3,13 @@
 A python package for performing geometric calculations in 3D.
 
 
-## Development installation 
+## Installation 
+To install the module and its core requirements, run
+```sh
+pip install --user -e 
+```
+within the base directory. 
+
 To install all requirements, including the ones for unit testing and documentation.
 
 ```sh
