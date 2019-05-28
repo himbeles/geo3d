@@ -8,14 +8,14 @@ def normalize(vec):
 
 class Frame:
     def __init__(self, rot, trans):
-        self.rot = rot
-        self.trans = trans
+        self._rot = np.array(rot)
+        self._trans = np.array(trans)
         
     def print(self):
-        print("rotation\n", self.rot)
-        print("Euler angles (XYZ, extrinsic, deg.)\n", R.from_dcm(self.rot).as_euler('xyz', degrees=True))
-        print("Euler angles (XYZ, intrinsic, deg.)\n", R.from_dcm(self.rot).as_euler('XYZ', degrees=True))
-        print("translation\n", self.trans)
+        print("rotation\n", self._rot)
+        print("Euler angles (XYZ, extrinsic, deg.)\n", self.euler_angles('xyz', degrees=True))
+        print("Euler angles (XYZ, intrinsic, deg.)\n", self.euler_angles('XYZ', degrees=True))
+        print("translation\n", self._trans)
         
     def _repr_html_(self):
         html = (
@@ -28,35 +28,47 @@ class Frame:
                     <th>translation<br></th>
                 </tr>
                 <tr><td>'''
-            + html_table_from_matrix(self.rot)
+            + html_table_from_matrix(self._rot)
             + '</td><td>'
-            + html_table_from_vector(R.from_dcm(self.rot).as_euler('xyz', degrees=True), indices=['θx','θy','θz'])
+            + html_table_from_vector(self.euler_angles('xyz', degrees=True), indices=['θx','θy','θz'])
             + '</td><td>'
-            + html_table_from_vector(R.from_dcm(self.rot).as_euler('XYZ', degrees=True), indices=['θx','θy','θz'])
+            + html_table_from_vector(self.euler_angles('XYZ', degrees=True), indices=['θx','θy','θz'])
             + '</td><td>'
-            + html_table_from_vector(self.trans, indices=['x','y','z'])
+            + html_table_from_vector(self._trans, indices=['x','y','z'])
             + '</td></tr></table>'
         )
         return html
     
     def euler_angles(self, *args, **kwargs):
-        return R.from_dcm(self.rot).as_euler(*args, **kwargs)
+        return R.from_dcm(self._rot).as_euler(*args, **kwargs)
+
+    @property
+    def translation(self):
+        return self._trans
+    
+    @property
+    def rotation(self):
+        return self._rot
 
     def express_in_frame(self, frameA):
         """
         construct trafo T between frameA and frameB such that 
-        vB = vA.(T.rot) + T.trans
+        vB = vA.(T._rot) + T._trans
         where vA, vB represent the same vector expressed in different corrdinate systems
 
         return the trafo as frame
         """
         return trafo_between_frames(frameA, self)
+    
+    @classmethod
+    def create_unit_frame(cls):
+        return Frame(np.identity(3), np.zeros(3))
 
 class Vector:
     def __init__(self, v):
         self.vec = np.array(v)
     
-    def express_in_frame(self, new_frame, original_frame=create_unit_frame()):
+    def express_in_frame(self, new_frame, original_frame=Frame.create_unit_frame()):
         """
         express vector given in original frame in the new frame
         """
@@ -84,7 +96,7 @@ class Point:
     def __init__(self, p):
         self.p = np.array(p)
     
-    def express_in_frame(self, new_frame, original_frame=create_unit_frame()):
+    def express_in_frame(self, new_frame, original_frame=Frame.create_unit_frame()):
         """
         express point given in original frame in the new frame
         """
@@ -104,9 +116,6 @@ class Point:
 
     def __getitem__(self,key):
         return self.p[key]
-
-def create_unit_frame():
-    return Frame(np.identity(3), np.zeros(3))
 
 def construct_frame(new_x, new_y, new_z, origin=[0,0,0]):
     """
@@ -152,26 +161,26 @@ def frame_wizard(primary_vec, secondary_vec, primary_axis, secondary_axis, origi
 def trafo_between_frames(frameA, frameB):
     """
     construct trafo T between frameA and frameB such that 
-    vB = vA.(T.rot) + T.trans
+    vB = vA.(T._rot) + T._trans
     where vA, vB represent the same vector expressed in different corrdinate systems
     """
-    Trot = np.linalg.inv(frameA.rot).dot(frameB.rot)
-    Ttrans = (frameB.trans - frameA.trans)@frameA.rot
+    Trot = np.linalg.inv(frameA._rot).dot(frameB._rot)
+    Ttrans = (frameB._trans - frameA._trans)@frameA._rot
     return Frame(Trot, Ttrans)
 
-def express_point_in_frame(point, new_frame, original_frame=create_unit_frame()):
+def express_point_in_frame(point, new_frame, original_frame=Frame.create_unit_frame()):
     """
     express point given in old frame in the new frame
     """
     trafo = trafo_between_frames(original_frame, new_frame) 
-    return Point((np.array(point) - trafo.trans)@trafo.rot)
+    return Point((np.array(point) - trafo._trans)@trafo._rot)
 
-def express_vector_in_frame(vector, new_frame, original_frame=create_unit_frame()):
+def express_vector_in_frame(vector, new_frame, original_frame=Frame.create_unit_frame()):
     """
     express vector given in old frame in the new frame
     """
     trafo = trafo_between_frames(original_frame, new_frame) 
-    return Vector(np.array(vector)@trafo.rot)
+    return Vector(np.array(vector)@trafo._rot)
 
 def rotate_vector(rot, vec):
     vec = np.array(vec)
