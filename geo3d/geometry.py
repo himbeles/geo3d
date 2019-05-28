@@ -1,9 +1,6 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
-#from IPython.display import HTML, display
-
-arcsec_in_radian = 1/3600/180*np.pi 
-arcsec_in_degrees = 1/3600 
+from .auxiliary import html_table_from_matrix, html_table_from_vector
 
 def normalize(vec):
     """2-norm normalize the given vector"""
@@ -31,13 +28,13 @@ class Frame:
                     <th>translation<br></th>
                 </tr>
                 <tr><td>'''
-            + _html_table_from_matrix(self.rot)
+            + html_table_from_matrix(self.rot)
             + '</td><td>'
-            + _html_table_from_vector(R.from_dcm(self.rot).as_euler('xyz', degrees=True), indices=['θx','θy','θz'])
+            + html_table_from_vector(R.from_dcm(self.rot).as_euler('xyz', degrees=True), indices=['θx','θy','θz'])
             + '</td><td>'
-            + _html_table_from_vector(R.from_dcm(self.rot).as_euler('XYZ', degrees=True), indices=['θx','θy','θz'])
+            + html_table_from_vector(R.from_dcm(self.rot).as_euler('XYZ', degrees=True), indices=['θx','θy','θz'])
             + '</td><td>'
-            + _html_table_from_vector(self.trans, indices=['x','y','z'])
+            + html_table_from_vector(self.trans, indices=['x','y','z'])
             + '</td></tr></table>'
         )
         return html
@@ -55,14 +52,11 @@ class Frame:
         """
         return trafo_between_frames(frameA, self)
 
-
-unit_frame = Frame(np.identity(3), np.zeros(3))
-
 class Vector:
     def __init__(self, v):
         self.vec = np.array(v)
     
-    def express_in_frame(self, new_frame, original_frame=unit_frame):
+    def express_in_frame(self, new_frame, original_frame=create_unit_frame()):
         """
         express vector given in original frame in the new frame
         """
@@ -70,7 +64,7 @@ class Vector:
     
     def _repr_html_(self):
         html = (
-            _html_table_from_vector(self.vec, indices=['x','y','z'])
+            html_table_from_vector(self.vec, indices=['x','y','z'])
         )
         return html
     
@@ -90,7 +84,7 @@ class Point:
     def __init__(self, p):
         self.p = np.array(p)
     
-    def express_in_frame(self, new_frame, original_frame=unit_frame):
+    def express_in_frame(self, new_frame, original_frame=create_unit_frame()):
         """
         express point given in original frame in the new frame
         """
@@ -98,7 +92,7 @@ class Point:
     
     def _repr_html_(self):
         html = (
-            _html_table_from_vector(self.p, indices=['x','y','z'])
+            html_table_from_vector(self.p, indices=['x','y','z'])
         )
         return html
 
@@ -110,6 +104,9 @@ class Point:
 
     def __getitem__(self,key):
         return self.p[key]
+
+def create_unit_frame():
+    return Frame(np.identity(3), np.zeros(3))
 
 def construct_frame(new_x, new_y, new_z, origin=[0,0,0]):
     """
@@ -162,14 +159,14 @@ def trafo_between_frames(frameA, frameB):
     Ttrans = (frameB.trans - frameA.trans)@frameA.rot
     return Frame(Trot, Ttrans)
 
-def express_point_in_frame(point, new_frame, original_frame=unit_frame):
+def express_point_in_frame(point, new_frame, original_frame=create_unit_frame()):
     """
     express point given in old frame in the new frame
     """
     trafo = trafo_between_frames(original_frame, new_frame) 
     return Point((np.array(point) - trafo.trans)@trafo.rot)
 
-def express_vector_in_frame(vector, new_frame, original_frame=unit_frame):
+def express_vector_in_frame(vector, new_frame, original_frame=create_unit_frame()):
     """
     express vector given in old frame in the new frame
     """
@@ -184,16 +181,3 @@ def rotate_vector(rot, vec):
         return normalize(rot@vec)
     else:
         raise Exception('rot is not a rotation object or matrix.')
-
-def _html_table_from_matrix(mat):
-    return '<table><tr>{}</tr></table>'.format(
-    '</tr><tr>'.join(
-    '<td>{}</td>'.format('</td><td>'.join('{:1.8f}'.format(_) for _ in row)) 
-        for row in mat))
-def _html_table_from_vector(vec, indices=None):
-    if indices is None:
-        return '<table><tr><td>{}</td></tr></table>'.format(
-        '</td></tr><tr><td>'.join('{:1.5f}'.format(_) for _ in vec))
-    else: 
-        return '<table><tr><td>{}</td></tr></table>'.format(
-        '</td></tr><tr><td>'.join('{}</td><td>{:1.5f}'.format(_[0],_[1]) for _ in zip(indices, vec)))
