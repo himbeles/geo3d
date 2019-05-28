@@ -44,6 +44,7 @@ def constrained_movement_3D(surface_points,surface_normals,deltas)->Frame:
     
     The calculation returns a coordinate transform between frames fixed to the rigid body, 
     before and after the disturbance. 
+    For an explanation of the algorithm, see `doc/constrained_movement.pdf`.
 
     Args:
         surface_points: List of 6 constrained points on the rigid body surface
