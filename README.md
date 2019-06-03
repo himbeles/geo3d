@@ -6,7 +6,7 @@ A python package for performing geometric calculations in 3D.
 ## Installation 
 To install the module and its core requirements, run
 ```sh
-pip install --user -e 
+pip install --user -e .
 ```
 within the base directory. 
 
@@ -33,6 +33,3 @@ Unit tests can be run using
 pytest -s 
 ```
 in package root. 
-
-
-testing
