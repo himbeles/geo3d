@@ -1,4 +1,5 @@
 __pycache__
+.eggs
 *.egg-info
 .vscode
 .pytest_cache
