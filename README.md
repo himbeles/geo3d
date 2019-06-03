@@ -1,6 +1,8 @@
 # geo3d
 
-A python package for performing geometric calculations in 3D.
+A python package for performing geometric calculations in 3D, such as 
+  - coordinate system transformations
+  - rigid body motion under local constraints
 
 
 ## Installation 
