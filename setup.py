@@ -49,7 +49,7 @@ setup(
     long_description=long_description,
 
     # The project's main homepage.
-    url='github.com/himbeles/geo3d',
+    url='https://github.com/himbeles/geo3d',
 
     # Author details
     author='himbeles',
