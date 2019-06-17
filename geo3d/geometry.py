@@ -278,8 +278,8 @@ def frame_wizard(primary_vec, secondary_vec, primary_axis: str, secondary_axis: 
 
     This constructor of a Frame object works anaogously to the Spatial Analyzer Frame Wizard.
     The primary axis of the frame is chosen as the `primary_vec`. 
-    The secondary axis of the frame is the `secondary_vec` projected into the plane spanned by
-    `primary_vec` and `seondary_vec`.
+    The secondary axis of the frame points along `secondary_vec` 
+    projected into the plane perpendicular to `primary_vec` .
     The tertiary axis completes the right-handed frame.
     The corresponding primary and secondary axes labels are given as input arguments
     `primary_axis`, `secondary_axis`.
