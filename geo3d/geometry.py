@@ -115,9 +115,14 @@ class Frame:
     def express_in_frame(self, frameA: 'Frame')->'Frame':
         """Express this frame in a different frame.
 
-        Construct transformation T between frameA and this frame (frameB) such that 
-        vB = vA.(T.rotation) + T.translation
-        where vA, vB represent the same vector expressed in frameA and frameB, respectively.
+        This is the transformation T0 between `frameA` and `frameB` expressed in frameA.
+        Transformation T0 such that T0*frameA = B -> T0=frameB*inv(frameA).
+        T0 expressed in frameA becomes: T = inv(frameA) T0 frameA = inv(frameA) frameB.
+
+        This is equivalent to a transformation T between `frameA` and `frameB` such that 
+        vA = (T.rotation).vB + T.translation
+        where vA, vB represent the same vector expressed in frameA and frameB, respectively:
+        frameA.rotation * vA + frameA.translation = frameB.rotation * vB + frameB.translation
         
         Args:
             frameA: Reference frame to express this frame in. 
@@ -125,7 +130,7 @@ class Frame:
         Returns:
             transformation as a new frame object
         """
-        return trafo_between_frames(frameA, self)
+        return express_frame_in_frame(self, frameA)
     
     @classmethod
     def create_unit_frame(cls)->'Frame':
@@ -314,13 +319,11 @@ def frame_wizard(primary_vec, secondary_vec, primary_axis: str, secondary_axis: 
     
     return Frame(rot, np.array(origin))
     
-
 def trafo_between_frames(frameA, frameB):
-    """Transformation matrix between frameA and frameB.
+    """Transformation between frameA and frameB.
 
-    Construct transformation T between `frameA` and `frameB` such that 
-    vB = vA.(T.rotation) + T.translation
-    where vA, vB represent the same vector expressed in frameA and frameB, respectively.
+    Construct transformation T between `frameA` and `frameB` 
+    such that T*frameA = B -> T=frameB*inv(frameA)
     
     Args:
         frameA: Reference frame.
@@ -329,7 +332,30 @@ def trafo_between_frames(frameA, frameB):
     Returns:
         transformation as a new frame object
     """
-    Trot = np.linalg.inv(frameA._rot).dot(frameB._rot)
+    Trot = frameB._rot.dot(np.transpose(frameA._rot))
+    Ttrans = (frameB._trans - frameA._trans)
+    return Frame(Trot, Ttrans)
+
+def express_frame_in_frame(frameB, frameA):
+    """Express frameB in frameA.
+
+    This is the transformation T0 between `frameA` and `frameB` expressed in frameA.
+    Transformation T0 such that T0*frameA = B -> T0=frameB*inv(frameA).
+    T0 expressed in frameA becomes: T = inv(frameA) T0 frameA = inv(frameA) frameB.
+
+    This is equivalent to a transformation T between `frameA` and `frameB` such that 
+    vA = (T.rotation).vB + T.translation
+    where vA, vB represent the same vector expressed in frameA and frameB, respectively:
+    frameA.rotation * vA + frameA.translation = frameB.rotation * vB + frameB.translation
+    
+    Args:
+        frameA: Reference frame.
+        frameB: Final frame.
+
+    Returns:
+        transformation as a new frame object
+    """
+    Trot = np.transpose(frameA._rot).dot(frameB._rot)
     Ttrans = (frameB._trans - frameA._trans)@frameA._rot
     return Frame(Trot, Ttrans)
 
@@ -347,7 +373,7 @@ def express_point_in_frame(point, new_frame, original_frame=Frame.create_unit_fr
         Point expressed in `new_frame`.
     """
     trafo = trafo_between_frames(original_frame, new_frame) 
-    return Point((np.array(point) - trafo._trans)@trafo._rot)
+    return Point((np.array(point) - trafo._trans)@trafo._rot) # multiplication to the right is the same as with transpose to the left 
 
 def express_vector_in_frame(vector, new_frame, original_frame=Frame.create_unit_frame())->Vector:
     """Express a vector in a different frame.
