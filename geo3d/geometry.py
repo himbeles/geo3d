@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.spatial.transform import Rotation as R
+from scipy.optimize import minimize
 from .auxiliary import html_table_from_matrix, html_table_from_vector
 from typing import Union, List, Tuple, Any
 
@@ -212,6 +213,19 @@ class Point:
 
     def __getitem__(self,key):
         return self._p[key]
+    
+    def transform(self, trafo):
+        """Transform this point by a given transformation frame.
+
+        Transform this point by a given transformation frame. Basically the inverse of "express point in frame".
+
+        Args:
+            trafo: Transformation frame 
+
+        Returns:
+            Point expressed in the old frame but transformed.
+        """
+        return Point(trafo._rot@np.array(self._p) + trafo._trans)
 
 class RotationMatrix:
     def __init__(self, m):
@@ -399,3 +413,38 @@ def rotate_vector(rot, vec):
         return normalize(rot@vec)
     else:
         raise Exception('rot is not a rotation object or matrix.')
+
+def distance_between_points(pointA, pointB):
+    return np.linalg.norm(np.array(pointA) - np.array(pointB))
+
+def minimize_points_to_points_distance(groupA, groupB, return_report=False):
+    """Transform point group to minimize point-group-to-point-group distance.
+
+    Returns a transformation (Frame object) that, if applied to all points in point group
+    `groupA`, minimizes the distance between all points in `groupA` an the corresponding 
+    points in `groupB`.
+    
+    Args:
+        groupA: Array of Points.
+        groupB: Array of Points (same size as groupA).
+        return_report: True if report of minimization algorithm should be returned
+
+    Returns:
+        transformation as a new Frame object or tuple of transformation and minimization report
+        if return_report==True
+    """
+    # return transform that maps groupA onto groupB with minimum point-to-point distance
+    def cost(x):  
+        [r1, r2, r3, t1, t2, t3] = x 
+        rot = R.from_rotvec([r1, r2, r3]).as_dcm()
+        trans = np.array([t1, t2, t3])
+        t = Frame(rot, trans)
+        distance = np.sum([
+            distance_between_points(pB, Point(pA).transform(t)) for (pA,pB) in zip(groupA, groupB)])
+        return distance
+    m = minimize(cost, [0,0,0,0,0,0])
+    t = Frame(R.from_rotvec(m['x'][:3]).as_dcm(), m['x'][3:])
+    if return_report:
+        return t, m
+    else: 
+        return t
