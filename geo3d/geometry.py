@@ -181,6 +181,19 @@ class Vector:
     def normalize(self):
         return normalize(self._vec)
 
+    def transform(self, trafo):
+        """Transform this vector by a given transformation frame.
+
+        Transform this vector by a given transformation frame. Basically the inverse of "express vector in frame".
+
+        Args:
+            trafo: Transformation frame 
+
+        Returns:
+            vector expressed in the original frame, but transformed.
+        """
+        return rotate_vector(trafo._rot, self._vec)
+
 class Point:
     def __init__(self, p):
         self._p = np.array(p)
@@ -223,7 +236,7 @@ class Point:
             trafo: Transformation frame 
 
         Returns:
-            Point expressed in the old frame but transformed.
+            Point expressed in the original frame but transformed.
         """
         return Point(trafo._rot@np.array(self._p) + trafo._trans)
 
