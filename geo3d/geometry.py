@@ -430,7 +430,7 @@ def rotate_vector(rot, vec):
 def distance_between_points(pointA, pointB):
     return np.linalg.norm(np.array(pointA) - np.array(pointB))
 
-def minimize_points_to_points_distance(groupA, groupB, return_report=False):
+def minimize_points_to_points_distance(groupA, groupB, return_report=False, method='Powell', tol=1e-6):
     """Transform point group to minimize point-group-to-point-group distance.
 
     Returns a transformation (Frame object) that, if applied to all points in point group
@@ -452,10 +452,10 @@ def minimize_points_to_points_distance(groupA, groupB, return_report=False):
         rot = R.from_rotvec([r1, r2, r3]).as_dcm()
         trans = np.array([t1, t2, t3])
         t = Frame(rot, trans)
-        c = np.sum(np.power([
-            distance_between_points(pB, Point(pA).transform(t)) for (pA,pB) in zip(groupA, groupB)], 2))
+        c = np.sqrt(np.mean(np.power([
+            distance_between_points(pB, Point(pA).transform(t)) for (pA,pB) in zip(groupA, groupB)], 2)))
         return c
-    m = minimize(cost, [0,0,0,0,0,0])
+    m = minimize(cost, [0,0,0,0,0,0], tol=tol, method=method)
     t = Frame(R.from_rotvec(m['x'][:3]).as_dcm(), m['x'][3:])
     if return_report:
         return t, m
