@@ -34,7 +34,7 @@ class Frame:
         # basic string representation of a frame
         s = ""
         s += "rotation\n{}".format(self._rot)
-        s += "\nEuler angles (XYZ, extrinsic, deg.)\n{}".format(self.euler_angles('xyz', degrees=True))
+        s += "\nEuler angles (xyz, extrinsic, deg.)\n{}".format(self.euler_angles('xyz', degrees=True))
         s += "\nEuler angles (XYZ, intrinsic, deg.)\n{}".format(self.euler_angles('XYZ', degrees=True))
         s += "\ntranslation\n{}".format(self._trans)
         return s
@@ -46,7 +46,7 @@ class Frame:
             <table>
                 <tr>
                     <th>rotation matrix</th>
-                    <th>Euler angles<br>(XYZ, extr., deg.)</th>
+                    <th>Euler angles<br>(xyz, extr., deg.)</th>
                     <th>Euler angles<br>(XYZ, intr., deg.)</th>
                     <th>translation<br></th>
                 </tr>
@@ -401,6 +401,22 @@ def express_point_in_frame(point, new_frame, original_frame=Frame.create_unit_fr
     """
     trafo = trafo_between_frames(original_frame, new_frame) 
     return Point((np.array(point) - trafo._trans)@trafo._rot) # multiplication to the right is the same as with transpose to the left 
+
+def express_points_in_frame(points, new_frame, original_frame=Frame.create_unit_frame()):
+    """Express points in a different frame.
+
+    Express the `points` given in the frame `original_frame` in a different frame `new_frame`.
+
+    Args:
+        points: Nx3 point object
+        new_frame: Frame to express this point in. 
+        original_frame: Reference frame where the point is specified in.
+
+    Returns:
+        Point expressed in `new_frame`.
+    """
+    trafo = trafo_between_frames(original_frame, new_frame) 
+    return (np.array(points) - trafo._trans)@trafo._rot # multiplication to the right is the same as with transpose to the left 
 
 def express_vector_in_frame(vector, new_frame, original_frame=Frame.create_unit_frame())->Vector:
     """Express a vector in a different frame.
