@@ -427,6 +427,9 @@ def rotate_vector(rot, vec):
     else:
         raise Exception('rot is not a rotation object or matrix.')
 
+def transform_points(points, trafo):
+    return np.dot(np.array(points), trafo._rot.T) + trafo._trans
+
 def distance_between_points(pointA, pointB):
     return np.linalg.norm(np.array(pointA) - np.array(pointB))
 
