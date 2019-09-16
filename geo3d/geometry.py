@@ -452,9 +452,9 @@ def minimize_points_to_points_distance(groupA, groupB, return_report=False):
         rot = R.from_rotvec([r1, r2, r3]).as_dcm()
         trans = np.array([t1, t2, t3])
         t = Frame(rot, trans)
-        distance = np.sum([
-            distance_between_points(pB, Point(pA).transform(t)) for (pA,pB) in zip(groupA, groupB)])
-        return distance
+        c = np.sum(np.power([
+            distance_between_points(pB, Point(pA).transform(t)) for (pA,pB) in zip(groupA, groupB)], 2))
+        return c
     m = minimize(cost, [0,0,0,0,0,0])
     t = Frame(R.from_rotvec(m['x'][:3]).as_dcm(), m['x'][3:])
     if return_report:
