@@ -61,7 +61,18 @@ class Frame:
             + '</td></tr></table>'
         )
         return html
-    
+
+    def SA_pastable_string(self):
+        """ Spatial Analyzer compatible string representation
+            
+        Returns:
+            str: SA compatible flattened 4x4 transformation matrix
+        """
+        p = np.eye(4)
+        p[0:3,0:3] = self._rot
+        p[0:3,3] = self._trans
+        return ' '.join(['{:0.12f}'.format(i) for i in p.flatten()])
+        
     def euler_angles(self, *args, **kwargs)->np.ndarray:
         """Frame rotation Euler angles.
 
