@@ -148,12 +148,31 @@ class Frame:
     def create_unit_frame(cls)->'Frame':
         """Construct unit frame.
 
-        Construct transformation a frame with no rotation and translation.
+        Construct transformation frame with no rotation and translation.
 
         Returns:
             new unit frame object
         """
         return Frame(np.identity(3), np.zeros(3))
+
+    @classmethod
+    def from_SA_pastable_string(cls, SA_string: str)->'Frame':
+        """Construct frame from SA transformation string.
+
+        Construct transformation frame from SA transformation string.
+
+        Args:
+            SA_string: trafo string from SA
+        Returns:
+            new frame object
+        """
+        try:
+            a = np.array([float( s ) for s in SA_string.split(' ', 15)]).reshape((4,4))
+            rot = a[0:3,0:3]
+            trans = a[:,3]
+        except:
+            raise Exception('SA string could not be read.')
+        return Frame(rot, trans)
 
 
 class Vector:
@@ -359,7 +378,8 @@ def frame_wizard(primary_vec, secondary_vec, primary_axis: str, secondary_axis: 
     
 def trafo_between_frames(frameA, frameB):
     """Transformation between frameA and frameB.
-
+    
+    Transformation between frameA and frameB, expressed in unit frame.
     Construct transformation T between `frameA` and `frameB` 
     such that T*frameA = B -> T=frameB*inv(frameA)
     
