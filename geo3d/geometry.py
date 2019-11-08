@@ -169,7 +169,7 @@ class Frame:
         try:
             a = np.array([float( s ) for s in SA_string.split(' ', 15)]).reshape((4,4))
             rot = a[0:3,0:3]
-            trans = a[:,3]
+            trans = a[:3,3]
         except:
             raise Exception('SA string could not be read.')
         return Frame(rot, trans)
