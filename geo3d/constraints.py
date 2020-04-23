@@ -5,7 +5,7 @@ from scipy.optimize import fsolve
 from typing import Union, List, Tuple, Any
 
 def _trafo2D(phi, dx, dy): 
-    rot = R.from_euler('Z', phi, degrees=True).as_dcm()
+    rot = R.from_euler('Z', phi, degrees=True).as_matrix()
     trans = [dx, dy, 0]
     return Frame(rot, trans)
 
@@ -24,7 +24,7 @@ def constrained_movement_2D(rs,cs,ds=[0,0,0]):
     return _trafo2D(phi, dx, dy)
 
 def _trafo3D(theta_x, theta_y, theta_z, dx, dy, dz): 
-    rot = R.from_euler('xyz', [theta_x, theta_y, theta_z], degrees=True).as_dcm()
+    rot = R.from_euler('xyz', [theta_x, theta_y, theta_z], degrees=True).as_matrix()
     trans = [dx, dy, dz]
     return Frame(rot, trans)
 

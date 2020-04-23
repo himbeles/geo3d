@@ -318,7 +318,7 @@ class RotationMatrix:
             degrees : If True, then the given angles are assumed to be in degrees.
                 Default is False.
         """
-        return cls(R.from_euler(seq, angles, degrees=degrees).as_dcm())
+        return cls(R.from_euler(seq, angles, degrees=degrees).as_matrix())
 
 
 def _construct_frame(new_x, new_y, new_z, origin=[0,0,0]):
@@ -468,7 +468,7 @@ def express_vector_in_frame(vector, new_frame, original_frame=Frame.create_unit_
 def rotate_vector(rot, vec):
     vec = np.array(vec)
     if isinstance(rot, R):
-        return normalize(rot.as_dcm()@vec)
+        return normalize(rot.as_matrix()@vec)
     elif isinstance(rot, np.ndarray):
         return normalize(rot@vec)
     else:
@@ -499,14 +499,14 @@ def minimize_points_to_points_distance(groupA, groupB, return_report=False, meth
     # return transform that maps groupA onto groupB with minimum point-to-point distance
     def cost(x):  
         [r1, r2, r3, t1, t2, t3] = x 
-        rot = R.from_rotvec([r1, r2, r3]).as_dcm()
+        rot = R.from_rotvec([r1, r2, r3]).as_matrix()
         trans = np.array([t1, t2, t3])
         t = Frame(rot, trans)
         c = np.sqrt(np.mean(np.power([
             distance_between_points(pB, Point(pA).transform(t)) for (pA,pB) in zip(groupA, groupB)], 2)))
         return c
     m = minimize(cost, [0,0,0,0,0,0], tol=tol, method=method)
-    t = Frame(R.from_rotvec(m['x'][:3]).as_dcm(), m['x'][3:])
+    t = Frame(R.from_rotvec(m['x'][:3]).as_matrix(), m['x'][3:])
     if return_report:
         return t, m
     else: 
