@@ -15,7 +15,7 @@ def normalize(vec)->np.ndarray:
     return np.array(vec)/np.linalg.norm(np.array(vec))
 
 class Frame:
-    def __init__(self, rot, trans):
+    def __init__(self, rotation_matrix, translation_vector):
         """Frame (transformation) constructor.
 
         Basic constructor method of a frame object. 
@@ -24,11 +24,11 @@ class Frame:
         a frame-to-frame transformation. 
 
         Args: 
-            rot: 3x3 orthogonal rotation matrix
-            trans: 3x1 or 1x3 translation vector
+            rotation_matrix: 3x3 orthogonal rotation matrix
+            translation_vector: 3x1 or 1x3 translation vector
         """
-        self._rot = np.array(rot)
-        self._trans = np.array(trans)
+        self._rot = np.array(rotation_matrix)
+        self._trans = np.array(translation_vector)
         
     def __str__(self):
         # basic string representation of a frame
