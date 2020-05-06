@@ -1,3 +1,4 @@
+from __future__ import annotations
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 from scipy.optimize import minimize
@@ -208,21 +209,55 @@ class Vector:
     def __getitem__(self,key):
         return self._vec[key]
 
-    def normalize(self):
-        return normalize(self._vec)
+    def __add__(self, other):
+        if isinstance(other, Point):
+            return Point(self._vec + other._p)
+        elif isinstance(other, Vector):
+            return Vector(self._vec + other._vec)
+        else: 
+            return self._vec + other
+    __radd__ = __add__
 
-    def transform(self, trafo):
+    def __sub__(self, other):
+        if isinstance(other, Point):
+            return Point(self._vec - other._p)
+        elif isinstance(other, Vector):
+            return Vector(self._vec - other._vec)
+        else: 
+            return self._vec - other
+
+    def normalize(self) -> Vector:
+        """Normalize the length of this vector to 1.
+
+        Returns:
+            Vector: Normalized vector
+        """        
+        return Vector(normalize(self._vec))
+
+    def length(self) -> float:
+        """Length of the vector
+
+        Returns:
+            float: The 2-norm length of the vector.
+        """        
+        return np.linalg.norm(self._vec)
+
+    def transform(self, trafo: Frame) -> Vector:        
         """Transform this vector by a given transformation frame.
 
         Transform this vector by a given transformation frame. Basically the inverse of "express vector in frame".
 
         Args:
-            trafo: Transformation frame 
+            trafo (Frame): Transformation frame
 
         Returns:
-            vector expressed in the original frame, but transformed.
+            Vector: vector expressed in the original frame, but transformed.
         """
-        return rotate_vector(trafo._rot, self._vec)
+        return Vector(rotate_vector(trafo._rot, self._vec))
+
+    def __mul__(self, other: float) -> Vector:
+        return Vector(self._vec * other)
+    __rmul__ = __mul__
 
 class Point:
     def __init__(self, p):
@@ -254,22 +289,41 @@ class Point:
     def __array__(self):
         return self._p
 
-    def __getitem__(self,key):
+    def __getitem__(self, key):
         return self._p[key]
+
+    def __add__(self, other):
+        if isinstance(other, Point):
+            return Point(self._p + other._p)
+        elif isinstance(other, Vector):
+            return Point(self._p + other._vec)
+        else: 
+            return self._p + other
+    __radd__ = __add__
+
+    def __sub__(self, other):
+        print(type(other))
+        if isinstance(other, Point):
+            return Vector(self._p - other._p)
+        elif isinstance(other, Vector):
+            return Point(self._p - other._vec)
+        else: 
+            return self._p - other
+    __rsub__ = __sub__
     
-    def transform(self, trafo):
+    def transform(self, trafo: Frame) -> Point:
         """Transform this point by a given transformation frame.
 
-        Transform this point by a given transformation frame. Basically the inverse of "express point in frame".
+        Apply a transformation to a point (move it), and express it still in the original frame. Basically the inverse of "express point in frame".
 
         Args:
-            trafo: Transformation frame 
+            trafo (Frame): Transformation frame 
 
         Returns:
             Point expressed in the original frame but transformed.
         """
         return Point(trafo._rot@np.array(self._p) + trafo._trans)
-
+    
 class RotationMatrix:
     def __init__(self, m):
         self._m = np.array(m)
@@ -333,7 +387,7 @@ def _construct_frame(new_x, new_y, new_z, origin=[0,0,0]):
 def frame_wizard(primary_vec, secondary_vec, primary_axis: str, secondary_axis: str, origin=[0,0,0]):
     """Frame-Wizard-type Frame constructor.
 
-    This constructor of a Frame object works anaogously to the Spatial Analyzer Frame Wizard.
+    This constructor of a Frame object works analogously to the Spatial Analyzer Frame Wizard.
     The primary axis of the frame is chosen as the `primary_vec`. 
     The secondary axis of the frame points along `secondary_vec` 
     projected into the plane perpendicular to `primary_vec` .
