@@ -222,7 +222,16 @@ class Frame:
 
 
 class Vector:
-    def __init__(self, v):
+    """A Vector is a container for one set of dX,dY,dZ deltas.
+
+    It is only subject to the rotational part of frame transformations. It is not affected by translations. 
+    """    
+    def __init__(self, v: VectorLike):
+        """Initialize a vector from a sequence of dX,dY,dZ deltas. 
+
+        Args:
+            v (VectorLike): A sequence of dX,dY,dZ deltas
+        """        
         self._vec = np.array(v)
     
     def express_in_frame(self, new_frame: Frame, original_frame: Frame = Frame.create_unit_frame()) -> Vector:
@@ -300,12 +309,27 @@ class Vector:
         """
         return rotate_vector(self._vec, transformation._rot)
 
+    def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
+        return np.dot(self._vec, other)
+
+    def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
+        return np.dot(other, self._vec)
+
     def __mul__(self, other: float) -> Vector:
         return Vector(self._vec * other)
     __rmul__ = __mul__
 
 class Point:
-    def __init__(self, p):
+    """A Point is a container for one set of X,Y,Z coordinates.
+
+    It is subject to translations and rotations of frame transformations.
+    """    
+    def __init__(self, p: VectorLike):
+        """Initialize a Point from a sequence of X,Y,Z coordinates.
+
+        Args:
+            p (VectorLike): sequence of X,Y,Z coordinates
+        """        
         self._p = np.array(p)
     
     def express_in_frame(self, new_frame, original_frame: Frame = Frame.create_unit_frame()) -> Point:
@@ -354,6 +378,12 @@ class Point:
         else: 
             return self._p - other
     __rsub__ = __sub__
+
+    def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
+        return np.dot(self._p, other)
+
+    def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
+        return np.dot(other, self._p)
     
     def transform(self, transformation: Frame) -> Point:
         """Transform this point by a given transformation frame.
