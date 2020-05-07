@@ -167,12 +167,10 @@ class Frame:
 
     @classmethod
     def from_SA_pastable_string(cls, SA_string: str) -> Frame:
-        """Construct frame from SA transformation string.
-
-        Construct transformation frame from SA transformation string.
+        """Construct frame from SA transformation matrix string.
 
         Args:
-            SA_string (str): trafo string from SA
+            SA_string (str): transformation matrix string from SA
         Returns:
             Frame: new frame object
         """
@@ -182,6 +180,44 @@ class Frame:
             trans = a[:3,3]
         except:
             raise Exception('SA string could not be read.')
+        return Frame(rot, trans)
+
+    @classmethod
+    def from_extrinsic_euler_and_translations(cls, theta_x: float, theta_y: float, theta_z: float, dx: float, dy: float, dz: float) -> Frame: 
+        """Frame from extrinsic xyz Euler angles (fixed rotation reference axes) and translations.
+
+        Args:
+            theta_x (float): rotation angle around extrinsic x-axis (degrees)
+            theta_y (float): rotation angle around extrinsic y-axis (degrees)
+            theta_z (float): rotation angle around extrinsic z-axis (degrees)
+            dx (float): translation along x
+            dy (float): translation along y
+            dz (float): translation along z
+
+        Returns:
+            Frame: Resulting frame
+        """        
+        rot = R.from_euler('xyz', [theta_x, theta_y, theta_z], degrees=True).as_matrix()
+        trans = [dx, dy, dz]
+        return Frame(rot, trans)
+
+    @classmethod
+    def from_intrinsic_euler_and_translations(cls, theta_x: float, theta_y: float, theta_z: float, dx: float, dy: float, dz: float) -> Frame: 
+        """Frame from intrinsic xyz Euler angles and translations.
+
+        Args:
+            theta_x (float): rotation angle around intrinsic x-axis (degrees)
+            theta_y (float): rotation angle around intrinsic y-axis (degrees)
+            theta_z (float): rotation angle around intrinsic z-axis (degrees)
+            dx (float): translation along x
+            dy (float): translation along y
+            dz (float): translation along z
+
+        Returns:
+            Frame: Resulting frame
+        """        
+        rot = R.from_euler('XYZ', [theta_x, theta_y, theta_z], degrees=True).as_matrix()
+        trans = [dx, dy, dz]
         return Frame(rot, trans)
 
 
