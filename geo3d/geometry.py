@@ -3,7 +3,7 @@ import numpy as np
 from scipy.spatial.transform import Rotation as R
 from scipy.optimize import minimize
 from .auxiliary import html_table_from_matrix, html_table_from_vector
-from typing import Union, List, Tuple, Any
+from typing import Union, List, Tuple, Any, Sequence
 
 def normalize(vec)->np.ndarray:
     """2-norm normalize the given vector.
@@ -16,7 +16,11 @@ def normalize(vec)->np.ndarray:
     return np.array(vec)/np.linalg.norm(np.array(vec))
 
 class Frame:
-    def __init__(self, rotation_matrix, translation_vector):
+    """A geometric Frame.
+
+    Defined via a translation and rotation transformation from a unit world frame.
+    """
+    def __init__(self, rotation_matrix: np.ndarray, translation_vector: Sequence[float]):
         """Frame (transformation) constructor.
 
         Basic constructor method of a frame object. 
@@ -28,10 +32,12 @@ class Frame:
             rotation_matrix: 3x3 orthogonal rotation matrix
             translation_vector: 3x1 or 1x3 translation vector
         """
-        self._rot = np.array(rotation_matrix)
-        self._trans = np.array(translation_vector)
-        
-    def __str__(self):
+        self._rot : np.ndarray = np.array(rotation_matrix)
+        self._trans : Sequence[float] = np.array(translation_vector)
+        assert self._rot.shape == (3,3), "Rotation matrix does not have the required shape of (3,3)."
+        assert self._trans.shape == (3,), "Translation vector does not have the required shape of (1,3) or (3,1)."
+    
+    def __str__(self) -> str:
         # basic string representation of a frame
         s = ""
         s += "rotation\n{}".format(self._rot)
@@ -40,7 +46,7 @@ class Frame:
         s += "\ntranslation\n{}".format(self._trans)
         return s
         
-    def _repr_html_(self):
+    def _repr_html_(self) -> str:
         # html representation of a frame
         html = (
             '''
@@ -63,7 +69,7 @@ class Frame:
         )
         return html
 
-    def SA_pastable_string(self):
+    def SA_pastable_string(self) -> str:
         """ Spatial Analyzer compatible string representation
             
         Returns:
@@ -108,20 +114,20 @@ class Frame:
         return R.from_dcm(self._rot).as_euler(*args, **kwargs)
 
     @property
-    def translation(self)->'Vector':
+    def translation(self) -> Vector:
         """Frame translation vector.
 
         Returns: 
-            Frame translation vector
+            Vector: Frame translation vector
         """
         return Vector(self._trans)
     
     @property
-    def rotation(self)->np.ndarray:
+    def rotation(self) -> RotationMatrix:
         """Frame rotation matrix.
 
         Returns: 
-            Frame rotation matrix
+            RotationMatrix: Frame rotation matrix
         """
         return RotationMatrix(self._rot)
 
@@ -146,7 +152,7 @@ class Frame:
         return express_frame_in_frame(self, frameA)
     
     @classmethod
-    def create_unit_frame(cls)->'Frame':
+    def create_unit_frame(cls) -> Frame:
         """Construct unit frame.
 
         Construct transformation frame with no rotation and translation.
@@ -157,7 +163,7 @@ class Frame:
         return Frame(np.identity(3), np.zeros(3))
 
     @classmethod
-    def from_SA_pastable_string(cls, SA_string: str)->'Frame':
+    def from_SA_pastable_string(cls, SA_string: str) -> Frame:
         """Construct frame from SA transformation string.
 
         Construct transformation frame from SA transformation string.
@@ -375,7 +381,7 @@ class RotationMatrix:
         return cls(R.from_euler(seq, angles, degrees=degrees).as_matrix())
 
 
-def _construct_frame(new_x, new_y, new_z, origin=[0,0,0]):
+def _construct_frame_from_orthogonal_vectors(new_x, new_y, new_z, origin=[0,0,0]) -> Frame:
     """
     transformation matrix into a new coordinate system where the new x,y,z axes are given by the provided vectors,
     and the origin is given. 
@@ -384,7 +390,7 @@ def _construct_frame(new_x, new_y, new_z, origin=[0,0,0]):
     trans = np.array(origin)
     return Frame(rot, trans)
 
-def frame_wizard(primary_vec, secondary_vec, primary_axis: str, secondary_axis: str, origin=[0,0,0]):
+def frame_wizard(primary_vec, secondary_vec, primary_axis: str, secondary_axis: str, origin=[0,0,0]) -> Frame:
     """Frame-Wizard-type Frame constructor.
 
     This constructor of a Frame object works analogously to the Spatial Analyzer Frame Wizard.
