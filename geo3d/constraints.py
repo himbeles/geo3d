@@ -23,11 +23,6 @@ def constrained_movement_2D(rs,cs,ds=[0,0,0]):
     phi, dx, dy =  fsolve(equations, (0,0,0))
     return _trafo2D(phi, dx, dy)
 
-def _trafo3D(theta_x, theta_y, theta_z, dx, dy, dz): 
-    rot = R.from_euler('xyz', [theta_x, theta_y, theta_z], degrees=True).as_matrix()
-    trans = [dx, dy, dz]
-    return Frame(rot, trans)
-
 def constrained_movement_3D(surface_points,surface_normals,deltas)->Frame:
     """Rigid body movement under constraints.
 
@@ -60,11 +55,11 @@ def constrained_movement_3D(surface_points,surface_normals,deltas)->Frame:
     assert len(rs)==6 and len(cs)==6 and len(deltas)==6, 'number of constraints must be 6 for a 3D problem.'
     def equations(p):
         theta_x, theta_y, theta_z, dx, dy, dz = p
-        t = _trafo3D(theta_x, theta_y, theta_z, dx, dy, dz)
+        t = Frame.from_extrinsic_euler_and_translations(theta_x, theta_y, theta_z, dx, dy, dz)
         eqs = []
         for (r,c,d) in zip(rs, cs, deltas):
             cn = normalize(c)
             eqs.append((express_point_in_frame(r+d*cn,t)-r)@cn)
         return eqs
     theta_x, theta_y, theta_z, dx, dy, dz =  fsolve(equations, (0,0,0,0,0,0))
-    return _trafo3D(theta_x, theta_y, theta_z, dx, dy, dz)
+    return Frame.from_extrinsic_euler_and_translations(theta_x, theta_y, theta_z, dx, dy, dz)
