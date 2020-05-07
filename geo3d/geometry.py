@@ -327,10 +327,10 @@ class Vector:
         return rotate_vector(self._a, transformation._rot)
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(self._a, other)
+        return np.dot(self._a, np.array(other))
 
     def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(other, self._a)
+        return np.dot(np.array(other), self._a)
 
     def __mul__(self, other: float) -> Vector:
         return Vector(self._a * other)
@@ -398,10 +398,10 @@ class Point:
     __rsub__ = __sub__
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(self._a, other)
+        return np.dot(self._a, np.array(other))
 
     def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(other, self._a)
+        return np.dot(np.array(other), self._a)
     
     def transform(self, transformation: Frame) -> Point:
         """Transform this point by a given transformation frame.
