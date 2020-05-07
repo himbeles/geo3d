@@ -220,6 +220,23 @@ class Frame:
         trans = [dx, dy, dz]
         return Frame(rot, trans)
 
+    @classmethod
+    def from_orthogonal_vectors(new_x: VectorLike, new_y: VectorLike, new_z: VectorLike, origin: VectorLike = [0,0,0]) -> Frame:
+        """Frame from three orthogonal vectors along the x,y,z axes. 
+
+        Args:
+            new_x (VectorLike): Vector along the x-axis
+            new_y (VectorLike): Vector along the x-axis
+            new_z (VectorLike): Vector along the x-axis
+            origin (VectorLike, optional): Origin coordinates. Defaults to [0,0,0].
+
+        Returns:
+            Frame: [description]
+        """
+        rot = np.stack([normalize(new_x), normalize(new_y), normalize(new_z)], 1)
+        trans = np.array(origin)
+        return Frame(rot, trans)
+
 
 class Vector:
     """A Vector is a container for one set of dX,dY,dZ deltas.
@@ -319,6 +336,7 @@ class Vector:
         return Vector(self._vec * other)
     __rmul__ = __mul__
 
+
 class Point:
     """A Point is a container for one set of X,Y,Z coordinates.
 
@@ -399,7 +417,16 @@ class Point:
         return Point(transformation._rot@np.array(self._p) + transformation._trans)
     
 class RotationMatrix:
-    def __init__(self, m):
+    """A 3x3 rotation matrix.
+
+    The rotation matrix must be orthogonal. This is not enforced in the initializer. 
+    """    
+    def __init__(self, m: RotationMatrixLike):
+        """Initialize a RotationMatrix from any type of 3x3 construct (sequences, np.ndarray, RotationMatrix).
+
+        Args:
+            m (RotationMatrixLike): [description]
+        """        
         self._m = np.array(m)
 
     def _repr_html_(self):
@@ -451,15 +478,6 @@ class RotationMatrix:
         """
         return cls(R.from_euler(seq, angles, degrees=degrees).as_matrix())
 
-
-def _construct_frame_from_orthogonal_vectors(new_x, new_y, new_z, origin=[0,0,0]) -> Frame:
-    """
-    transformation matrix into a new coordinate system where the new x,y,z axes are given by the provided vectors,
-    and the origin is given. 
-    """
-    rot = np.stack([normalize(new_x), normalize(new_y), normalize(new_z)], 1)
-    trans = np.array(origin)
-    return Frame(rot, trans)
 
 def frame_wizard(primary_vec: VectorLike, secondary_vec: VectorLike, primary_axis: str, secondary_axis: str, origin: VectorLike = [0,0,0]) -> Frame:
     """Frame-Wizard-type Frame constructor.
