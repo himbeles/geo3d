@@ -249,7 +249,7 @@ class Vector:
         Args:
             v (VectorLike): A sequence of dX,dY,dZ deltas
         """        
-        self._vec = np.array(v)
+        self._a : np.ndarray = np.array(v) # storage as Numpy array
     
     def express_in_frame(self, new_frame: Frame, original_frame: Frame = Frame.create_unit_frame()) -> Vector:
         """Express this vector in a different frame.
@@ -263,39 +263,39 @@ class Vector:
         Returns:
             Vector: Vector expressed in `new_frame`.
         """
-        return express_vector_in_frame(self._vec, new_frame, original_frame)
+        return express_vector_in_frame(self._a, new_frame, original_frame)
     
     def _repr_html_(self):
         html = (
-            html_table_from_vector(self._vec, indices=['x','y','z'])
+            html_table_from_vector(self._a, indices=['x','y','z'])
         )
         return html
     
     def as_array(self):
-        return self._vec
+        return self._a
 
     def __array__(self):
-        return self._vec
+        return self._a
 
     def __getitem__(self,key):
-        return self._vec[key]
+        return self._a[key]
 
     def __add__(self, other):
         if isinstance(other, Point):
-            return Point(self._vec + other._p)
+            return Point(self._a + other._a)
         elif isinstance(other, Vector):
-            return Vector(self._vec + other._vec)
+            return Vector(self._a + other._a)
         else: 
-            return self._vec + other
+            return self._a + other
     __radd__ = __add__
 
     def __sub__(self, other):
         if isinstance(other, Point):
-            return Point(self._vec - other._p)
+            return Point(self._a - other._a)
         elif isinstance(other, Vector):
-            return Vector(self._vec - other._vec)
+            return Vector(self._a - other._a)
         else: 
-            return self._vec - other
+            return self._a - other
 
     def normalize(self) -> Vector:
         """Normalize the length of this vector to 1.
@@ -303,7 +303,7 @@ class Vector:
         Returns:
             Vector: Normalized vector
         """        
-        return Vector(normalize(self._vec))
+        return Vector(normalize(self._a))
 
     def length(self) -> float:
         """Length of the vector
@@ -311,7 +311,7 @@ class Vector:
         Returns:
             float: The 2-norm length of the vector.
         """        
-        return np.linalg.norm(self._vec)
+        return np.linalg.norm(self._a)
 
     def transform(self, transformation: Frame) -> Vector:        
         """Transform this vector by a given transformation frame.
@@ -324,16 +324,16 @@ class Vector:
         Returns:
             Vector: vector expressed in the original frame, but transformed.
         """
-        return rotate_vector(self._vec, transformation._rot)
+        return rotate_vector(self._a, transformation._rot)
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(self._vec, other)
+        return np.dot(self._a, other)
 
     def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(other, self._vec)
+        return np.dot(other, self._a)
 
     def __mul__(self, other: float) -> Vector:
-        return Vector(self._vec * other)
+        return Vector(self._a * other)
     __rmul__ = __mul__
 
 
@@ -348,7 +348,7 @@ class Point:
         Args:
             p (VectorLike): sequence of X,Y,Z coordinates
         """        
-        self._p = np.array(p)
+        self._a : np.ndarray = np.array(p) # storage as Numpy array
     
     def express_in_frame(self, new_frame, original_frame: Frame = Frame.create_unit_frame()) -> Point:
         """Express this point in a different frame.
@@ -362,46 +362,46 @@ class Point:
         Returns:
             Point: Point expressed in `new_frame`.
         """
-        return express_point_in_frame(self._p, new_frame, original_frame)
+        return express_point_in_frame(self._a, new_frame, original_frame)
     
     def _repr_html_(self):
         html = (
-            html_table_from_vector(self._p, indices=['x','y','z'])
+            html_table_from_vector(self._a, indices=['x','y','z'])
         )
         return html
 
     def as_array(self):
-        return self._p
+        return self._a
 
     def __array__(self):
-        return self._p
+        return self._a
 
     def __getitem__(self, key):
-        return self._p[key]
+        return self._a[key]
 
     def __add__(self, other):
         if isinstance(other, Point):
-            return Point(self._p + other._p)
+            return Point(self._a + other._a)
         elif isinstance(other, Vector):
-            return Point(self._p + other._vec)
+            return Point(self._a + other._a)
         else: 
-            return self._p + other
+            return self._a + other
     __radd__ = __add__
 
     def __sub__(self, other):
         if isinstance(other, Point):
-            return Vector(self._p - other._p)
+            return Vector(self._a - other._a)
         elif isinstance(other, Vector):
-            return Point(self._p - other._vec)
+            return Point(self._a - other._a)
         else: 
-            return self._p - other
+            return self._a - other
     __rsub__ = __sub__
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(self._p, other)
+        return np.dot(self._a, other)
 
     def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(other, self._p)
+        return np.dot(other, self._a)
     
     def transform(self, transformation: Frame) -> Point:
         """Transform this point by a given transformation frame.
@@ -414,7 +414,7 @@ class Point:
         Returns:
             Point: Point expressed in the original frame but transformed.
         """
-        return Point(transformation._rot@np.array(self._p) + transformation._trans)
+        return Point(transformation._rot@np.array(self._a) + transformation._trans)
     
 class RotationMatrix:
     """A 3x3 rotation matrix.
@@ -427,22 +427,22 @@ class RotationMatrix:
         Args:
             m (RotationMatrixLike): [description]
         """        
-        self._m = np.array(m)
+        self._a : np.ndarray = np.array(m) # storage as Numpy array
 
     def _repr_html_(self):
         html = (
-            html_table_from_matrix(self._m)
+            html_table_from_matrix(self._a)
         )
         return html
     
     def as_array(self):
-        return self._m
+        return self._a
 
     def __array__(self):
-        return self._m
+        return self._a
 
     def __getitem__(self,key):
-        return self._m[key]
+        return self._a[key]
 
     @classmethod
     def from_euler_angles(cls, seq: str, angles: Sequence[float], degrees: bool = False) -> RotationMatrix:
