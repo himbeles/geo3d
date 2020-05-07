@@ -47,7 +47,7 @@ class Frame:
         s += "\nEuler angles (xyz, extrinsic, deg.)\n{}".format(self.euler_angles('xyz', degrees=True))
         s += "\nEuler angles (XYZ, intrinsic, deg.)\n{}".format(self.euler_angles('XYZ', degrees=True))
         s += "\ntranslation\n{}".format(self._trans)
-        return s
+        return "<%s instance at %s>\n%s" % (self.__class__.__name__, id(self), s)
         
     def _repr_html_(self) -> str:
         # html representation of a frame
@@ -71,7 +71,7 @@ class Frame:
             + '</td></tr></table>'
         )
         return html
-
+    
     def SA_pastable_string(self) -> str:
         """ Spatial Analyzer compatible string representation
             
@@ -265,6 +265,10 @@ class Vector:
         """
         return express_vector_in_frame(self._a, new_frame, original_frame)
     
+    def __str__(self) -> str:
+        # basic string representation
+        return "<%s instance at %s> %s" % (self.__class__.__name__, id(self), self._a)
+
     def _repr_html_(self):
         html = (
             html_table_from_vector(self._a, indices=['x','y','z'])
@@ -364,6 +368,10 @@ class Point:
         """
         return express_point_in_frame(self._a, new_frame, original_frame)
     
+    def __str__(self) -> str:
+        # basic string representation
+        return "<%s instance at %s> %s" % (self.__class__.__name__, id(self), self._a)
+
     def _repr_html_(self):
         html = (
             html_table_from_vector(self._a, indices=['x','y','z'])
@@ -428,6 +436,10 @@ class RotationMatrix:
             m (RotationMatrixLike): [description]
         """        
         self._a : np.ndarray = np.array(m) # storage as Numpy array
+
+    def __str__(self) -> str:
+        # basic string representation
+        return "<%s instance at %s>\n%s" % (self.__class__.__name__, id(self), self._a)
 
     def _repr_html_(self):
         html = (
