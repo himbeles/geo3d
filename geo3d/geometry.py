@@ -308,7 +308,6 @@ class Point:
     __radd__ = __add__
 
     def __sub__(self, other):
-        print(type(other))
         if isinstance(other, Point):
             return Vector(self._p - other._p)
         elif isinstance(other, Vector):
