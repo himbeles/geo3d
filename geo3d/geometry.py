@@ -438,7 +438,8 @@ class Point:
         Returns:
             Point: Point expressed in the original frame but transformed.
         """
-        return Point(transformation._rot@np.array(self._a) + transformation._trans)
+        return Point(transform_points(self, transformation))
+        #return Point(transformation._rot@np.array(self._a) + transformation._trans)
     
 class RotationMatrix:
     """A 3x3 rotation matrix.
@@ -657,10 +658,10 @@ def rotate_vector(vec: VectorLike, rot: RotationMatrixLike) -> Vector:
     """    
     return Vector(np.array(rot)@np.array(vec))
 
-def transform_points(points, trafo):
+def transform_points(points: Union[VectorLike, Sequence[VectorLike]], trafo: Frame) -> np.ndarray:
     return np.dot(np.array(points), trafo._rot.T) + trafo._trans
 
-def distance_between_points(pointA, pointB):
+def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
     return np.linalg.norm(np.array(pointA) - np.array(pointB))
 
 def minimize_points_to_points_distance(groupA, groupB, return_report=False, method='Powell', tol=1e-6):
