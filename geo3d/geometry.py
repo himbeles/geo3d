@@ -116,6 +116,22 @@ class Frame:
         """
         return R.from_dcm(self._rot).as_euler(*args, **kwargs)
 
+    def extrinsic_euler_angles(self) -> Tuple[float, float, float]: 
+        """Extrinsic xyz Euler angles (fixed rotation reference axes) of the Frame.
+
+        Returns:
+           Tuple[float, float, float]: rotation angles around extrinsic x,y,z axes (degrees)
+        """        
+        return self.euler_angles('xyz', degrees=True)
+
+    def intrinsic_euler_angles(self) -> Tuple[float, float, float]: 
+        """Intrinsic xyz Euler angles of the Frame.
+
+        Returns:
+           Tuple[float, float, float]: rotation angles around intrinsic x,y,z axes (degrees)
+        """        
+        return self.euler_angles('XYZ', degrees=True)
+
     @property
     def translation(self) -> Vector:
         """Frame translation vector.
