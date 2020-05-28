@@ -12,9 +12,9 @@ def normalize(vec: VectorLike) -> np.ndarray:
     """2-norm normalize the given vector.
     
     Args: 
-        vec (VectorLike): non-normalized vector
+        vec: non-normalized vector
     Returns:
-        np.ndarray: normalized vector
+        normalized vector
     """
     return np.array(vec)/np.linalg.norm(np.array(vec))
 
@@ -32,8 +32,8 @@ class Frame:
         a frame-to-frame transformation. 
 
         Args: 
-            rotation_matrix (RotationMatrixLike): 3x3 orthogonal rotation matrix
-            translation_vector (VectorLike): 3x1 or 1x3 translation vector
+            rotation_matrix: 3x3 orthogonal rotation matrix
+            translation_vector: 3x1 or 1x3 translation vector
         """
         self._rot : np.ndarray = np.array(rotation_matrix)
         self._trans : np.ndarray = np.array(translation_vector)
@@ -76,7 +76,7 @@ class Frame:
         """ Spatial Analyzer compatible string representation
             
         Returns:
-            str: SA compatible flattened 4x4 transformation matrix
+            SA compatible flattened 4x4 transformation matrix
         """
         p = np.eye(4)
         p[0:3,0:3] = self._rot
@@ -120,7 +120,7 @@ class Frame:
         """Extrinsic xyz Euler angles (fixed rotation reference axes) of the Frame.
 
         Returns:
-           Tuple[float, float, float]: rotation angles around extrinsic x,y,z axes (degrees)
+           Rotation angles around extrinsic x,y,z axes (degrees)
         """        
         return self.euler_angles('xyz', degrees=True)
 
@@ -128,7 +128,7 @@ class Frame:
         """Intrinsic xyz Euler angles of the Frame.
 
         Returns:
-           Tuple[float, float, float]: rotation angles around intrinsic x,y,z axes (degrees)
+           Rotation angles around intrinsic x,y,z axes (degrees)
         """        
         return self.euler_angles('XYZ', degrees=True)
 
@@ -137,7 +137,7 @@ class Frame:
         """Frame translation vector.
 
         Returns: 
-            Vector: Frame translation vector
+            Frame translation vector
         """
         return Vector(self._trans)
     
@@ -146,7 +146,7 @@ class Frame:
         """Frame rotation matrix.
 
         Returns: 
-            RotationMatrix: Frame rotation matrix
+            Frame rotation matrix
         """
         return RotationMatrix(self._rot)
 
@@ -163,10 +163,10 @@ class Frame:
         reference_frame.rotation * vA + reference_frame.translation = self.rotation * vB + self.translation
         
         Args:
-            reference_frame (Frame): Reference frame to express this frame in. 
+            reference_frame: Reference frame to express this frame in. 
 
         Returns:
-            Frame: Frame expressed in a new reference frame
+            Frame expressed in a new reference frame
         """
         return express_frame_in_frame(self, reference_frame)
     
@@ -177,7 +177,7 @@ class Frame:
         Construct transformation frame with no rotation and translation.
 
         Returns:
-            Frame: new unit frame object
+            New unit frame object
         """
         return Frame(np.identity(3), np.zeros(3))
 
@@ -186,9 +186,9 @@ class Frame:
         """Construct frame from SA transformation matrix string.
 
         Args:
-            SA_string (str): transformation matrix string from SA
+            SA_string: transformation matrix string from SA
         Returns:
-            Frame: new frame object
+            New frame object
         """
         try:
             a = np.array([float( s ) for s in SA_string.split(' ', 15)]).reshape((4,4))
@@ -203,15 +203,15 @@ class Frame:
         """Frame from extrinsic xyz Euler angles (fixed rotation reference axes) and translations.
 
         Args:
-            theta_x (float): rotation angle around extrinsic x-axis (degrees)
-            theta_y (float): rotation angle around extrinsic y-axis (degrees)
-            theta_z (float): rotation angle around extrinsic z-axis (degrees)
-            dx (float): translation along x
-            dy (float): translation along y
-            dz (float): translation along z
+            theta_x: rotation angle around extrinsic x-axis (degrees)
+            theta_y: rotation angle around extrinsic y-axis (degrees)
+            theta_z: rotation angle around extrinsic z-axis (degrees)
+            dx: translation along x
+            dy: translation along y
+            dz: translation along z
 
         Returns:
-            Frame: Resulting frame
+            Resulting frame
         """        
         rot = R.from_euler('xyz', [theta_x, theta_y, theta_z], degrees=True).as_matrix()
         trans = [dx, dy, dz]
@@ -222,15 +222,15 @@ class Frame:
         """Frame from intrinsic xyz Euler angles and translations.
 
         Args:
-            theta_x (float): rotation angle around intrinsic x-axis (degrees)
-            theta_y (float): rotation angle around intrinsic y-axis (degrees)
-            theta_z (float): rotation angle around intrinsic z-axis (degrees)
-            dx (float): translation along x
-            dy (float): translation along y
-            dz (float): translation along z
+            theta_x: rotation angle around intrinsic x-axis (degrees)
+            theta_y: rotation angle around intrinsic y-axis (degrees)
+            theta_z: rotation angle around intrinsic z-axis (degrees)
+            dx: translation along x
+            dy: translation along y
+            dz: translation along z
 
         Returns:
-            Frame: Resulting frame
+            Resulting frame
         """        
         rot = R.from_euler('XYZ', [theta_x, theta_y, theta_z], degrees=True).as_matrix()
         trans = [dx, dy, dz]
@@ -241,13 +241,13 @@ class Frame:
         """Frame from three orthogonal vectors along the x,y,z axes. 
 
         Args:
-            new_x (VectorLike): Vector along the x-axis
-            new_y (VectorLike): Vector along the x-axis
-            new_z (VectorLike): Vector along the x-axis
-            origin (VectorLike, optional): Origin coordinates. Defaults to [0,0,0].
+            new_x: Vector along the x-axis
+            new_y: Vector along the x-axis
+            new_z: Vector along the x-axis
+            origin: Origin coordinates. Defaults to [0,0,0].
 
         Returns:
-            Frame: [description]
+            Frame: Resulting Frame
         """
         rot = np.stack([normalize(new_x), normalize(new_y), normalize(new_z)], 1)
         trans = np.array(origin)
@@ -263,7 +263,7 @@ class Vector:
         """Initialize a vector from a sequence of dX,dY,dZ deltas. 
 
         Args:
-            v (VectorLike): A sequence of dX,dY,dZ deltas
+            v: A sequence of dX,dY,dZ deltas
         """        
         self._a : np.ndarray = np.array(v) # storage as Numpy array
     
@@ -273,11 +273,11 @@ class Vector:
         Express the vector given in the frame `original_frame` in a different frame `new_frame`.
 
         Args:
-            new_frame (Frame): Frame to express this vector in. 
-            original_frame (Frame, optional): Reference frame where the vector is specified in. Defaults to Frame.create_unit_frame().
+            new_frame: Frame to express this vector in. 
+            original_frame: Reference frame where the vector is specified in. Defaults to Frame.create_unit_frame().
 
         Returns:
-            Vector: Vector expressed in `new_frame`.
+            Vector expressed in `new_frame`.
         """
         return express_vector_in_frame(self._a, new_frame, original_frame)
     
@@ -321,7 +321,7 @@ class Vector:
         """Normalize the length of this vector to 1.
 
         Returns:
-            Vector: Normalized vector
+            Normalized vector
         """        
         return Vector(normalize(self._a))
 
@@ -329,7 +329,7 @@ class Vector:
         """Length of the vector
 
         Returns:
-            float: The 2-norm length of the vector.
+            The 2-norm length of the vector.
         """        
         return np.linalg.norm(self._a)
 
@@ -339,10 +339,10 @@ class Vector:
         Apply a transformation to a vector (rotate it), and express it still in the original frame. Basically the inverse of "express vector in frame".
 
         Args:
-            transformation (Frame): Transformation frame
+            transformation: Transformation frame
 
         Returns:
-            Vector: vector expressed in the original frame, but transformed.
+            vector expressed in the original frame, but transformed.
         """
         return rotate_vector(self._a, transformation._rot)
 
@@ -366,7 +366,7 @@ class Point:
         """Initialize a Point from a sequence of X,Y,Z coordinates.
 
         Args:
-            p (VectorLike): sequence of X,Y,Z coordinates
+            p: sequence of X,Y,Z coordinates
         """        
         self._a : np.ndarray = np.array(p) # storage as Numpy array
     
@@ -376,11 +376,11 @@ class Point:
         Express the point given in the frame `original_frame` in a different frame `new_frame`.
 
         Args:
-            new_frame (Frame): Frame to express this point in. 
-            original_frame (Frame, optional): Reference frame where the point is specified in. Defaults to Frame.create_unit_frame().
+            new_frame: Frame to express this point in. 
+            original_frame: Reference frame where the point is specified in. Defaults to Frame.create_unit_frame().
 
         Returns:
-            Point: Point expressed in `new_frame`.
+            Point expressed in `new_frame`.
         """
         return express_point_in_frame(self._a, new_frame, original_frame)
     
@@ -433,10 +433,10 @@ class Point:
         Apply a transformation to a point (move it), and express it still in the original frame. Basically the inverse of "express point in frame".
 
         Args:
-            transformation (Frame): Transformation frame 
+            transformation: Transformation frame 
 
         Returns:
-            Point: Point expressed in the original frame but transformed.
+            Point expressed in the original frame but transformed.
         """
         return Point(transform_points(self, transformation))
         #return Point(transformation._rot@np.array(self._a) + transformation._trans)
@@ -450,7 +450,7 @@ class RotationMatrix:
         """Initialize a RotationMatrix from any type of 3x3 construct (sequences, np.ndarray, RotationMatrix).
 
         Args:
-            m (RotationMatrixLike): [description]
+            m: Rotation-matrix-like object
         """        
         self._a : np.ndarray = np.array(m) # storage as Numpy array
 
@@ -480,11 +480,11 @@ class RotationMatrix:
         Arguments are passed to scipy.spatial.transform.Rotation.from_euler(*args, **kwargs).
 
         Args:
-            seq (str): Specifies sequence of axes for rotations. Up to 3 characters
+            seq: Specifies sequence of axes for rotations. Up to 3 characters
                 belonging to the set {'X', 'Y', 'Z'} for intrinsic rotations, or
                 {'x', 'y', 'z'} for extrinsic rotations. Extrinsic and intrinsic
                 rotations cannot be mixed in one function call.
-            angles (Sequence[float]) : float or array_like, shape (N,) or (N, [1 or 2 or 3])
+            angles: float or array_like, shape (N,) or (N, [1 or 2 or 3])
                 Euler angles specified in radians (`degrees` is False) or degrees
                 (`degrees` is True).
                 For a single character `seq`, `angles` can be:
@@ -499,11 +499,11 @@ class RotationMatrix:
                 - array_like with shape (N, W) where each `angle[i]`
                 corresponds to a sequence of Euler angles describing a single
                 rotation
-            degrees (bool, optional) : If True, then the given angles are assumed to be in degrees.
+            degrees: If True, then the given angles are assumed to be in degrees.
                 Defaults to False.
             
         Returns:
-            RotationMatrix: Rotation matrix
+            Rotation matrix
         """
         return cls(R.from_euler(seq, angles, degrees=degrees).as_matrix())
 
@@ -521,14 +521,14 @@ def frame_wizard(primary_vec: VectorLike, secondary_vec: VectorLike, primary_axi
     The `origin` of the frame can be specified. 
 
     Args:
-        primary_vec (VectorLike): vector specifying the primary axis
-        secondary_vec (VectorLike): vector used in the construction of the secondary axis
-        primary_axis (str): label x/z/y of primary axis
-        secondary_axis (str): label x/z/y of secondary axis
-        origin (VectorLike, optional): point coordinates of the frame origin
+        primary_vec: vector specifying the primary axis
+        secondary_vec: vector used in the construction of the secondary axis
+        primary_axis: label x/z/y of primary axis
+        secondary_axis: label x/z/y of secondary axis
+        origin: point coordinates of the frame origin
 
     Returns:
-        Frame: Constructed Frame
+        Constructed Frame
     """
     assert secondary_axis != primary_axis, 'secondary axis must not equal primary axis: choose from x,y,z'
     primary_vec = normalize(primary_vec)
@@ -565,11 +565,11 @@ def transformation_between_frames(frameA: Frame, frameB: Frame) -> Frame:
     such that T*frameA = B -> T=frameB*inv(frameA)
     
     Args:
-        frameA (Frame): Reference frame.
-        frameB (Frame): Final frame.
+        frameA: Reference frame.
+        frameB: Final frame.
 
     Returns:
-        Frame: transformation between frameA and frameB
+        Transformation between frameA and frameB
     """
     Trot = frameB._rot.dot(np.transpose(frameA._rot))
     Ttrans = (frameB._trans - frameA._trans)
@@ -588,11 +588,11 @@ def express_frame_in_frame(input_frame: Frame, reference_frame: Frame):
     reference_frame.rotation * vA + reference_frame.translation = input_frame.rotation * vB + input_frame.translation
     
     Args:
-        input_frame (Frame): Input frame.
-        reference_frame (Frame): Reference frame in which input frame should be expressed.
+        input_frame: Input frame.
+        reference_frame: Reference frame in which input frame should be expressed.
 
     Returns:
-        Frame: Input frame expressed in reference frame
+        Input frame expressed in reference frame
     """
     Trot = np.transpose(reference_frame._rot).dot(input_frame._rot)
     Ttrans = (input_frame._trans - reference_frame._trans)@reference_frame._rot
@@ -604,12 +604,12 @@ def express_point_in_frame(point: VectorLike, new_frame: Frame, original_frame: 
     Express the `point` given in the frame `original_frame` in a different frame `new_frame`.
 
     Args:
-        point (VectorLike): 3x1 point object
-        new_frame (Frame): Frame to express this point in. 
-        original_frame (Frame, optional): Reference frame where the point is specified in. Defaults to UnitFrame.
+        point: 3x1 point object
+        new_frame: Frame to express this point in. 
+        original_frame: Reference frame where the point is specified in. Defaults to UnitFrame.
 
     Returns:
-        Point: Point expressed in `new_frame`.
+        Point expressed in `new_frame`.
     """
     trafo = transformation_between_frames(original_frame, new_frame) 
     return Point((np.array(point) - trafo._trans)@trafo._rot) # multiplication to the right is the same as with transpose to the left 
@@ -620,12 +620,12 @@ def express_points_in_frame(points: Sequence[VectorLike], new_frame: Frame, orig
     Express the `points` given in the frame `original_frame` in a different frame `new_frame`.
 
     Args:
-        points (Sequence[VectorLike]): Sequence of points.
-        new_frame (Frame): Frame to express this point in. 
-        original_frame (Frame, optional): Reference frame where the point is specified in. Defaults to UnitFrame.
+        points: Sequence of points.
+        new_frame: Frame to express this point in. 
+        original_frame: Reference frame where the point is specified in. Defaults to UnitFrame.
 
     Returns:
-        Sequence[VectorLike]: Points expressed in `new_frame`.
+        Points expressed in `new_frame`.
     """
     trafo = transformation_between_frames(original_frame, new_frame) 
     return (np.array(points) - trafo._trans)@trafo._rot # multiplication to the right is the same as with transpose to the left 
@@ -636,12 +636,12 @@ def express_vector_in_frame(vector: VectorLike, new_frame: Frame, original_frame
     Express the `vector` given in the frame `original_frame` in a different frame `new_frame`.
 
     Args:
-        vector (VectorLike): 3x1 vector object
-        new_frame (Frame): Frame to express this vector in. 
-        original_frame (Frame, optional): Reference frame where the vector is specified in.
+        vector: 3x1 vector object
+        new_frame: Frame to express this vector in. 
+        original_frame: Reference frame where the vector is specified in.
 
     Returns:
-        Vector, Vector expressed in `new_frame`.
+        Vector expressed in `new_frame`.
     """
     trafo = transformation_between_frames(original_frame, new_frame) 
     return Vector(np.array(vector)@trafo._rot)
@@ -650,11 +650,11 @@ def rotate_vector(vec: VectorLike, rot: RotationMatrixLike) -> Vector:
     """Rotate vector using a given rotation matrix.
 
     Args:
-        vec (VectorLike): The input vector.
-        rot (RotationMatrixLike): The rotation matrix.
+        vec: The input vector.
+        rot: The rotation matrix.
 
     Returns:
-        np.ndarray: The rotated vector.
+        The rotated vector.
     """    
     return Vector(np.array(rot)@np.array(vec))
 
@@ -677,8 +677,7 @@ def minimize_points_to_points_distance(groupA, groupB, return_report=False, meth
         return_report: True if report of minimization algorithm should be returned
 
     Returns:
-        transformation as a new Frame object or tuple of transformation and minimization report
-        if return_report==True
+        Transformation, or tuple of transformation and minimization report if return_report==True
     """
     # return transform that maps groupA onto groupB with minimum point-to-point distance
     def cost(x):  
