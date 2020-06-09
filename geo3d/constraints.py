@@ -4,26 +4,33 @@ import numpy as np
 from scipy.optimize import fsolve
 from typing import Union, List, Tuple, Any
 
-def _trafo2D(phi, dx, dy): 
-    rot = R.from_euler('Z', phi, degrees=True).as_matrix()
+
+def _trafo2D(phi, dx, dy):
+    rot = R.from_euler("Z", phi, degrees=True).as_matrix()
     trans = [dx, dy, 0]
     return Frame(rot, trans)
 
-def constrained_movement_2D(rs,cs,ds=[0,0,0]):
+
+def constrained_movement_2D(rs, cs, ds=[0, 0, 0]):
     rs = np.array(rs)
     cs = np.array(cs)
-    assert len(rs)==3 and len(cs)==3 and len(ds)==3, 'number of constraints must be 3 for a 2D problem.'
+    assert (
+        len(rs) == 3 and len(cs) == 3 and len(ds) == 3
+    ), "number of constraints must be 3 for a 2D problem."
+
     def equations(p):
         phi, dx, dy = p
         t = _trafo2D(phi, dx, dy)
         eqs = []
-        for (r,c,d) in zip(rs, cs, ds):
-            eqs.append((express_point_in_frame(r+d*c,t)-r)@c)
+        for (r, c, d) in zip(rs, cs, ds):
+            eqs.append((express_point_in_frame(r + d * c, t) - r) @ c)
         return eqs
-    phi, dx, dy =  fsolve(equations, (0,0,0))
+
+    phi, dx, dy = fsolve(equations, (0, 0, 0))
     return _trafo2D(phi, dx, dy)
 
-def constrained_movement_3D(surface_points,surface_normals,deltas)->Frame:
+
+def constrained_movement_3D(surface_points, surface_normals, deltas) -> Frame:
     """Rigid body movement under constraints.
 
     Calculate the movement of a 3D rigid body under the disturbance 
@@ -52,14 +59,22 @@ def constrained_movement_3D(surface_points,surface_normals,deltas)->Frame:
     """
     rs = np.array(surface_points)
     cs = np.array(surface_normals)
-    assert len(rs)==6 and len(cs)==6 and len(deltas)==6, 'number of constraints must be 6 for a 3D problem.'
+    assert (
+        len(rs) == 6 and len(cs) == 6 and len(deltas) == 6
+    ), "number of constraints must be 6 for a 3D problem."
+
     def equations(p):
         theta_x, theta_y, theta_z, dx, dy, dz = p
-        t = Frame.from_extrinsic_euler_and_translations(theta_x, theta_y, theta_z, dx, dy, dz)
+        t = Frame.from_extrinsic_euler_and_translations(
+            theta_x, theta_y, theta_z, dx, dy, dz
+        )
         eqs = []
-        for (r,c,d) in zip(rs, cs, deltas):
+        for (r, c, d) in zip(rs, cs, deltas):
             cn = normalize(c)
-            eqs.append((express_point_in_frame(r+d*cn,t)-r)@cn)
+            eqs.append((express_point_in_frame(r + d * cn, t) - r) @ cn)
         return eqs
-    theta_x, theta_y, theta_z, dx, dy, dz =  fsolve(equations, (0,0,0,0,0,0))
-    return Frame.from_extrinsic_euler_and_translations(theta_x, theta_y, theta_z, dx, dy, dz)
+
+    theta_x, theta_y, theta_z, dx, dy, dz = fsolve(equations, (0, 0, 0, 0, 0, 0))
+    return Frame.from_extrinsic_euler_and_translations(
+        theta_x, theta_y, theta_z, dx, dy, dz
+    )
