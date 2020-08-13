@@ -132,7 +132,7 @@ class Frame:
         Returns: 
             Array of frame rotation Euler angles.
         """
-        return R.from_dcm(self._rot).as_euler(*args, **kwargs)
+        return R.from_matrix(self._rot).as_euler(*args, **kwargs)
 
     def extrinsic_euler_angles(self) -> Tuple[float, float, float]:
         """Extrinsic xyz Euler angles (fixed rotation reference axes) of the Frame.
