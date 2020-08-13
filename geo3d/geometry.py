@@ -271,6 +271,35 @@ class Frame:
         return Frame(rot, trans)
 
     @classmethod
+    def from_quat_and_translations(
+        cls,
+        q0: float,
+        q1: float,
+        q2: float,
+        q3: float,
+        dx: float,
+        dy: float,
+        dz: float,
+    ) -> Frame:
+        """Frame from quaternion components (scalar last) and translations.
+
+        Args:
+            q0: quaternion component 0 (x)
+            q1: quaternion component 1 (y)
+            q2: quaternion component 2 (x)
+            q3: quaternion component 3 (scalar)
+            dx: translation along x
+            dy: translation along y
+            dz: translation along z
+
+        Returns:
+            Resulting frame
+        """
+        rot = R.from_quat([q0, q1, q2, q3]).as_matrix()
+        trans = [dx, dy, dz]
+        return Frame(rot, trans)
+
+    @classmethod
     def from_orthogonal_vectors(
         new_x: VectorLike,
         new_y: VectorLike,
