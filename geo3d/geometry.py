@@ -769,6 +769,7 @@ def transform_points(
     points: Union[VectorLike, Sequence[VectorLike]], trafo: Frame
 ) -> np.ndarray:
     return np.dot(np.array(points), trafo._rot.T) + trafo._trans
+    # rotation can also be written as `np.einsum('ij,kj->ki', t0._rot, np.array(points))`
 
 
 def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
