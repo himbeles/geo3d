@@ -414,7 +414,9 @@ class Vector:
         Returns:
             vector expressed in the original frame, but transformed.
         """
-        return rotate_vector(self._a, transformation._rot)
+        
+        #return rotate_vector(self._a, transformation._rot)
+        return Vector(transformation._rot @ self._a)
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
         return np.dot(self._a, np.array(other))
@@ -512,8 +514,8 @@ class Point:
         Returns:
             Point expressed in the original frame but transformed.
         """
-        return Point(transform_points(self, transformation))
-        # return Point(transformation._rot@np.array(self._a) + transformation._trans)
+        #return Point(transform_points(self, transformation))
+        return Point(transformation._rot@self._a + transformation._trans)
 
 
 class RotationMatrix:
