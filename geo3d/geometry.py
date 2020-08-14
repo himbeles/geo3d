@@ -17,7 +17,7 @@ def normalize(vec: VectorLike) -> np.ndarray:
     Returns:
         normalized vector
     """
-    return np.array(vec) / np.linalg.norm(np.array(vec))
+    return np.asarray(vec) / np.linalg.norm(np.asarray(vec))
 
 
 class Frame:
@@ -209,7 +209,7 @@ class Frame:
             New frame object
         """
         try:
-            a = np.array([float(s) for s in SA_string.split(" ", 15)]).reshape((4, 4))
+            a = np.asarray([float(s) for s in SA_string.split(" ", 15)]).reshape((4, 4))
             rot = a[0:3, 0:3]
             trans = a[:3, 3]
         except:
@@ -318,7 +318,7 @@ class Frame:
             Frame: Resulting Frame
         """
         rot = np.stack([normalize(new_x), normalize(new_y), normalize(new_z)], 1)
-        trans = np.array(origin)
+        trans = origin
         return Frame(rot, trans)
 
 
@@ -419,10 +419,10 @@ class Vector:
         return Vector(transformation._rot @ self._a)
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(self._a, np.array(other))
+        return np.dot(self._a, np.asarray(other))
 
     def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(np.array(other), self._a)
+        return np.dot(np.asarray(other), self._a)
 
     def __mul__(self, other: float) -> Vector:
         return Vector(self._a * other)
@@ -498,10 +498,10 @@ class Point:
     __rsub__ = __sub__
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(self._a, np.array(other))
+        return np.dot(self._a, np.asarray(other))
 
     def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
-        return np.dot(np.array(other), self._a)
+        return np.dot(np.asarray(other), self._a)
 
     def transform(self, transformation: Frame) -> Point:
         """Transform this point by a given transformation frame.
@@ -641,7 +641,7 @@ def frame_wizard(
         primary_vec, rot[:, tertiary_index]
     )
 
-    return Frame(rot, np.array(origin))
+    return Frame(rot, origin)
 
 
 def transformation_between_frames(frameA: Frame, frameB: Frame) -> Frame:
@@ -706,7 +706,7 @@ def express_point_in_frame(
     """
     trafo = transformation_between_frames(original_frame, new_frame)
     return Point(
-        (np.array(point) - trafo._trans) @ trafo._rot
+        (np.asarray(point) - trafo._trans) @ trafo._rot
     )  # multiplication to the right is the same as with transpose to the left
 
 
@@ -729,7 +729,7 @@ def express_points_in_frame(
     """
     trafo = transformation_between_frames(original_frame, new_frame)
     return (
-        np.array(points) - trafo._trans
+        np.asarray(points) - trafo._trans
     ) @ trafo._rot  # multiplication to the right is the same as with transpose to the left
 
 
@@ -751,7 +751,7 @@ def express_vector_in_frame(
         Vector expressed in `new_frame`.
     """
     trafo = transformation_between_frames(original_frame, new_frame)
-    return Vector(np.array(vector) @ trafo._rot)
+    return Vector(np.asarray(vector) @ trafo._rot)
 
 
 def rotate_vector(vec: VectorLike, rot: RotationMatrixLike) -> Vector:
@@ -764,18 +764,18 @@ def rotate_vector(vec: VectorLike, rot: RotationMatrixLike) -> Vector:
     Returns:
         The rotated vector.
     """
-    return Vector(np.array(rot) @ np.array(vec))
+    return Vector(np.asarray(rot) @ np.asarray(vec))
 
 
 def transform_points(
     points: Union[VectorLike, Sequence[VectorLike]], trafo: Frame
 ) -> np.ndarray:
-    return np.dot(np.array(points), trafo._rot.T) + trafo._trans
-    # rotation can also be written as `np.einsum('ij,kj->ki', t0._rot, np.array(points))`
+    return np.dot(np.asarray(points), trafo._rot.T) + trafo._trans
+    # rotation can also be written as `np.einsum('ij,kj->ki', t0._rot, np.asarray(points))`
 
 
 def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
-    return np.linalg.norm(np.array(pointA) - np.array(pointB))
+    return np.linalg.norm(np.asarray(pointA) - np.asarray(pointB))
 
 
 def minimize_points_to_points_distance(
@@ -799,7 +799,7 @@ def minimize_points_to_points_distance(
     def cost(x):
         [r1, r2, r3, t1, t2, t3] = x
         rot = R.from_rotvec([r1, r2, r3]).as_matrix()
-        trans = np.array([t1, t2, t3])
+        trans = np.asarray([t1, t2, t3])
         t = Frame(rot, trans)
         c = np.sqrt(
             np.mean(
