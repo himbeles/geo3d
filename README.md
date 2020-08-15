@@ -1,3 +1,5 @@
+![Release on PyPI](https://github.com/himbeles/geo3d/workflows/Upload%20Python%20Package/badge.svg)
+
 # geo3d
 
 A python package for performing geometric calculations in 3D, such as 
