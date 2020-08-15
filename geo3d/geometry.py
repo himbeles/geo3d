@@ -188,6 +188,13 @@ class Frame:
         """
         return express_frame_in_frame(self, reference_frame)
 
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, self.__class__):
+            return False
+        eq_r = np.allclose(self._rot, o._rot, rtol=1e-10)
+        eq_t = np.allclose(self._trans, o._trans, rtol=1e-10)
+        return eq_r and eq_t
+
     @classmethod
     def create_unit_frame(cls) -> Frame:
         """Construct unit frame.
