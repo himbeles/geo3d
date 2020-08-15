@@ -1,4 +1,5 @@
 [![Release on PyPI](https://github.com/himbeles/geo3d/workflows/Publish%20on%20PyPI/badge.svg)](https://pypi.org/project/geo3d/)
+![Test package](https://github.com/himbeles/geo3d/workflows/Test%20package/badge.svg)
 
 # geo3d
 
