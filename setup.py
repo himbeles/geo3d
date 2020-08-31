@@ -46,6 +46,7 @@ setup(
     setup_requires=["setuptools_scm"],
     description="A python package for performing geometric calculations in 3D",
     long_description=long_description,
+    long_description_content_type="text/markdown",
     # The project's main homepage.
     url="https://github.com/himbeles/geo3d",
     # Author details
