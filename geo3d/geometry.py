@@ -436,6 +436,10 @@ class Vector:
 
     __rmul__ = __mul__
 
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, self.__class__):
+            return False
+        return np.allclose(self._a, o._a, rtol=1e-10)
 
 class Point:
     """A Point is a container for one set of X,Y,Z coordinates.
@@ -509,6 +513,11 @@ class Point:
 
     def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
         return np.dot(np.asarray(other), self._a)
+
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, self.__class__):
+            return False
+        return np.allclose(self._a, o._a, rtol=1e-10)
 
     def transform(self, transformation: Frame) -> Point:
         """Transform this point by a given transformation frame.
@@ -591,6 +600,11 @@ class RotationMatrix:
             Rotation matrix
         """
         return cls(R.from_euler(seq, angles, degrees=degrees).as_matrix())
+
+    def __eq__(self, o: object) -> bool:
+        if not isinstance(o, self.__class__):
+            return False
+        return np.allclose(self._a, o._a, rtol=1e-10)
 
 
 def frame_wizard(
