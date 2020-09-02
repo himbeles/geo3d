@@ -280,7 +280,7 @@ class Frame:
         return Frame(rot, trans)
 
     @classmethod
-    def from_quat_and_translations_old(
+    def _from_quat_and_translations_scipy(
         cls,
         q0: float,
         q1: float,
