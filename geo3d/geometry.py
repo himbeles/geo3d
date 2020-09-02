@@ -2,6 +2,8 @@ from __future__ import annotations
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 from scipy.optimize import minimize
+import math
+from numba import jit
 from .auxiliary import html_table_from_matrix, html_table_from_vector
 from typing import Union, List, Tuple, Any, Sequence, TypeVar, Optional
 
@@ -204,7 +206,7 @@ class Frame:
         Returns:
             New unit frame object
         """
-        return Frame(np.identity(3), np.zeros(3))
+        return cls(np.identity(3), np.zeros(3))
 
     @classmethod
     def from_SA_pastable_string(cls, SA_string: str) -> Frame:
@@ -221,7 +223,7 @@ class Frame:
             trans = a[:3, 3]
         except:
             raise Exception("SA string could not be read.")
-        return Frame(rot, trans)
+        return cls(rot, trans)
 
     @classmethod
     def from_extrinsic_euler_and_translations(
@@ -248,7 +250,7 @@ class Frame:
         """
         rot = R.from_euler("xyz", [theta_x, theta_y, theta_z], degrees=True).as_matrix()
         trans = [dx, dy, dz]
-        return Frame(rot, trans)
+        return cls(rot, trans)
 
     @classmethod
     def from_intrinsic_euler_and_translations(
@@ -275,7 +277,36 @@ class Frame:
         """
         rot = R.from_euler("XYZ", [theta_x, theta_y, theta_z], degrees=True).as_matrix()
         trans = [dx, dy, dz]
-        return Frame(rot, trans)
+        return cls(rot, trans)
+
+    @classmethod
+    def _from_quat_and_translations_scipy(
+        cls,
+        q0: float,
+        q1: float,
+        q2: float,
+        q3: float,
+        dx: float,
+        dy: float,
+        dz: float,
+    ) -> Frame:
+        """Frame from quaternion components (scalar last) and translations.
+
+        Args:
+            q0: quaternion component 0 (x)
+            q1: quaternion component 1 (y)
+            q2: quaternion component 2 (x)
+            q3: quaternion component 3 (scalar)
+            dx: translation along x
+            dy: translation along y
+            dz: translation along z
+
+        Returns:
+            Resulting frame
+        """
+        rot = R.from_quat([q0, q1, q2, q3]).as_matrix()
+        trans = [dx, dy, dz]
+        return cls(rot, trans)
 
     @classmethod
     def from_quat_and_translations(
@@ -302,9 +333,10 @@ class Frame:
         Returns:
             Resulting frame
         """
-        rot = R.from_quat([q0, q1, q2, q3]).as_matrix()
+        quat = normalized_quat(q0, q1, q2, q3)
+        rot = quat_as_matrix(quat)
         trans = [dx, dy, dz]
-        return Frame(rot, trans)
+        return cls(rot, trans)
 
     @classmethod
     def from_orthogonal_vectors(
@@ -421,8 +453,8 @@ class Vector:
         Returns:
             vector expressed in the original frame, but transformed.
         """
-        
-        #return rotate_vector(self._a, transformation._rot)
+
+        # return rotate_vector(self._a, transformation._rot)
         return Vector(transformation._rot @ self._a)
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
@@ -440,6 +472,7 @@ class Vector:
         if not isinstance(o, self.__class__):
             return False
         return np.allclose(self._a, o._a, rtol=1e-10)
+
 
 class Point:
     """A Point is a container for one set of X,Y,Z coordinates.
@@ -530,8 +563,8 @@ class Point:
         Returns:
             Point expressed in the original frame but transformed.
         """
-        #return Point(transform_points(self, transformation))
-        return Point(transformation._rot@self._a + transformation._trans)
+        # return Point(transform_points(self, transformation))
+        return Point(transformation._rot @ self._a + transformation._trans)
 
 
 class RotationMatrix:
@@ -841,3 +874,86 @@ def minimize_points_to_points_distance(
         return t, m
     else:
         return t
+
+
+@jit
+def normalized_quat(x, y, z, w):
+    """ Return unit quaternion
+    
+    by dividing by Euclidean (L2) norm
+    
+    Args:
+        vec : array-like shape (3,)
+    
+    Returns: array shape (3,) vector divided by L2 norm
+    
+    --------
+    >>> vec = [1, 2, 3]
+    >>> l2n = np.sqrt(np.dot(vec, vec))
+    >>> nvec = normalized_vector(vec)
+    >>> np.allclose(np.array(vec) / l2n, nvec)
+    True
+    >>> vec = np.array([[1, 2, 3]])
+    >>> vec.shape
+    (1, 3)
+    >>> normalized_vector(vec).shape
+    (3,)
+    """
+    norm = math.sqrt(x ** 2 + y ** 2 + z ** 2 + w ** 2)
+    return np.asarray([o / norm for o in [x, y, z, w]])
+
+
+@jit
+def quat_as_matrix(unit_quat):
+    """Represent unit quaternion as rotation matrix.
+    
+    Method from scipy.spatial.transform.Rotation, 
+    jit-compiled by numba for speedup. 
+
+    Returns
+    -------
+    matrix : ndarray, shape (3, 3) or (N, 3, 3)
+        Shape depends on shape of inputs used for initialization.
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
+    Examples
+    --------
+    >>> from scipy.spatial.transform import Rotation as R
+    Represent a single rotation:
+    >>> r = R.from_rotvec([0, 0, np.pi/2])
+    >>> r.as_matrix()
+    array([[ 2.22044605e-16, -1.00000000e+00,  0.00000000e+00],
+           [ 1.00000000e+00,  2.22044605e-16,  0.00000000e+00],
+           [ 0.00000000e+00,  0.00000000e+00,  1.00000000e+00]])
+    """
+    x = unit_quat[0]
+    y = unit_quat[1]
+    z = unit_quat[2]
+    w = unit_quat[3]
+
+    x2 = x * x
+    y2 = y * y
+    z2 = z * z
+    w2 = w * w
+
+    xy = x * y
+    zw = z * w
+    xz = x * z
+    yw = y * w
+    yz = y * z
+    xw = x * w
+
+    matrix = np.empty((3, 3))
+
+    matrix[0, 0] = x2 - y2 - z2 + w2
+    matrix[1, 0] = 2 * (xy + zw)
+    matrix[2, 0] = 2 * (xz - yw)
+    matrix[0, 1] = 2 * (xy - zw)
+    matrix[1, 1] = -x2 + y2 - z2 + w2
+    matrix[2, 1] = 2 * (yz + xw)
+    matrix[0, 2] = 2 * (xz + yw)
+    matrix[1, 2] = 2 * (yz - xw)
+    matrix[2, 2] = -x2 - y2 + z2 + w2
+
+    return matrix
