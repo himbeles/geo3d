@@ -42,8 +42,8 @@ class Frame:
             rotation_matrix: 3x3 orthogonal rotation matrix
             translation_vector: 3x1 or 1x3 translation vector
         """
-        self._rot: np.ndarray = np.array(rotation_matrix, dtype=float)
-        self._trans: np.ndarray = np.array(translation_vector, dtype=float)
+        self._rot: np.ndarray = np.array(rotation_matrix)
+        self._trans: np.ndarray = np.array(translation_vector)
         assert self._rot.shape == (
             3,
             3,
@@ -206,7 +206,7 @@ class Frame:
         Returns:
             New unit frame object
         """
-        return Frame(np.identity(3), np.zeros(3))
+        return cls(np.identity(3), np.zeros(3))
 
     @classmethod
     def from_SA_pastable_string(cls, SA_string: str) -> Frame:
@@ -223,7 +223,7 @@ class Frame:
             trans = a[:3, 3]
         except:
             raise Exception("SA string could not be read.")
-        return Frame(rot, trans)
+        return cls(rot, trans)
 
     @classmethod
     def from_extrinsic_euler_and_translations(
@@ -250,7 +250,7 @@ class Frame:
         """
         rot = R.from_euler("xyz", [theta_x, theta_y, theta_z], degrees=True).as_matrix()
         trans = [dx, dy, dz]
-        return Frame(rot, trans)
+        return cls(rot, trans)
 
     @classmethod
     def from_intrinsic_euler_and_translations(
@@ -277,7 +277,7 @@ class Frame:
         """
         rot = R.from_euler("XYZ", [theta_x, theta_y, theta_z], degrees=True).as_matrix()
         trans = [dx, dy, dz]
-        return Frame(rot, trans)
+        return cls(rot, trans)
 
     @classmethod
     def _from_quat_and_translations_scipy(
