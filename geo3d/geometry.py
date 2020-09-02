@@ -19,7 +19,8 @@ def normalize(vec: VectorLike) -> np.ndarray:
     Returns:
         normalized vector
     """
-    return np.asarray(vec) / np.linalg.norm(np.asarray(vec))
+    #return np.asarray(vec) / np.linalg.norm(np.asarray(vec))
+    return normalized_vector(vec)
 
 
 class Frame:
@@ -333,7 +334,7 @@ class Frame:
         Returns:
             Resulting frame
         """
-        quat = normalized_quat(q0, q1, q2, q3)
+        quat = normalized_quat(np.asarray([q0, q1, q2, q3]))
         rot = quat_as_matrix(quat)
         trans = [dx, dy, dz]
         return cls(rot, trans)
@@ -440,7 +441,7 @@ class Vector:
         Returns:
             The 2-norm length of the vector.
         """
-        return np.linalg.norm(self._a)
+        return vector_norm(self._a)
 
     def transform(self, transformation: Frame) -> Vector:
         """Transform this vector by a given transformation frame.
@@ -829,7 +830,7 @@ def transform_points(
 
 
 def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
-    return np.linalg.norm(np.asarray(pointA) - np.asarray(pointB))
+    return vector_norm(np.asarray(pointA) - np.asarray(pointB))
 
 
 def minimize_points_to_points_distance(
@@ -877,15 +878,19 @@ def minimize_points_to_points_distance(
 
 
 @jit
-def normalized_quat(x, y, z, w):
+def normalized_quat(q) -> np.ndarray:
     """ Return unit quaternion
     
     by dividing by Euclidean (L2) norm
     
     Args:
-        vec : array-like shape (3,)
+        q array with elements
+            q0: quaternion component 0 (x)
+            q1: quaternion component 1 (y)
+            q2: quaternion component 2 (x)
+            q3: quaternion component 3 (scalar)
     
-    Returns: array shape (3,) vector divided by L2 norm
+    Returns: array shape (4,) vector divided by L2 norm
     
     --------
     >>> vec = [1, 2, 3]
@@ -899,9 +904,48 @@ def normalized_quat(x, y, z, w):
     >>> normalized_vector(vec).shape
     (3,)
     """
-    norm = math.sqrt(x ** 2 + y ** 2 + z ** 2 + w ** 2)
-    return np.asarray([o / norm for o in [x, y, z, w]])
+    q0, q1, q2, q3 = q
+    norm = math.sqrt(q0 ** 2 + q1 ** 2 + q2 ** 2 + q3 ** 2)
+    return np.asarray([o / norm for o in [q0, q1, q2, q3]])
 
+
+@jit
+def normalized_vector(vec) -> np.ndarray:
+    """ Return unit vector
+    
+    by dividing by Euclidean (L2) norm
+    
+    Args:
+        q array with elements
+            q0: quaternion component 0 (x)
+            q1: quaternion component 1 (y)
+            q2: quaternion component 2 (x)
+            q3: quaternion component 3 (scalar)
+    
+    Returns: array shape (3,) vector divided by L2 norm
+    """
+    v0, v1, v2 = vec
+    norm = math.sqrt(v0 ** 2 + v1 ** 2 + v2 ** 2)
+    return np.asarray([o / norm for o in [v0, v1, v2]])
+
+@jit
+def vector_norm(vec) -> float:
+    """ Return vector norm
+    
+    by dividing by Euclidean (L2) norm
+    
+    Args:
+        q array with elements
+            q0: quaternion component 0 (x)
+            q1: quaternion component 1 (y)
+            q2: quaternion component 2 (x)
+            q3: quaternion component 3 (scalar)
+    
+    Returns: L2 norm of vector
+    """
+    v0, v1, v2 = vec
+    norm = math.sqrt(v0 ** 2 + v1 ** 2 + v2 ** 2)
+    return norm
 
 @jit
 def quat_as_matrix(unit_quat):
