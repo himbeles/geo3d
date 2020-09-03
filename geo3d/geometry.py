@@ -465,7 +465,8 @@ class Vector:
         """
 
         # return rotate_vector(self._a, transformation._rot)
-        return Vector.from_array(transformation._rot @ self._a, copy=False)
+        # return Vector.from_array(transformation._rot @ self._a, copy=False)
+        return Vector.from_array(transform_vector(transformation._rot, self._a), copy=False)
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
         return np.dot(self._a, np.asarray(other))
@@ -588,8 +589,11 @@ class Point:
             Point expressed in the original frame but transformed.
         """
         # return Point(transform_points(self, transformation))
+        # return Point.from_array(
+        #     transformation._rot @ self._a + transformation._trans, copy=False
+        # )
         return Point.from_array(
-            transformation._rot @ self._a + transformation._trans, copy=False
+            transform_point(transformation._rot, transformation._trans, self._a), copy=False
         )
 
 
@@ -846,6 +850,13 @@ def rotate_vector(vec: VectorLike, rot: RotationMatrixLike) -> Vector:
     """
     return Vector(np.asarray(rot) @ np.asarray(vec))
 
+@njit
+def transform_vector(rot, vec):
+    return cast_vec_to_array(mult_mat_vec(rot, vec))
+@njit
+def transform_point(rot, trans, p):
+    return cast_vec_to_array(add_vectors(mult_mat_vec(rot, p), trans))
+    
 
 def transform_points(
     points: Union[VectorLike, Sequence[VectorLike]], trafo: Frame
@@ -1003,3 +1014,32 @@ def quat_as_matrix(unit_quat):
     matrix[2, 2] = -x2 - y2 + z2 + w2
 
     return matrix
+
+
+@njit
+def add_vectors(v1,v2):
+    return (v1[0]+v2[0], v1[1]+v2[1], v1[2]+v2[2])
+
+@njit
+def mult_vector_scalar(v,s):
+    return (v[0]*s, v[1]*s, v[2]*s)
+
+@njit
+def dot_vectors(v1,v2):
+    return v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2]
+
+@njit
+def mult_mat_vec(m,v):
+    return (
+        dot_vectors(m[0], v),
+        dot_vectors(m[1], v),
+        dot_vectors(m[2], v)
+    )
+
+@njit
+def cast_vec_to_array(vec):
+    a = np.empty(3)
+    a[0] = vec[0]
+    a[1] = vec[1]
+    a[2] = vec[2]
+    return a
