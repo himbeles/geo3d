@@ -2,24 +2,13 @@ from __future__ import annotations
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 from scipy.optimize import minimize
-import math
-from numba import jit
+from math import sqrt
+from numba import njit
 from .auxiliary import html_table_from_matrix, html_table_from_vector
 from typing import Union, List, Tuple, Any, Sequence, TypeVar, Optional
 
 RotationMatrixLike = Union[Sequence[Sequence[float]], np.ndarray, "RotationMatrix"]
 VectorLike = Union[Sequence[float], np.ndarray, "Vector", "Point"]
-
-
-def normalize(vec: VectorLike) -> np.ndarray:
-    """2-norm normalize the given vector.
-    
-    Args: 
-        vec: non-normalized vector
-    Returns:
-        normalized vector
-    """
-    return np.asarray(vec) / np.linalg.norm(np.asarray(vec))
 
 
 class Frame:
@@ -333,7 +322,7 @@ class Frame:
         Returns:
             Resulting frame
         """
-        quat = normalized_quat(q0, q1, q2, q3)
+        quat = normalized_quat((q0, q1, q2, q3))
         rot = quat_as_matrix(quat)
         trans = [dx, dy, dz]
         return cls(rot, trans)
@@ -356,7 +345,14 @@ class Frame:
         Returns:
             Frame: Resulting Frame
         """
-        rot = np.stack([normalize(new_x), normalize(new_y), normalize(new_z)], 1)
+        rot = np.stack(
+            [
+                normalized_vector(np.array(new_x)),
+                normalized_vector(np.array(new_x)),
+                normalized_vector(np.array(new_x)),
+            ],
+            1,
+        )
         trans = origin
         return Frame(rot, trans)
 
@@ -374,6 +370,20 @@ class Vector:
             v: A sequence of dX,dY,dZ deltas
         """
         self._a: np.ndarray = np.array(v)  # storage as Numpy array
+
+    @classmethod
+    def from_array(cls, a: np.ndarray, copy=True):
+        """Initialize a vector from a numpy array of dX,dY,dZ deltas. 
+
+        Args:
+            a: A np.array containing dX,dY,dZ deltas
+        """
+        obj = cls.__new__(cls)
+        if copy:
+            obj._a = a.copy()  # storage as Numpy array
+        else:
+            obj._a = a
+        return obj
 
     def express_in_frame(
         self, new_frame: Frame, original_frame: Frame = Frame.create_unit_frame()
@@ -432,7 +442,7 @@ class Vector:
         Returns:
             Normalized vector
         """
-        return Vector(normalize(self._a))
+        return Vector.from_array(normalized_vector(self._a), copy=False)
 
     def length(self) -> float:
         """Length of the vector
@@ -440,7 +450,7 @@ class Vector:
         Returns:
             The 2-norm length of the vector.
         """
-        return np.linalg.norm(self._a)
+        return norm_L2(self._a)
 
     def transform(self, transformation: Frame) -> Vector:
         """Transform this vector by a given transformation frame.
@@ -455,7 +465,7 @@ class Vector:
         """
 
         # return rotate_vector(self._a, transformation._rot)
-        return Vector(transformation._rot @ self._a)
+        return Vector.from_array(transformation._rot @ self._a, copy=False)
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
         return np.dot(self._a, np.asarray(other))
@@ -487,6 +497,20 @@ class Point:
             p: sequence of X,Y,Z coordinates
         """
         self._a: np.ndarray = np.array(p)  # storage as Numpy array
+
+    @classmethod
+    def from_array(cls, a: np.ndarray, copy=True):
+        """Initialize a Point from a numpy array of of X,Y,Z coordinate. 
+
+        Args:
+            a: A np.array containing of X,Y,Z coordinate
+        """
+        obj = cls.__new__(cls)
+        if copy:
+            obj._a = a.copy()  # storage as Numpy array
+        else:
+            obj._a = a
+        return obj
 
     def express_in_frame(
         self, new_frame, original_frame: Frame = Frame.create_unit_frame()
@@ -564,7 +588,9 @@ class Point:
             Point expressed in the original frame but transformed.
         """
         # return Point(transform_points(self, transformation))
-        return Point(transformation._rot @ self._a + transformation._trans)
+        return Point.from_array(
+            transformation._rot @ self._a + transformation._trans, copy=False
+        )
 
 
 class RotationMatrix:
@@ -671,8 +697,8 @@ def frame_wizard(
     assert (
         secondary_axis != primary_axis
     ), "secondary axis must not equal primary axis: choose from x,y,z"
-    primary_vec = normalize(primary_vec)
-    secondary_vec = normalize(secondary_vec)
+    primary_vec = normalized_vector(np.array(primary_vec))
+    secondary_vec = normalized_vector(np.array(secondary_vec))
     rot = np.zeros((3, 3))
     column_dict = {"x": 0, "y": 1, "z": 2}
     primary_index = column_dict.pop(primary_axis)
@@ -688,7 +714,7 @@ def frame_wizard(
     rot[:, primary_index] = primary_vec
 
     # construct tertiary and secondary axis
-    rot[:, tertiary_index] = signature_perm * normalize(
+    rot[:, tertiary_index] = signature_perm * normalized_vector(
         np.cross(primary_vec, secondary_vec)
     )
     rot[:, secondary_index] = -signature_perm * np.cross(
@@ -829,7 +855,7 @@ def transform_points(
 
 
 def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
-    return np.linalg.norm(np.asarray(pointA) - np.asarray(pointB))
+    return norm_L2(np.asarray(pointA) - np.asarray(pointB))
 
 
 def minimize_points_to_points_distance(
@@ -876,34 +902,54 @@ def minimize_points_to_points_distance(
         return t
 
 
-@jit
-def normalized_quat(x, y, z, w):
+@njit
+def normalized_quat(q) -> Tuple[float, float, float, float]:
     """ Return unit quaternion
     
     by dividing by Euclidean (L2) norm
     
     Args:
-        vec : array-like shape (3,)
+        q array with elements
+            q0: quaternion component 0 (x)
+            q1: quaternion component 1 (y)
+            q2: quaternion component 2 (x)
+            q3: quaternion component 3 (scalar)
     
-    Returns: array shape (3,) vector divided by L2 norm
-    
-    --------
-    >>> vec = [1, 2, 3]
-    >>> l2n = np.sqrt(np.dot(vec, vec))
-    >>> nvec = normalized_vector(vec)
-    >>> np.allclose(np.array(vec) / l2n, nvec)
-    True
-    >>> vec = np.array([[1, 2, 3]])
-    >>> vec.shape
-    (1, 3)
-    >>> normalized_vector(vec).shape
-    (3,)
+    Returns: 
+        array shape (4,) vector divided by L2 norm
     """
-    norm = math.sqrt(x ** 2 + y ** 2 + z ** 2 + w ** 2)
-    return np.asarray([o / norm for o in [x, y, z, w]])
+    n = norm_L2(q)
+    return (q[0] / n, q[1] / n, q[2] / n, q[3] / n)
 
 
-@jit
+@njit
+def normalized_vector(vec) -> np.ndarray:
+    """ Return unit vector
+    
+    by dividing by Euclidean (L2) norm
+    
+    Args:
+        vec array with elements x,y,z
+    
+    Returns: 
+        array shape (3,) vector divided by L2 norm
+    """
+    res = np.empty(3)
+    n = norm_L2(vec)
+    res[0] = vec[0] / n
+    res[1] = vec[1] / n
+    res[2] = vec[2] / n
+    return res
+
+@njit
+def norm_L2(vec):
+    s = 0
+    for v in vec:
+        s += v ** 2
+    return sqrt(s)
+
+
+@njit
 def quat_as_matrix(unit_quat):
     """Represent unit quaternion as rotation matrix.
     
