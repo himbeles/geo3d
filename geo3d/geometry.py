@@ -401,9 +401,11 @@ class Vector:
         """
         return express_vector_in_frame(self._a, new_frame, original_frame)
 
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def __str__(self) -> str:
-        # basic string representation
-        return "<%s instance at %s> %s" % (self.__class__.__name__, id(self), self._a)
+        return "<%s at %s> %s" % ("Vector", id(self), self._a)
 
     def _repr_html_(self):
         html = html_table_from_vector(self._a, indices=["x", "y", "z"])
@@ -466,7 +468,9 @@ class Vector:
 
         # return rotate_vector(self._a, transformation._rot)
         # return Vector.from_array(transformation._rot @ self._a, copy=False)
-        return Vector.from_array(transform_vector(transformation._rot, self._a), copy=False)
+        return Vector.from_array(
+            transform_vector(transformation._rot, self._a), copy=False
+        )
 
     def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
         return np.dot(self._a, np.asarray(other))
@@ -529,9 +533,11 @@ class Point:
         """
         return express_point_in_frame(self._a, new_frame, original_frame)
 
+    def __repr__(self) -> str:
+        return self.__str__()
+
     def __str__(self) -> str:
-        # basic string representation
-        return "<%s instance at %s> %s" % (self.__class__.__name__, id(self), self._a)
+        return "<%s at %s> %s" % ("Point", id(self), self._a)
 
     def _repr_html_(self):
         html = html_table_from_vector(self._a, indices=["x", "y", "z"])
@@ -593,7 +599,8 @@ class Point:
         #     transformation._rot @ self._a + transformation._trans, copy=False
         # )
         return Point.from_array(
-            transform_point(transformation._rot, transformation._trans, self._a), copy=False
+            transform_point(transformation._rot, transformation._trans, self._a),
+            copy=False,
         )
 
 
@@ -850,13 +857,16 @@ def rotate_vector(vec: VectorLike, rot: RotationMatrixLike) -> Vector:
     """
     return Vector(np.asarray(rot) @ np.asarray(vec))
 
+
 @njit
 def transform_vector(rot, vec):
     return cast_vec_to_array(mult_mat_vec(rot, vec))
+
+
 @njit
 def transform_point(rot, trans, p):
     return cast_vec_to_array(add_vectors(mult_mat_vec(rot, p), trans))
-    
+
 
 def transform_points(
     points: Union[VectorLike, Sequence[VectorLike]], trafo: Frame
@@ -952,6 +962,7 @@ def normalized_vector(vec) -> np.ndarray:
     res[2] = vec[2] / n
     return res
 
+
 @njit
 def norm_L2(vec):
     s = 0
@@ -1017,24 +1028,24 @@ def quat_as_matrix(unit_quat):
 
 
 @njit
-def add_vectors(v1,v2):
-    return (v1[0]+v2[0], v1[1]+v2[1], v1[2]+v2[2])
+def add_vectors(v1, v2):
+    return (v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2])
+
 
 @njit
-def mult_vector_scalar(v,s):
-    return (v[0]*s, v[1]*s, v[2]*s)
+def mult_vector_scalar(v, s):
+    return (v[0] * s, v[1] * s, v[2] * s)
+
 
 @njit
-def dot_vectors(v1,v2):
-    return v1[0]*v2[0] + v1[1]*v2[1] + v1[2]*v2[2]
+def dot_vectors(v1, v2):
+    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
+
 
 @njit
-def mult_mat_vec(m,v):
-    return (
-        dot_vectors(m[0], v),
-        dot_vectors(m[1], v),
-        dot_vectors(m[2], v)
-    )
+def mult_mat_vec(m, v):
+    return (dot_vectors(m[0], v), dot_vectors(m[1], v), dot_vectors(m[2], v))
+
 
 @njit
 def cast_vec_to_array(vec):
