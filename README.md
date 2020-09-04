@@ -22,15 +22,8 @@ pip install --user -e .[dev]
 ```
 
 ## Usage 
+Instructions on basic usage can be found in the jupyter notebook in `/doc`.
 
-### Basic usage
-Instructions on basic usage can be found in the jupyter notebook
-`examples/basic_usage.ipynb`.
-
-### Constrained motion
-The module allows to calculate rigid body movement from disturbances to exact constraints. 
-A usage example is given in
-`examples/constrained_motion.ipynb`.
 
 ## Testing
 Unit tests can be run using 
@@ -38,3 +31,11 @@ Unit tests can be run using
 pytest -s 
 ```
 in package root. 
+
+
+## Building the docs
+The documentation can be built by running
+```sh
+make html
+```
+within the `/doc` folder.

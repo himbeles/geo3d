@@ -1,6 +1,5 @@
 sphinx
-sphinx-autodoc-typehints
-sphinx_bootstrap_theme
+nbsphinx
 pytest
 setuptools_scm
 black
