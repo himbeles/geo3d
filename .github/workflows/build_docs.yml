@@ -35,7 +35,7 @@ jobs:
           python -m pip install -U pip
           python -m pip install -r requirements-dev.txt
           sudo apt-get install pandoc
-          cd docs && make
+          cd docs && make html
 
       # Runs a set of commands using the runners shell
       - name: Deploy to GitHub Pages
