@@ -1,4 +1,3 @@
-from tests.conftest import example_frames
 import pytest
 
 from numpy import sqrt
