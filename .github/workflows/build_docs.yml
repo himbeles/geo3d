@@ -27,7 +27,7 @@ jobs:
       # Runs a single command using the runners shell
       - name: Build the Sphinx Docs
         run: |
-          pip install -r requirements-dev.txt
+          pip3 install -r requirements-dev.txt
           apt-get install pandoc
           cd docs && make
 
