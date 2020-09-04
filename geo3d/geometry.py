@@ -870,7 +870,7 @@ def transform_vector(rot, vec):
 
 @njit
 def transform_point(rot, trans, p):
-    return cast_vec_to_array(add_vectors(mult_mat_vec(rot, p), trans))
+    return cast_vec_to_array(add_vec_vec(mult_mat_vec(rot, p), trans))
 
 
 def transform_points(
@@ -1033,23 +1033,23 @@ def quat_as_matrix(unit_quat):
 
 
 @njit
-def add_vectors(v1, v2):
+def add_vec_vec(v1, v2):
     return (v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2])
 
 
 @njit
-def mult_vector_scalar(v, s):
+def mult_vec_sca(v, s):
     return (v[0] * s, v[1] * s, v[2] * s)
 
 
 @njit
-def dot_vectors(v1, v2):
+def dot_vec_vec(v1, v2):
     return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
 
 
 @njit
 def mult_mat_vec(m, v):
-    return (dot_vectors(m[0], v), dot_vectors(m[1], v), dot_vectors(m[2], v))
+    return (dot_vec_vec(m[0], v), dot_vec_vec(m[1], v), dot_vec_vec(m[2], v))
 
 
 @njit
