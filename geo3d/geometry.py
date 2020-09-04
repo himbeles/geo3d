@@ -779,9 +779,7 @@ def express_frame_in_frame(input_frame: Frame, reference_frame: Frame):
 
 
 def express_point_in_frame(
-    point: VectorLike,
-    new_frame: Frame,
-    original_frame: Frame = Frame.create_unit_frame(),
+    point: VectorLike, new_frame: Frame, original_frame: Optional[Frame] = None,
 ) -> Point:
     """Express a point in a different frame.
 
@@ -795,7 +793,10 @@ def express_point_in_frame(
     Returns:
         Point expressed in `new_frame`.
     """
-    trafo = transformation_between_frames(original_frame, new_frame)
+    if original_frame is None:
+        trafo = new_frame
+    else:
+        trafo = transformation_between_frames(original_frame, new_frame)
     return Point(
         (np.asarray(point) - trafo._trans) @ trafo._rot
     )  # multiplication to the right is the same as with transpose to the left
@@ -804,7 +805,7 @@ def express_point_in_frame(
 def express_points_in_frame(
     points: Sequence[VectorLike],
     new_frame: Frame,
-    original_frame: Frame = Frame.create_unit_frame(),
+    original_frame: Optional[Frame] = None,
 ) -> Sequence[VectorLike]:
     """Express points in a different frame.
 
@@ -818,16 +819,17 @@ def express_points_in_frame(
     Returns:
         Points expressed in `new_frame`.
     """
-    trafo = transformation_between_frames(original_frame, new_frame)
+    if original_frame is None:
+        trafo = new_frame
+    else:
+        trafo = transformation_between_frames(original_frame, new_frame)
     return (
         np.asarray(points) - trafo._trans
     ) @ trafo._rot  # multiplication to the right is the same as with transpose to the left
 
 
 def express_vector_in_frame(
-    vector: VectorLike,
-    new_frame: Frame,
-    original_frame: Frame = Frame.create_unit_frame(),
+    vector: VectorLike, new_frame: Frame, original_frame: Optional[Frame] = None,
 ) -> Vector:
     """Express a vector in a different frame.
 
@@ -836,12 +838,15 @@ def express_vector_in_frame(
     Args:
         vector: 3x1 vector object
         new_frame: Frame to express this vector in. 
-        original_frame: Reference frame where the vector is specified in.
+        original_frame: Reference frame where the vector is specified in (defaults to UnitFrame).
 
     Returns:
         Vector expressed in `new_frame`.
     """
-    trafo = transformation_between_frames(original_frame, new_frame)
+    if original_frame is None:
+        trafo = new_frame
+    else:
+        trafo = transformation_between_frames(original_frame, new_frame)
     return Vector(np.asarray(vector) @ trafo._rot)
 
 
