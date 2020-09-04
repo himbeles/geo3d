@@ -23,11 +23,17 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-
+      
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+        
       # Runs a single command using the runners shell
       - name: Build the Sphinx Docs
         run: |
-          pip3 install -r requirements-dev.txt
+          python -m pip install -U pip
+          python -m pip install -r requirements-dev.txt
           apt-get install pandoc
           cd docs && make
 
