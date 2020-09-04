@@ -1,5 +1,6 @@
 sphinx
 nbsphinx
+sphinx_copybutton
 pytest
 setuptools_scm
 black
