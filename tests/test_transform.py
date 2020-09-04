@@ -14,6 +14,12 @@ def test_vector_express_in_frame(example_frames):
     vt = v.express_in_frame(fc)
     assert vt==Vector([math.sqrt(2),0,-3])
 
+def test_vector_express_in_frame_with_original_frame(example_frames):
+    fa,fb,fc = example_frames
+    v = Vector([1,1,3])
+    vt = v.express_in_frame(fc, original_frame=fa)
+    assert vt==Vector([1,1,3])
+
 def test_point_transform(example_frames):
     fa,fb,fc = example_frames
     p = Point([1,1,3])
