@@ -22,7 +22,7 @@ pip install --user -e .[dev]
 ```
 
 ## Usage 
-Instructions on basic usage can be found in the jupyter notebook in `/doc`.
+Instructions on basic usage can be found in the jupyter notebook in `/docs`.
 
 
 ## Testing
@@ -34,8 +34,7 @@ in package root.
 
 
 ## Building the docs
-The documentation can be built by running
+The documentation can be built from the `.ipynb` documents in the `/docs` folder by running
 ```sh
 make html
 ```
-within the `/doc` folder.
