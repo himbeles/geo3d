@@ -45,7 +45,7 @@ class Frame:
         # basic string representation of a frame
         s = ""
         s += "rotation\n{}".format(self._rot)
-        s += "\nEuler angles (xyz, extrinsic, deg.)\n{}".format(
+        s += "\Fixed angles (xyz, extrinsic, deg.)\n{}".format(
             self.euler_angles("xyz", degrees=True)
         )
         s += "\nEuler angles (XYZ, intrinsic, deg.)\n{}".format(
@@ -61,8 +61,8 @@ class Frame:
             <table>
                 <tr>
                     <th>rotation matrix</th>
-                    <th>Euler angles<br>(xyz, extr., deg.)</th>
-                    <th>Euler angles<br>(XYZ, intr., deg.)</th>
+                    <th>Fixed angles<br>(xyz, extr., deg.)</th>
+                    <th>Euler angles<br>(xyz, intr., deg.)</th>
                     <th>translation<br></th>
                 </tr>
                 <tr><td>"""
