@@ -22,12 +22,12 @@ class Frame:
     ) -> None:
         """Frame (transformation) constructor.
 
-        Basic constructor method of a frame object. 
-        The arguments rot and trans are taken as 
+        Basic constructor method of a frame object.
+        The arguments rot and trans are taken as
         the rotation matrix and translation vector of
-        a frame-to-frame transformation. 
+        a frame-to-frame transformation.
 
-        Args: 
+        Args:
             rotation_matrix: 3x3 orthogonal rotation matrix
             translation_vector: 3x1 or 1x3 translation vector
         """
@@ -82,8 +82,8 @@ class Frame:
         return html
 
     def SA_pastable_string(self) -> str:
-        """ Spatial Analyzer compatible string representation
-            
+        """Spatial Analyzer compatible string representation
+
         Returns:
             SA compatible flattened 4x4 transformation matrix
         """
@@ -119,8 +119,8 @@ class Frame:
                 rotation
             degrees : If True, then the given angles are assumed to be in degrees.
                 Default is False.
-        
-        Returns: 
+
+        Returns:
             Array of frame rotation Euler angles.
         """
         return R.from_matrix(self._rot).as_euler(*args, **kwargs)
@@ -145,7 +145,7 @@ class Frame:
     def translation(self) -> Vector:
         """Frame translation vector.
 
-        Returns: 
+        Returns:
             Frame translation vector
         """
         return Vector(self._trans)
@@ -154,7 +154,7 @@ class Frame:
     def rotation(self) -> RotationMatrix:
         """Frame rotation matrix.
 
-        Returns: 
+        Returns:
             Frame rotation matrix
         """
         return RotationMatrix(self._rot)
@@ -166,13 +166,13 @@ class Frame:
         Transformation T0 such that T0*reference_frame = self -> T0=self*inv(reference_frame).
         T0 expressed in reference_frame becomes: T = inv(reference_frame) T0 reference_frame = inv(reference_frame) self.
 
-        This is equivalent to a transformation T between `reference_frame` and `self` such that 
+        This is equivalent to a transformation T between `reference_frame` and `self` such that
         vA = (T.rotation).vB + T.translation
         where vA, vB represent the same vector expressed in reference_frame and self, respectively:
         reference_frame.rotation * vA + reference_frame.translation = self.rotation * vB + self.translation
-        
+
         Args:
-            reference_frame: Reference frame to express this frame in. 
+            reference_frame: Reference frame to express this frame in.
 
         Returns:
             Frame expressed in a new reference frame
@@ -334,7 +334,7 @@ class Frame:
         new_z: VectorLike,
         origin: VectorLike = [0, 0, 0],
     ) -> Frame:
-        """Frame from three orthogonal vectors along the x,y,z axes. 
+        """Frame from three orthogonal vectors along the x,y,z axes.
 
         Args:
             new_x: Vector along the x-axis
@@ -360,11 +360,11 @@ class Frame:
 class Vector:
     """A Vector is a container for one set of dX,dY,dZ deltas.
 
-    It is only subject to the rotational part of frame transformations. It is not affected by translations. 
+    It is only subject to the rotational part of frame transformations. It is not affected by translations.
     """
 
     def __init__(self, v: VectorLike):
-        """Initialize a vector from a sequence of dX,dY,dZ deltas. 
+        """Initialize a vector from a sequence of dX,dY,dZ deltas.
 
         Args:
             v: A sequence of dX,dY,dZ deltas
@@ -373,7 +373,7 @@ class Vector:
 
     @classmethod
     def from_array(cls, a: np.ndarray, copy=True):
-        """Initialize a vector from a numpy array of dX,dY,dZ deltas. 
+        """Initialize a vector from a numpy array of dX,dY,dZ deltas.
 
         Args:
             a: A np.array containing dX,dY,dZ deltas
@@ -393,7 +393,7 @@ class Vector:
         Express the vector given in the frame `original_frame` in a different frame `new_frame`.
 
         Args:
-            new_frame: Frame to express this vector in. 
+            new_frame: Frame to express this vector in.
             original_frame: Reference frame where the vector is specified in. Defaults to Frame.create_unit_frame().
 
         Returns:
@@ -505,7 +505,7 @@ class Point:
 
     @classmethod
     def from_array(cls, a: np.ndarray, copy=True):
-        """Initialize a Point from a numpy array of of X,Y,Z coordinate. 
+        """Initialize a Point from a numpy array of of X,Y,Z coordinate.
 
         Args:
             a: A np.array containing of X,Y,Z coordinate
@@ -525,7 +525,7 @@ class Point:
         Express the point given in the frame `original_frame` in a different frame `new_frame`.
 
         Args:
-            new_frame: Frame to express this point in. 
+            new_frame: Frame to express this point in.
             original_frame: Reference frame where the point is specified in. Defaults to Frame.create_unit_frame().
 
         Returns:
@@ -589,7 +589,7 @@ class Point:
         Apply a transformation to a point (move it), and express it still in the original frame. Basically the inverse of "express point in frame".
 
         Args:
-            transformation: Transformation frame 
+            transformation: Transformation frame
 
         Returns:
             Point expressed in the original frame but transformed.
@@ -607,7 +607,7 @@ class Point:
 class RotationMatrix:
     """A 3x3 rotation matrix.
 
-    The rotation matrix must be orthogonal. This is not enforced in the initializer. 
+    The rotation matrix must be orthogonal. This is not enforced in the initializer.
     """
 
     def __init__(self, m: RotationMatrixLike):
@@ -640,7 +640,7 @@ class RotationMatrix:
         cls, seq: str, angles: Sequence[float], degrees: bool = False
     ) -> RotationMatrix:
         """Rotation matrix from Euler angles.
-        
+
         Arguments are passed to scipy.spatial.transform.Rotation.from_euler(*args, **kwargs).
 
         Args:
@@ -665,7 +665,7 @@ class RotationMatrix:
                 rotation
             degrees: If True, then the given angles are assumed to be in degrees.
                 Defaults to False.
-            
+
         Returns:
             Rotation matrix
         """
@@ -687,13 +687,13 @@ def frame_wizard(
     """Frame-Wizard-type Frame constructor.
 
     This constructor of a Frame object works analogously to the Spatial Analyzer Frame Wizard.
-    The primary axis of the frame is chosen as the `primary_vec`. 
-    The secondary axis of the frame points along `secondary_vec` 
+    The primary axis of the frame is chosen as the `primary_vec`.
+    The secondary axis of the frame points along `secondary_vec`
     projected into the plane perpendicular to `primary_vec` .
     The tertiary axis completes the right-handed frame.
     The corresponding primary and secondary axes labels are given as input arguments
     `primary_axis`, `secondary_axis`.
-    The `origin` of the frame can be specified. 
+    The `origin` of the frame can be specified.
 
     Args:
         primary_vec: vector specifying the primary axis
@@ -737,11 +737,11 @@ def frame_wizard(
 
 def transformation_between_frames(frameA: Frame, frameB: Frame) -> Frame:
     """Transformation between frameA and frameB.
-    
+
     Transformation between frameA and frameB, expressed in unit frame.
-    Construct transformation T between `frameA` and `frameB` 
+    Construct transformation T between `frameA` and `frameB`
     such that T*frameA = B -> T=frameB*inv(frameA)
-    
+
     Args:
         frameA: Reference frame.
         frameB: Final frame.
@@ -761,11 +761,11 @@ def express_frame_in_frame(input_frame: Frame, reference_frame: Frame):
     Transformation T0 such that T0*reference_frame = B -> T0=input_frame*inv(reference_frame).
     T0 expressed in reference_frame becomes: T = inv(reference_frame) T0 reference_frame = inv(reference_frame) input_frame.
 
-    This is equivalent to a transformation T between `reference_frame` and `input_frame` such that 
+    This is equivalent to a transformation T between `reference_frame` and `input_frame` such that
     vA = (T.rotation).vB + T.translation
     where vA, vB represent the same vector expressed in reference_frame and input_frame, respectively:
     reference_frame.rotation * vA + reference_frame.translation = input_frame.rotation * vB + input_frame.translation
-    
+
     Args:
         input_frame: Input frame.
         reference_frame: Reference frame in which input frame should be expressed.
@@ -779,7 +779,9 @@ def express_frame_in_frame(input_frame: Frame, reference_frame: Frame):
 
 
 def express_point_in_frame(
-    point: VectorLike, new_frame: Frame, original_frame: Optional[Frame] = None,
+    point: VectorLike,
+    new_frame: Frame,
+    original_frame: Optional[Frame] = None,
 ) -> Point:
     """Express a point in a different frame.
 
@@ -787,7 +789,7 @@ def express_point_in_frame(
 
     Args:
         point: 3x1 point object
-        new_frame: Frame to express this point in. 
+        new_frame: Frame to express this point in.
         original_frame: Reference frame where the point is specified in. Defaults to UnitFrame.
 
     Returns:
@@ -813,7 +815,7 @@ def express_points_in_frame(
 
     Args:
         points: Sequence of points.
-        new_frame: Frame to express this point in. 
+        new_frame: Frame to express this point in.
         original_frame: Reference frame where the point is specified in. Defaults to UnitFrame.
 
     Returns:
@@ -829,7 +831,9 @@ def express_points_in_frame(
 
 
 def express_vector_in_frame(
-    vector: VectorLike, new_frame: Frame, original_frame: Optional[Frame] = None,
+    vector: VectorLike,
+    new_frame: Frame,
+    original_frame: Optional[Frame] = None,
 ) -> Vector:
     """Express a vector in a different frame.
 
@@ -837,7 +841,7 @@ def express_vector_in_frame(
 
     Args:
         vector: 3x1 vector object
-        new_frame: Frame to express this vector in. 
+        new_frame: Frame to express this vector in.
         original_frame: Reference frame where the vector is specified in (defaults to UnitFrame).
 
     Returns:
@@ -865,12 +869,22 @@ def rotate_vector(vec: VectorLike, rot: RotationMatrixLike) -> Vector:
 
 @njit
 def transform_vector(rot, vec):
-    return cast_vec_to_array(mult_mat_vec(rot, vec))
+    return cast_vec_to_array(_transform_vector_bare(rot, vec))
+
+
+@njit
+def _transform_vector_bare(rot, vec):
+    return mult_mat_vec(rot, vec)
 
 
 @njit
 def transform_point(rot, trans, p):
-    return cast_vec_to_array(add_vec_vec(mult_mat_vec(rot, p), trans))
+    return cast_vec_to_array(_transform_point_bare(rot, trans, p))
+
+
+@njit
+def _transform_point_bare(rot, trans, p):
+    return add_vec_vec(mult_mat_vec(rot, p), trans)
 
 
 def transform_points(
@@ -890,9 +904,9 @@ def minimize_points_to_points_distance(
     """Transform point group to minimize point-group-to-point-group distance.
 
     Returns a transformation (Frame object) that, if applied to all points in point group
-    `groupA`, minimizes the distance between all points in `groupA` an the corresponding 
+    `groupA`, minimizes the distance between all points in `groupA` an the corresponding
     points in `groupB`.
-    
+
     Args:
         groupA: Array of Points.
         groupB: Array of Points (same size as groupA).
@@ -930,18 +944,18 @@ def minimize_points_to_points_distance(
 
 @njit
 def normalized_quat(q) -> Tuple[float, float, float, float]:
-    """ Return unit quaternion
-    
+    """Return unit quaternion
+
     by dividing by Euclidean (L2) norm
-    
+
     Args:
         q array with elements
             q0: quaternion component 0 (x)
             q1: quaternion component 1 (y)
             q2: quaternion component 2 (x)
             q3: quaternion component 3 (scalar)
-    
-    Returns: 
+
+    Returns:
         array shape (4,) vector divided by L2 norm
     """
     n = norm_L2(q)
@@ -950,14 +964,14 @@ def normalized_quat(q) -> Tuple[float, float, float, float]:
 
 @njit
 def normalized_vector(vec) -> np.ndarray:
-    """ Return unit vector
-    
+    """Return unit vector
+
     by dividing by Euclidean (L2) norm
-    
+
     Args:
         vec array with elements x,y,z
-    
-    Returns: 
+
+    Returns:
         array shape (3,) vector divided by L2 norm
     """
     res = np.empty(3)
@@ -979,9 +993,9 @@ def norm_L2(vec):
 @njit
 def quat_as_matrix(unit_quat):
     """Represent unit quaternion as rotation matrix.
-    
-    Method from scipy.spatial.transform.Rotation, 
-    jit-compiled by numba for speedup. 
+
+    Method from scipy.spatial.transform.Rotation,
+    jit-compiled by numba for speedup.
 
     Returns
     -------
