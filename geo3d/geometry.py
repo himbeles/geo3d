@@ -509,12 +509,13 @@ class Point:
 
         Args:
             a: A np.array containing of X,Y,Z coordinate
+            copy: Pass array by value or reference
         """
         obj = cls.__new__(cls)
         if copy:
-            obj._a = a.copy()  # storage as Numpy array
+            obj._a = a.copy()  # storage as copied numpy array
         else:
-            obj._a = a
+            obj._a = a # storage as copied numpy array passed by reference
         return obj
 
     def express_in_frame(
