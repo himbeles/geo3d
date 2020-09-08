@@ -11,6 +11,7 @@ Welcome to geo3d's documentation!
    :caption: Contents:
 
    basic_usage
+   queries
 
 
 
