@@ -1,7 +1,6 @@
 from __future__ import annotations
 import numpy as np
 from scipy.spatial.transform import Rotation as R
-from scipy.optimize import minimize
 from math import sqrt
 from numba import njit
 from .auxiliary import html_table_from_matrix, html_table_from_vector
@@ -45,7 +44,7 @@ class Frame:
         # basic string representation of a frame
         s = ""
         s += "rotation\n{}".format(self._rot)
-        s += "\Fixed angles (xyz, extrinsic, deg.)\n{}".format(
+        s += "\nFixed angles (xyz, extrinsic, deg.)\n{}".format(
             self.euler_angles("xyz", degrees=True)
         )
         s += "\nEuler angles (XYZ, intrinsic, deg.)\n{}".format(
@@ -895,54 +894,6 @@ def transform_points(
     # rotation can also be written as `np.einsum('ij,kj->ki', t0._rot, np.asarray(points))`
 
 
-def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
-    return norm_L2(np.asarray(pointA) - np.asarray(pointB))
-
-
-def minimize_points_to_points_distance(
-    groupA, groupB, return_report=False, method="Powell", tol=1e-6
-):
-    """Transform point group to minimize point-group-to-point-group distance.
-
-    Returns a transformation (Frame object) that, if applied to all points in point group
-    `groupA`, minimizes the distance between all points in `groupA` an the corresponding
-    points in `groupB`.
-
-    Args:
-        groupA: Array of Points.
-        groupB: Array of Points (same size as groupA).
-        return_report: True if report of minimization algorithm should be returned
-
-    Returns:
-        Transformation, or tuple of transformation and minimization report if return_report==True
-    """
-    # return transform that maps groupA onto groupB with minimum point-to-point distance
-    def cost(x):
-        [r1, r2, r3, t1, t2, t3] = x
-        rot = R.from_rotvec([r1, r2, r3]).as_matrix()
-        trans = np.asarray([t1, t2, t3])
-        t = Frame(rot, trans)
-        c = np.sqrt(
-            np.mean(
-                np.power(
-                    [
-                        distance_between_points(pB, Point(pA).transform(t))
-                        for (pA, pB) in zip(groupA, groupB)
-                    ],
-                    2,
-                )
-            )
-        )
-        return c
-
-    m = minimize(cost, [0, 0, 0, 0, 0, 0], tol=tol, method=method)
-    t = Frame(R.from_rotvec(m["x"][:3]).as_matrix(), m["x"][3:])
-    if return_report:
-        return t, m
-    else:
-        return t
-
-
 @njit
 def normalized_quat(q) -> Tuple[float, float, float, float]:
     """Return unit quaternion
@@ -984,7 +935,7 @@ def normalized_vector(vec) -> np.ndarray:
 
 
 @njit
-def norm_L2(vec):
+def norm_L2(vec) -> float:
     s = 0
     for v in vec:
         s += v ** 2
