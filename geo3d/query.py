@@ -5,13 +5,24 @@ from .geometry import Frame, Point, norm_L2, VectorLike
 from scipy.optimize import minimize
 from scipy.spatial.transform import Rotation as R
 
+from typing import Sequence
+
 
 def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
+    """Distance between two points.
+
+    Args:
+        pointA: 1st point
+        pointB: 2nd point
+
+    Returns:
+        Euclidean distance between the two points
+    """
     return norm_L2(np.asarray(pointA) - np.asarray(pointB))
 
 
 def minimize_points_to_points_distance(
-    groupA, groupB, return_report=False, method="Powell", tol=1e-6
+    groupA: Sequence[VectorLike], groupB: Sequence[VectorLike], return_report=False, method="Powell", tol=1e-6
 ):
     """Find point group transform to minimize point-group-to-point-group distance.
 
@@ -20,8 +31,8 @@ def minimize_points_to_points_distance(
     points in `groupB`.
 
     Args:
-        groupA: Array of Points.
-        groupB: Array of Points (same size as groupA).
+        groupA: Sequence of Points.
+        groupB: Sequence of Points (same size as groupA).
         return_report: True if report of minimization algorithm should be returned
 
     Returns:
