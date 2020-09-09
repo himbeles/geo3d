@@ -1,10 +1,10 @@
 from __future__ import annotations
+from geo3d.linalg import add_vec_vec, cast_vec_to_array, mult_mat_vec, norm_L2
 import numpy as np
 from scipy.spatial.transform import Rotation as R
-from math import sqrt
 from numba import njit
 from .auxiliary import html_table_from_matrix, html_table_from_vector
-from typing import Union, List, Tuple, Any, Sequence, TypeVar, Optional
+from typing import Union, Tuple, Sequence, Optional
 
 RotationMatrixLike = Union[Sequence[Sequence[float]], np.ndarray, "RotationMatrix"]
 VectorLike = Union[Sequence[float], np.ndarray, "Vector", "Point"]
@@ -895,54 +895,6 @@ def transform_points(
 
 
 @njit
-def normalized_quat(q) -> Tuple[float, float, float, float]:
-    """Return unit quaternion
-
-    by dividing by Euclidean (L2) norm
-
-    Args:
-        q array with elements
-            q0: quaternion component 0 (x)
-            q1: quaternion component 1 (y)
-            q2: quaternion component 2 (x)
-            q3: quaternion component 3 (scalar)
-
-    Returns:
-        array shape (4,) vector divided by L2 norm
-    """
-    n = norm_L2(q)
-    return (q[0] / n, q[1] / n, q[2] / n, q[3] / n)
-
-
-@njit
-def normalized_vector(vec) -> np.ndarray:
-    """Return unit vector
-
-    by dividing by Euclidean (L2) norm
-
-    Args:
-        vec array with elements x,y,z
-
-    Returns:
-        array shape (3,) vector divided by L2 norm
-    """
-    res = np.empty(3)
-    n = norm_L2(vec)
-    res[0] = vec[0] / n
-    res[1] = vec[1] / n
-    res[2] = vec[2] / n
-    return res
-
-
-@njit
-def norm_L2(vec) -> float:
-    s = 0
-    for v in vec:
-        s += v ** 2
-    return sqrt(s)
-
-
-@njit
 def quat_as_matrix(unit_quat):
     """Represent unit quaternion as rotation matrix.
 
@@ -999,29 +951,39 @@ def quat_as_matrix(unit_quat):
 
 
 @njit
-def add_vec_vec(v1, v2):
-    return (v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2])
+def normalized_vector(vec) -> np.ndarray:
+    """Return unit vector array
 
+    by dividing by Euclidean (L2) norm
+
+    Args:
+        vec array with elements x,y,z
+
+    Returns:
+        array shape (3,) vector divided by L2 norm
+    """
+    res = np.empty(3)
+    n = norm_L2(vec)
+    res[0] = vec[0] / n
+    res[1] = vec[1] / n
+    res[2] = vec[2] / n
+    return res
 
 @njit
-def mult_vec_sca(v, s):
-    return (v[0] * s, v[1] * s, v[2] * s)
+def normalized_quat(q) -> Tuple[float, float, float, float]:
+    """Return unit quaternion
 
+    by dividing by Euclidean (L2) norm
 
-@njit
-def dot_vec_vec(v1, v2):
-    return v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]
+    Args:
+        q array with elements
+            q0: quaternion component 0 (x)
+            q1: quaternion component 1 (y)
+            q2: quaternion component 2 (x)
+            q3: quaternion component 3 (scalar)
 
-
-@njit
-def mult_mat_vec(m, v):
-    return (dot_vec_vec(m[0], v), dot_vec_vec(m[1], v), dot_vec_vec(m[2], v))
-
-
-@njit
-def cast_vec_to_array(vec):
-    a = np.empty(3)
-    a[0] = vec[0]
-    a[1] = vec[1]
-    a[2] = vec[2]
-    return a
+    Returns:
+        array shape (4,) vector divided by L2 norm
+    """
+    n = norm_L2(q)
+    return (q[0] / n, q[1] / n, q[2] / n, q[3] / n)
