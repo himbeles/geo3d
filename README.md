@@ -26,8 +26,8 @@ pip install --user -e .[dev]
 ```
 
 ## Usage 
-Instructions on basic usage can be found in the jupyter notebook in `/docs`.
-
+Instructions on basic usage can be found in the jupyter notebook in `/docs`, 
+which are also deployed to [himbeles.github.io/geo3d](https://himbeles.github.io/geo3d).
 
 ## Testing
 Unit tests can be run using 
