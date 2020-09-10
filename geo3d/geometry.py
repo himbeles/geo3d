@@ -514,7 +514,7 @@ class Point:
         if copy:
             obj._a = a.copy()  # storage as copied numpy array
         else:
-            obj._a = a # storage as copied numpy array passed by reference
+            obj._a = a  # storage as copied numpy array passed by reference
         return obj
 
     def express_in_frame(
@@ -951,6 +951,67 @@ def quat_as_matrix(unit_quat):
 
 
 @njit
+def matrix_as_quat(matrix: np.ndarray):
+    """Rotation quaternion from rotation matrix.
+
+    Method from scipy.spatial.transform.Rotation,
+    jit-compiled by numba for speedup.
+
+    Rotations in 3 dimensions can be represented with 3 x 3 proper
+    orthogonal matrices [1]_. If the input is not proper orthogonal,
+    an approximation is created using the method described in [2]_.
+
+    Args:
+    matrix : array_like, shape (N, 3, 3) or (3, 3)
+        A single matrix or a stack of matrices, where ``matrix[i]`` is
+        the i-th matrix.
+
+    Returns:
+    quaternion array with elements
+            q0: quaternion component 0 (x)
+            q1: quaternion component 1 (y)
+            q2: quaternion component 2 (x)
+            q3: quaternion component 3 (scalar)
+
+    References
+    ----------
+    .. [1] https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions
+    .. [2] F. Landis Markley, "Unit Quaternion from Rotation Matrix",
+            Journal of guidance, control, and dynamics vol. 31.2, pp.
+            440-442, 2008.
+    """
+    # matrix = np.asarray(matrix, dtype=float)
+
+    decision_matrix = np.empty(4)
+    decision_matrix[0] = matrix[0][0]
+    decision_matrix[1] = matrix[1][1]
+    decision_matrix[2] = matrix[2][2]
+    decision_matrix[3] = decision_matrix[:3].sum()
+
+    choice = decision_matrix.argmax()
+
+    quat = np.empty(4)
+
+    if choice != 3:
+        i = choice
+        j = (i + 1) % 3
+        k = (j + 1) % 3
+
+        quat[i] = 1 - decision_matrix[3] + 2 * matrix[i, i]
+        quat[j] = matrix[j, i] + matrix[i, j]
+        quat[k] = matrix[k, i] + matrix[i, k]
+        quat[3] = matrix[k, j] - matrix[j, k]
+
+    else:
+        quat[0] = matrix[2, 1] - matrix[1, 2]
+        quat[1] = matrix[0, 2] - matrix[2, 0]
+        quat[2] = matrix[1, 0] - matrix[0, 1]
+        quat[3] = 1 + decision_matrix[3]
+
+    return normalized_quat(quat)
+
+
+@njit
 def normalized_vector(vec) -> np.ndarray:
     """Return unit vector array
 
@@ -968,6 +1029,7 @@ def normalized_vector(vec) -> np.ndarray:
     res[1] = vec[1] / n
     res[2] = vec[2] / n
     return res
+
 
 @njit
 def normalized_quat(q) -> Tuple[float, float, float, float]:
