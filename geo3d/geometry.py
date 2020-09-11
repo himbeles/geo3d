@@ -1,6 +1,14 @@
 from __future__ import annotations
-from geo3d.linalg import add_vec_vec, cast_vec_to_array, mult_mat_vec, norm_L2
+from .linalg import (
+    add_vec_vec,
+    cast_vec_to_array,
+    dot_vec_vec,
+    mult_mat_vec,
+    mult_vec_sca,
+    norm_L2,
+)
 import numpy as np
+import math
 from scipy.spatial.transform import Rotation as R
 from numba import njit
 from .auxiliary import html_table_from_matrix, html_table_from_vector
@@ -1049,3 +1057,39 @@ def normalized_quat(q) -> Tuple[float, float, float, float]:
     """
     n = norm_L2(q)
     return (q[0] / n, q[1] / n, q[2] / n, q[3] / n)
+
+
+@njit
+def quat_angle(quat):
+    # w > 0 to ensure 0 <= angle <= pi
+    sign = (
+        -1 if quat[3] < 0 else 1
+    )  # flip sign of last quat entry if < 0, meaning |angle|>pi
+    return 2 * math.atan2(norm_L2(quat[:3]), sign * quat[3])
+
+
+@njit
+def quat_twist_angle(quat, twist_axis):
+    # https://stackoverflow.com/questions/3684269/component-of-a-quaternion-rotation-around-an-axis
+    d = normalized_vector(twist_axis)  # twist axis
+    proj = dot_vec_vec(quat[0:3], d)  # quaternion rotation projected onto twist axis
+    p = mult_vec_sca(d, proj)
+
+    twist_quat = normalized_quat((p[0], p[1], p[2], quat[3]))
+
+    # invert angle sign when proj is negative
+    sign = -1 if proj < 0 else 1
+    angle = sign * quat_angle(twist_quat)
+    return angle
+
+
+@njit
+def quat_as_rotvec(quat):
+    # w > 0 to ensure 0 <= angle <= pi
+    sign = -1 if quat[3] < 0 else 1
+    q = (quat[0] * sign, quat[1] * sign, quat[2] * sign, quat[3] * sign)
+
+    angle = 2 * math.atan2(norm_L2(q[:3]), q[3])
+    scale = angle / math.sin(angle / 2)
+    rotvec = mult_vec_sca(q[:3], scale)
+    return rotvec
