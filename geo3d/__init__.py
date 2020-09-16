@@ -1,4 +1,5 @@
 from .geometry import *
+from .query import *
 
 import pkg_resources
 
