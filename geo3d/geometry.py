@@ -2,6 +2,7 @@ from __future__ import annotations
 from .linalg import (
     add_vec_vec,
     cast_vec_to_array,
+    cross_vec_vec,
     dot_vec_vec,
     mult_mat_vec,
     mult_vec_sca,
@@ -16,6 +17,7 @@ from typing import Union, Tuple, Sequence, Optional
 
 RotationMatrixLike = Union[Sequence[Sequence[float]], np.ndarray, "RotationMatrix"]
 VectorLike = Union[Sequence[float], np.ndarray, "Vector", "Point"]
+QuaternionTuple = Tuple[float, float, float, float]
 
 
 class Frame:
@@ -244,9 +246,13 @@ class Frame:
         Returns:
             Resulting frame
         """
-        rot = R.from_euler("xyz", [theta_x, theta_y, theta_z], degrees=True).as_matrix()
-        trans = [dx, dy, dz]
-        return cls(rot, trans)
+        quat = euler_as_quat(
+            theta_x / 180 * math.pi,
+            theta_y / 180 * math.pi,
+            theta_z / 180 * math.pi,
+            intrinsic=False,
+        )
+        return cls.from_quat_and_translations(*quat, dx, dy, dz)
 
     @classmethod
     def from_intrinsic_euler_and_translations(
@@ -271,9 +277,13 @@ class Frame:
         Returns:
             Resulting frame
         """
-        rot = R.from_euler("XYZ", [theta_x, theta_y, theta_z], degrees=True).as_matrix()
-        trans = [dx, dy, dz]
-        return cls(rot, trans)
+        quat = euler_as_quat(
+            theta_x / 180 * math.pi,
+            theta_y / 180 * math.pi,
+            theta_z / 180 * math.pi,
+            intrinsic=True,
+        )
+        return cls.from_quat_and_translations(*quat, dx, dy, dz)
 
     @classmethod
     def _from_quat_and_translations_scipy(
@@ -1040,7 +1050,7 @@ def normalized_vector(vec) -> np.ndarray:
 
 
 @njit
-def normalized_quat(q) -> Tuple[float, float, float, float]:
+def normalized_quat(q) -> QuaternionTuple:
     """Return unit quaternion
 
     by dividing by Euclidean (L2) norm
@@ -1060,7 +1070,83 @@ def normalized_quat(q) -> Tuple[float, float, float, float]:
 
 
 @njit
-def quat_angle(quat):
+def elementary_quat(axis_idx, angle) -> QuaternionTuple:
+    """Rotation quaternion for an elementary rotation around x, y, or z.
+
+    Args:
+        axis_idx: the axis index (0 for x, 1 for y, 2 for z)
+        angle: the rotation angle in rad
+
+    Returns:
+        rotation unit quaternion
+    """
+    quat = np.zeros(4)
+    quat[axis_idx] = math.sin(angle / 2)
+    quat[3] = math.cos(angle / 2)
+    return quat
+
+
+@njit
+def compose_quats(p, q) -> QuaternionTuple:
+    """Compose rotations expressed by quaternions p,q
+
+    jit-compiled version of scipy _compose_quat
+
+    Args:
+        p: First rotation unit quaternion
+        q: Second rotation unit quaternion
+
+    Returns:
+        composed rotation quaternion
+    """
+    product = np.empty(4)
+    product[3] = p[3] * q[3] - dot_vec_vec(p[:3], q[:3])
+    product[:3] = add_vec_vec(
+        mult_vec_sca(q[:3], p[3]),
+        add_vec_vec(mult_vec_sca(p[:3], q[3]), cross_vec_vec(p[:3], q[:3])),
+    )
+    return product
+
+
+@njit
+def euler_as_quat(theta_x: float, theta_y: float, theta_z: float, intrinsic=False):
+    """Express Euler angles composition as quaternion
+
+    Args:
+        theta_x: Rotation angle around x in rad
+        theta_y: Rotation angle around y in rad
+        theta_z: Rotation angle around z in rad
+        intrinsic: Accept intrinsic or extrinsic (fixed) Euler angles as input. Defaults to False.
+
+    Returns:
+        Rotation quaternion
+    """
+    result = elementary_quat(0, theta_x)
+    angles = (theta_x, theta_y, theta_z)
+
+    for i in range(1, 3):
+        a = angles[i]
+        if intrinsic:
+            result = compose_quats(result, elementary_quat(i, a))
+        else:
+            result = compose_quats(elementary_quat(i, a), result)
+
+    return result
+
+
+@njit
+def quat_angle(quat) -> float:
+    """Rotation angle of a given quaternion in rad.
+
+    Angle can go from 0 to pi around the rotation axis
+    along the first three quaternion entries.
+
+    Args:
+        quat: rotation unit quaternion
+
+    Returns:
+        rotation angle
+    """
     # w > 0 to ensure 0 <= angle <= pi
     sign = (
         -1 if quat[3] < 0 else 1
@@ -1069,7 +1155,7 @@ def quat_angle(quat):
 
 
 @njit
-def quat_twist_angle(quat, twist_axis):
+def quat_twist_angle(quat, twist_axis) -> float:
     # https://stackoverflow.com/questions/3684269/component-of-a-quaternion-rotation-around-an-axis
     d = normalized_vector(twist_axis)  # twist axis
     proj = dot_vec_vec(quat[0:3], d)  # quaternion rotation projected onto twist axis

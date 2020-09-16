@@ -2,6 +2,7 @@ from numba import njit
 import numpy as np
 from math import sqrt
 
+
 @njit
 def add_vec_vec(v1, v2):
     return (v1[0] + v2[0], v1[1] + v2[1], v1[2] + v2[2])
@@ -18,8 +19,18 @@ def dot_vec_vec(v1, v2):
 
 
 @njit
+def cross_vec_vec(v1, v2):
+    return (
+        v1[1] * v2[2] - v1[2] * v2[1],
+        v1[2] * v2[0] - v1[0] * v2[2],
+        v1[0] * v2[1] - v1[1] * v2[0],
+    )
+
+
+@njit
 def mult_mat_vec(m, v):
     return (dot_vec_vec(m[0], v), dot_vec_vec(m[1], v), dot_vec_vec(m[2], v))
+
 
 @njit
 def cast_vec_to_array(vec):
@@ -29,10 +40,10 @@ def cast_vec_to_array(vec):
     a[2] = vec[2]
     return a
 
+
 @njit
 def norm_L2(vec) -> float:
     s = 0
     for v in vec:
         s += v ** 2
     return sqrt(s)
-
