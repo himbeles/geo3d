@@ -5,8 +5,10 @@ from .linalg import (
     cross_vec_vec,
     dot_vec_vec,
     mult_mat_vec,
+    mult_vec_mat,
     mult_vec_sca,
     norm_L2,
+    sub_vec_vec,
 )
 import numpy as np
 import math
@@ -814,12 +816,14 @@ def express_point_in_frame(
         Point expressed in `new_frame`.
     """
     if original_frame is None:
-        trafo = new_frame
+        return Point.from_array(
+            _express_point_bare(new_frame._rot, new_frame._trans, point), copy=False
+        )
     else:
         trafo = transformation_between_frames(original_frame, new_frame)
-    return Point(
-        (np.asarray(point) - trafo._trans) @ trafo._rot
-    )  # multiplication to the right is the same as with transpose to the left
+        return Point(
+            (np.asarray(point) - trafo._trans) @ trafo._rot
+        )  # multiplication to the right is the same as with transpose to the left
 
 
 def express_points_in_frame(
@@ -840,12 +844,12 @@ def express_points_in_frame(
         Points expressed in `new_frame`.
     """
     if original_frame is None:
-        trafo = new_frame
+        return _express_points_bare(new_frame._rot, new_frame._trans, points)
     else:
         trafo = transformation_between_frames(original_frame, new_frame)
-    return (
-        np.asarray(points) - trafo._trans
-    ) @ trafo._rot  # multiplication to the right is the same as with transpose to the left
+        return (
+            np.asarray(points) - trafo._trans
+        ) @ trafo._rot  # multiplication to the right is the same as with transpose to the left
 
 
 def express_vector_in_frame(
@@ -903,6 +907,20 @@ def transform_point(rot, trans, p):
 @njit
 def _transform_point_bare(rot, trans, p):
     return add_vec_vec(mult_mat_vec(rot, p), trans)
+
+
+@njit
+def _express_point_bare(rot, trans, p):
+    return mult_vec_mat(sub_vec_vec(p, trans), rot)
+
+
+@njit
+def _express_points_bare(rot, trans, points):
+    dim = len(points)
+    res = np.empty((dim, 3))
+    for i in range(dim):
+        res[i] = _express_point_bare(rot, trans, points[i])
+    return np.asarray(res)
 
 
 def transform_points(
