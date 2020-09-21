@@ -1,6 +1,7 @@
 import numpy as np
 
-from .geometry import Frame, Point, norm_L2, VectorLike
+from .geometry import Frame, Point, norm_L2, VectorLike, Plane
+from .linalg import dot_vec_vec, norm_L2
 
 from scipy.optimize import minimize
 from scipy.spatial.transform import Rotation as R
@@ -21,12 +22,24 @@ def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
     return norm_L2(np.asarray(pointA) - np.asarray(pointB))
 
 
+def distances_plane_to_points(plane: Plane, points: Sequence[VectorLike]):
+    """Distances between plane and points along plane normal"""
+    normal = plane.normal.as_array()
+    cartesian_d = dot_vec_vec(normal, plane.point.as_array())
+    normal_length = norm_L2(normal)
+    return (np.dot(points, normal) - cartesian_d) / normal_length
+
+
 def centroid(points: Sequence[VectorLike]) -> Point:
-    return Point(np.sum(points,0) / len(points))
+    return Point(np.sum(points, 0) / len(points))
 
 
 def minimize_points_to_points_distance(
-    groupA: Sequence[VectorLike], groupB: Sequence[VectorLike], return_report=False, method="Powell", tol=1e-6
+    groupA: Sequence[VectorLike],
+    groupB: Sequence[VectorLike],
+    return_report=False,
+    method="Powell",
+    tol=1e-6,
 ):
     """Find point group transform to minimize point-group-to-point-group distance.
 
