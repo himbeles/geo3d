@@ -22,8 +22,20 @@ def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
     return norm_L2(np.asarray(pointA) - np.asarray(pointB))
 
 
-def distances_plane_to_points(plane: Plane, points: Sequence[VectorLike]):
-    """Distances between plane and points along plane normal"""
+def distances_plane_to_points(plane: Plane, points: Sequence[VectorLike]) -> np.ndarray:
+    """Shortest distances between plane and points
+
+    The distances are given from the plane to the points, along the plane normal.
+    Negative distances indicate points positioned along the negative plane normal.
+
+    Args:
+        plane: The queried plane
+        points: The sequence of queried points
+
+    Returns:
+        np.array of floats: distances for all points 
+    """
+
     normal = plane.normal.as_array()
     cartesian_d = dot_vec_vec(normal, plane.point.as_array())
     normal_length = norm_L2(normal)
@@ -31,6 +43,14 @@ def distances_plane_to_points(plane: Plane, points: Sequence[VectorLike]):
 
 
 def centroid(points: Sequence[VectorLike]) -> Point:
+    """Centroid for a sequence of points
+
+    Args:
+        points: The queried sequence of points
+
+    Returns:
+        Point: Centroid point
+    """
     return Point(np.sum(points, 0) / len(points))
 
 
