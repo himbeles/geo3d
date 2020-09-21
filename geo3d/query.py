@@ -21,6 +21,10 @@ def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
     return norm_L2(np.asarray(pointA) - np.asarray(pointB))
 
 
+def centroid(points: Sequence[VectorLike]) -> Point:
+    return Point(np.sum(points,0) / len(points))
+
+
 def minimize_points_to_points_distance(
     groupA: Sequence[VectorLike], groupB: Sequence[VectorLike], return_report=False, method="Powell", tol=1e-6
 ):

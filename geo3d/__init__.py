@@ -1,5 +1,6 @@
 from .geometry import *
 from .query import *
+from .fit import *
 
 import pkg_resources
 

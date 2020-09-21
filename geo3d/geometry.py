@@ -16,6 +16,7 @@ from scipy.spatial.transform import Rotation as R
 from numba import njit
 from .auxiliary import html_table_from_matrix, html_table_from_vector
 from typing import Union, Tuple, Sequence, Optional
+from dataclasses import dataclass
 
 RotationMatrixLike = Union[Sequence[Sequence[float]], np.ndarray, "RotationMatrix"]
 VectorLike = Union[Sequence[float], np.ndarray, "Vector", "Point"]
@@ -622,6 +623,12 @@ class Point:
             transform_point(transformation._rot, transformation._trans, self._a),
             copy=False,
         )
+
+
+@dataclass
+class Plane:
+    normal: Vector
+    point: Point
 
 
 class RotationMatrix:
