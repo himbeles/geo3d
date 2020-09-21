@@ -3,10 +3,19 @@ import math
 
 from .query import centroid, distances_plane_to_points
 from .geometry import Plane, Vector, Point, VectorLike
-from typing import Sequence
+from typing import Sequence, Union, Dict, Tuple
 
 
-def fit_plane(points: Sequence[VectorLike], return_fit_props=False):
+def fit_plane(points: Sequence[VectorLike], return_fit_props=False) -> Union[Plane, Tuple[Plane, Dict]]:
+    """Fit plane to points
+
+    Args:
+        points: Sequence of points
+        return_fit_props: True if dictionary with fit properties should be returned. Defaults to False.
+
+    Returns:
+        Plane or tuple (Plane, fit_properties) if return_fit_props==True
+    """
     centr = centroid(points).as_array()
     svd = np.linalg.svd(points - centr)
     normal = svd[2][-1]
