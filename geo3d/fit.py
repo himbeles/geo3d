@@ -6,7 +6,9 @@ from .geometry import Plane, Vector, Point, VectorLike
 from typing import Sequence, Union, Dict, Tuple
 
 
-def fit_plane(points: Sequence[VectorLike], return_fit_props=False) -> Union[Plane, Tuple[Plane, Dict]]:
+def fit_plane(
+    points: Sequence[VectorLike], return_fit_props=False
+) -> Union[Plane, Tuple[Plane, Dict]]:
     """Fit plane to points
 
     Args:
@@ -28,11 +30,11 @@ def fit_plane(points: Sequence[VectorLike], return_fit_props=False) -> Union[Pla
 
     if return_fit_props:
         fit_props = {
-            "rms_error": math.sqrt(np.sum(residuals**2)/len(points)), 
+            "rms_error": math.sqrt(np.sum(residuals ** 2) / len(points)),
             "residuals": residuals,
             "residuals_min": residuals_min,
             "residuals_max": residuals_max,
-            "flatness": flatness
+            "flatness": flatness,
         }
         return (plane, fit_props)
     else:

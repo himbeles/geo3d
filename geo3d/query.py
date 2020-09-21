@@ -33,7 +33,7 @@ def distances_plane_to_points(plane: Plane, points: Sequence[VectorLike]) -> np.
         points: The sequence of queried points
 
     Returns:
-        np.array of floats: distances for all points 
+        np.array of floats: distances for all points
     """
 
     normal = plane.normal.as_array()
