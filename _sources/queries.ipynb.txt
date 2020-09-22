@@ -9,12 +9,12 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 2,
+   "execution_count": 13,
    "metadata": {},
    "outputs": [],
    "source": [
-    "from geo3d.query import distance_between_points, minimize_points_to_points_distance\n",
-    "from geo3d import Point"
+    "from geo3d.query import distance_between_points, minimize_points_to_points_distance, distances_plane_to_points\n",
+    "from geo3d import Point, Plane, Vector"
    ]
   },
   {
@@ -33,7 +33,7 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 3,
+   "execution_count": 14,
    "metadata": {},
    "outputs": [
     {
@@ -42,7 +42,7 @@
        "3.0"
       ]
      },
-     "execution_count": 3,
+     "execution_count": 14,
      "metadata": {},
      "output_type": "execute_result"
     }
@@ -51,6 +51,45 @@
     "pointA = Point([1,2,3])\n",
     "pointB = Point([1,2,6])\n",
     "distance_between_points(pointA, pointB)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Plane-to-Points Distance"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The distance from a plane to an array of points, positive along the plane normal vector."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "array([-3., -6.])"
+      ]
+     },
+     "execution_count": 29,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "plane = Plane(\n",
+    "    normal=Vector([0,0,-1]), \n",
+    "    point=Point([1,2,0])\n",
+    ")\n",
+    "points = [[1,2,3], [1,2,6]]\n",
+    "distances_plane_to_points(plane, points)"
    ]
   },
   {
@@ -110,9 +149,9 @@
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "gims-venv",
+   "display_name": "py3",
    "language": "python",
-   "name": "gims-venv"
+   "name": "py3"
   },
   "language_info": {
    "codemirror_mode": {
@@ -124,7 +163,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.8.3"
+   "version": "3.8.5"
   }
  },
  "nbformat": 4,
