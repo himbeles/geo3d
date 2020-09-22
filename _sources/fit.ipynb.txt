@@ -1,0 +1,80 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Fitting"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from geo3d.fit import fit_plane\n",
+    "from geo3d import Point, Plane, Vector"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Plane Fit to Points"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Fit a plane to an array of points. The fitted plane is defined by a `Plane.point` attribute giving the centroid of the fitted points, and a normal vector attribute `Plane.normal`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "output_type": "execute_result",
+     "data": {
+      "text/plain": "Plane(normal=<Vector at 2251509756448> [0. 0. 1.], point=<Point at 2251509756064> [0.         0.33333333 0.        ])"
+     },
+     "metadata": {},
+     "execution_count": 8
+    }
+   ],
+   "source": [
+    "plane = Plane(\n",
+    "    normal=Vector([0,0,-1]), \n",
+    "    point=Point([1,2,0])\n",
+    ")\n",
+    "points = [[1,0,0], [0,1,0], [-1,0,0]]\n",
+    "plane = fit_plane(points)\n",
+    "plane"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3.8.5 64-bit",
+   "language": "python",
+   "name": "python_defaultSpec_1600784398027"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.5-final"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
