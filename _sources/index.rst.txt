@@ -12,7 +12,7 @@ Welcome to geo3d's documentation!
 
    basic_usage
    queries
-
+   fit
 
 
 Indices and tables
