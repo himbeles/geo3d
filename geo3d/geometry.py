@@ -393,7 +393,7 @@ class Vector:
         Args:
             v: A sequence of dX,dY,dZ deltas
         """
-        self._a: np.ndarray = np.array(v, dtype="float64")  # storage as Numpy array
+        self._a: np.ndarray = np.array(v)  # storage as Numpy array
 
     @classmethod
     def from_array(cls, a: np.ndarray, copy=True):
@@ -531,7 +531,7 @@ class Point:
         Args:
             p: sequence of X,Y,Z coordinates
         """
-        self._a: np.ndarray = np.array(p, dtype="float64")  # storage as Numpy array
+        self._a: np.ndarray = np.array(p)  # storage as Numpy array
 
     @classmethod
     def from_array(cls, a: np.ndarray, copy=True):
