@@ -255,7 +255,9 @@ class Frame:
             theta_z / 180 * math.pi,
             intrinsic=False,
         )
-        return cls.from_quat_and_translations(quat[0], quat[1], quat[2], quat[3], dx, dy, dz)
+        return cls.from_quat_and_translations(
+            quat[0], quat[1], quat[2], quat[3], dx, dy, dz
+        )
 
     @classmethod
     def from_intrinsic_euler_and_translations(
@@ -286,7 +288,9 @@ class Frame:
             theta_z / 180 * math.pi,
             intrinsic=True,
         )
-        return cls.from_quat_and_translations(quat[0], quat[1], quat[2], quat[3], dx, dy, dz)
+        return cls.from_quat_and_translations(
+            quat[0], quat[1], quat[2], quat[3], dx, dy, dz
+        )
 
     @classmethod
     def _from_quat_and_translations_scipy(
@@ -389,7 +393,7 @@ class Vector:
         Args:
             v: A sequence of dX,dY,dZ deltas
         """
-        self._a: np.ndarray = np.array(v)  # storage as Numpy array
+        self._a: np.ndarray = np.array(v, dtype="float64")  # storage as Numpy array
 
     @classmethod
     def from_array(cls, a: np.ndarray, copy=True):
@@ -515,13 +519,19 @@ class Point:
     It is subject to translations and rotations of frame transformations.
     """
 
+    # __array_interface__ = {
+    #     "shape": (3,),
+    #     "typestr": "|f8",
+    #     "version": 3,
+    # }
+
     def __init__(self, p: VectorLike):
         """Initialize a Point from a sequence of X,Y,Z coordinates.
 
         Args:
             p: sequence of X,Y,Z coordinates
         """
-        self._a: np.ndarray = np.array(p)  # storage as Numpy array
+        self._a: np.ndarray = np.array(p, dtype="float64")  # storage as Numpy array
 
     @classmethod
     def from_array(cls, a: np.ndarray, copy=True):
