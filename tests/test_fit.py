@@ -3,7 +3,6 @@ from geo3d import Point, Plane, Vector
 
 
 def test_fit_plane():
-    plane = Plane(normal=Vector([0, 0, -1]), point=Point([1, 2, 0]))
     points = [[1, 0, 0], [0, 1, 0], [-1, 0, 0]]
     plane = fit_plane(points)
     assert plane == Plane(normal=Vector([0, 0, 1]), point=Point([0, 1 / 3, 0]))
