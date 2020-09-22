@@ -1,11 +1,21 @@
 import pytest
 
-from geo3d import Vector
+from geo3d import Vector, Point
 import numpy as np
 
 
 def test_vector_from_array():
     p = Vector([1, 2, 3])
+    assert p[2] == 3
+
+
+def test_vector_from_vector():
+    p = Vector(Vector([1, 2, 3]))
+    assert p[2] == 3
+
+
+def test_vector_from_point():
+    p = Vector(Point([1, 2, 3]))
     assert p[2] == 3
 
 
