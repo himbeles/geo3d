@@ -278,7 +278,7 @@ div.rendered_html tbody tr:hover {
 <div class="section" id="Fitting">
 <h1>Fitting<a class="headerlink" href="#Fitting" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -291,27 +291,23 @@ from geo3d import Point, Plane, Vector
 <h2>Plane Fit to Points<a class="headerlink" href="#Plane-Fit-to-Points" title="Permalink to this headline">¶</a></h2>
 <p>Fit a plane to an array of points. The fitted plane is defined by a <code class="docutils literal notranslate"><span class="pre">Plane.point</span></code> attribute giving the centroid of the fitted points, and a normal vector attribute <code class="docutils literal notranslate"><span class="pre">Plane.normal</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>plane = Plane(
-    normal=Vector([0,0,-1]),
-    point=Point([1,2,0])
-)
-points = [[1,0,0], [0,1,0], [-1,0,0]]
+<span></span>points = [[1,0,0], [0,1,0], [-1,0,0]]
 plane = fit_plane(points)
 plane
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Plane(normal=&lt;Vector at 2251509756448&gt; [0. 0. 1.], point=&lt;Point at 2251509756064&gt; [0.         0.33333333 0.        ])
+Plane(normal=&lt;Vector at 2518162131360&gt; [0. 0. 1.], point=&lt;Point at 2518162131552&gt; [0.         0.33333333 0.        ])
 </pre></div></div>
 </div>
 </div>
