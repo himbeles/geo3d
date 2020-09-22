@@ -1,5 +1,3 @@
-import pytest
-
 from geo3d import Point, Vector
 import numpy as np
 
