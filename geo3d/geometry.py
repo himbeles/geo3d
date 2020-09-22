@@ -255,7 +255,7 @@ class Frame:
             theta_z / 180 * math.pi,
             intrinsic=False,
         )
-        return cls.from_quat_and_translations(*quat, dx, dy, dz)
+        return cls.from_quat_and_translations(quat[0], quat[1], quat[2], quat[3], dx, dy, dz)
 
     @classmethod
     def from_intrinsic_euler_and_translations(
@@ -286,7 +286,7 @@ class Frame:
             theta_z / 180 * math.pi,
             intrinsic=True,
         )
-        return cls.from_quat_and_translations(*quat, dx, dy, dz)
+        return cls.from_quat_and_translations(quat[0], quat[1], quat[2], quat[3], dx, dy, dz)
 
     @classmethod
     def _from_quat_and_translations_scipy(
