@@ -9,7 +9,8 @@ It allows to
   - transform points and vectors
   - express points and vectors in different frames
   - create frames from primary and secondary axes vectors
-  - align two point groups by minimizing point-to-point distances  
+  - align two point groups by minimizing point-to-point distances
+  - fit planes to points
 
 
 ## Installation 
