@@ -640,6 +640,18 @@ class Plane:
     normal: Vector
     point: Point
 
+    def as_abcd(self) -> Tuple[float, float, float, float]:
+        """ABCD components of the plane
+
+        Defining the plane via
+        a*x + b*y + c*z + d = 0
+
+        Returns:
+            tuple (a,b,c,d)
+        """
+        n = normalized_vector(self.normal.as_array())
+        return (*n, -1 * dot_vec_vec(n, self.point.as_array()))
+
 
 class RotationMatrix:
     """A 3x3 rotation matrix.
