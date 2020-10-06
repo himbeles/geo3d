@@ -410,7 +410,7 @@ class Vector:
         return obj
 
     def express_in_frame(
-        self, new_frame: Frame, original_frame: Frame = Frame.create_unit_frame()
+        self, new_frame: Frame, original_frame: Optional[Frame] = None
     ) -> Vector:
         """Express this vector in a different frame.
 
@@ -423,6 +423,7 @@ class Vector:
         Returns:
             Vector expressed in `new_frame`.
         """
+
         return express_vector_in_frame(self._a, new_frame, original_frame)
 
     def __repr__(self) -> str:
@@ -549,7 +550,7 @@ class Point:
         return obj
 
     def express_in_frame(
-        self, new_frame, original_frame: Frame = Frame.create_unit_frame()
+        self, new_frame, original_frame: Optional[Frame] = None
     ) -> Point:
         """Express this point in a different frame.
 
@@ -562,6 +563,7 @@ class Point:
         Returns:
             Point expressed in `new_frame`.
         """
+
         return express_point_in_frame(self._a, new_frame, original_frame)
 
     def __repr__(self) -> str:
@@ -849,9 +851,10 @@ def express_point_in_frame(
             _express_point_bare(new_frame._rot, new_frame._trans, point), copy=False
         )
     else:
-        trafo = transformation_between_frames(original_frame, new_frame)
-        return Point(
-            (np.asarray(point) - trafo._trans) @ trafo._rot
+        new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
+        _express_point_bare
+        return Point.from_array(
+            _express_point_bare(new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, point), copy=False
         )  # multiplication to the right is the same as with transpose to the left
 
 
@@ -875,10 +878,10 @@ def express_points_in_frame(
     if original_frame is None:
         return _express_points_bare(new_frame._rot, new_frame._trans, points)
     else:
-        trafo = transformation_between_frames(original_frame, new_frame)
+        new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
         return (
-            np.asarray(points) - trafo._trans
-        ) @ trafo._rot  # multiplication to the right is the same as with transpose to the left
+            np.asarray(points) - new_frame_in_orig_frame._trans
+        ) @ new_frame_in_orig_frame._rot  # multiplication to the right is the same as with transpose to the left
 
 
 def express_vector_in_frame(
@@ -901,7 +904,7 @@ def express_vector_in_frame(
     if original_frame is None:
         trafo = new_frame
     else:
-        trafo = transformation_between_frames(original_frame, new_frame)
+        trafo = express_frame_in_frame(new_frame, original_frame)
     return Vector(np.asarray(vector) @ trafo._rot)
 
 
