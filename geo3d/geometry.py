@@ -105,7 +105,7 @@ class Frame:
         p = np.eye(4)
         p[0:3, 0:3] = self._rot
         p[0:3, 3] = self._trans
-        return " ".join(["{:0.12f}".format(i) for i in p.flatten()])
+        return "\n".join([" ".join([f"{i:0.12f}"for i in l]) for l in p])
 
     def euler_angles(self, *args, **kwargs) -> np.ndarray:
         """Frame rotation Euler angles.
