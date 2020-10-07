@@ -1,4 +1,17 @@
 from __future__ import annotations
+
+import numpy as np
+import math
+from scipy.spatial.transform import Rotation as R
+from numba import njit
+from typing import Union, Tuple, Sequence, Optional
+from dataclasses import dataclass
+
+RotationMatrixLike = Union[Sequence[Sequence[float]], np.ndarray, "RotationMatrix"]
+VectorLike = Union[Sequence[float], np.ndarray, "Vector", "Point"]
+QuaternionTuple = Tuple[float, float, float, float]
+VectorTuple = Tuple[float, float, float]
+
 from .linalg import (
     add_vec_vec,
     cast_vec_to_array,
@@ -10,17 +23,7 @@ from .linalg import (
     norm_L2,
     sub_vec_vec,
 )
-import numpy as np
-import math
-from scipy.spatial.transform import Rotation as R
-from numba import njit
 from .auxiliary import html_table_from_matrix, html_table_from_vector
-from typing import Union, Tuple, Sequence, Optional
-from dataclasses import dataclass
-
-RotationMatrixLike = Union[Sequence[Sequence[float]], np.ndarray, "RotationMatrix"]
-VectorLike = Union[Sequence[float], np.ndarray, "Vector", "Point"]
-QuaternionTuple = Tuple[float, float, float, float]
 
 
 class Frame:
@@ -852,9 +855,12 @@ def express_point_in_frame(
         )
     else:
         new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
-        _express_point_bare
-        return Point.from_array(
-            _express_point_bare(new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, point), copy=False
+        return Point(
+            np.array(
+                _express_point_bare(
+                    new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, point
+                )
+            )
         )  # multiplication to the right is the same as with transpose to the left
 
 
@@ -942,7 +948,7 @@ def _transform_point_bare(rot, trans, p):
 
 
 @njit
-def _express_point_bare(rot, trans, p):
+def _express_point_bare(rot, trans, p) -> VectorTuple:
     return mult_vec_mat(sub_vec_vec(p, trans), rot)
 
 
