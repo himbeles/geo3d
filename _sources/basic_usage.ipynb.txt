@@ -40,7 +40,7 @@
     {
      "output_type": "execute_result",
      "data": {
-      "text/plain": "<geo3d.geometry.Frame at 0x4d77a00>",
+      "text/plain": "&lt;geo3d.geometry.Frame at 0x23a9cae8040&gt;",
       "text/html": "\n            <table>\n                <tr>\n                    <th>rotation matrix</th>\n                    <th>Fixed angles<br>(xyz, extr., deg.)</th>\n                    <th>Euler angles<br>(xyz, intr., deg.)</th>\n                    <th>translation<br></th>\n                </tr>\n                <tr><td><table><tr><td>0.19245009</td><td>0.41147560</td><td>-0.89087081</td></tr><tr><td>0.19245009</td><td>0.87438565</td><td>0.44543540</td></tr><tr><td>0.96225045</td><td>-0.25717225</td><td>0.08908708</td></tr></table></td><td><table><tr><td>θx</td><td>-70.89339</td></tr><tr><td>θy</td><td>-74.20683</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>-78.69007</td></tr><tr><td>θy</td><td>-62.98288</td></tr><tr><td>θz</td><td>-64.93417</td></tr></table></td><td><table><tr><td>x</td><td>3.00000</td></tr><tr><td>y</td><td>4.00000</td></tr><tr><td>z</td><td>6.00000</td></tr></table></td></tr></table>"
      },
      "metadata": {},
@@ -68,8 +68,12 @@
    "metadata": {},
    "outputs": [],
    "source": [
-    "fa = frame_wizard(Vector([1,1,5]),Vector([1,2,0]), 'x', 'y', origin=[3,4,6])\n",
-    "fb = frame_wizard(Vector([1,2,0]),Vector([-1,-1,-5]), 'x', 'y', origin=[6,4,6])"
+    "# rotation only from UnitFrame\n",
+    "fa = frame_wizard(Vector([1, 1, 0]), Vector([1, -1, 0]), \"x\", \"y\", origin=[0, 0, 0])\n",
+    "# translation only from UnitFrame\n",
+    "fb = frame_wizard(Vector([1, 0, 0]), Vector([0, 1, 0]), \"x\", \"y\", origin=[1, 1, 4])\n",
+    "# rotation and translation from UnitFrame\n",
+    "fc = frame_wizard(Vector([1, 1, 0]), Vector([1, -1, 0]), \"x\", \"y\", origin=[1, 1, 4])"
    ]
   },
   {
@@ -80,8 +84,8 @@
     {
      "output_type": "execute_result",
      "data": {
-      "text/plain": "<geo3d.geometry.Frame at 0x292858b0>",
-      "text/html": "\n            <table>\n                <tr>\n                    <th>rotation matrix</th>\n                    <th>Fixed angles<br>(xyz, extr., deg.)</th>\n                    <th>Euler angles<br>(xyz, intr., deg.)</th>\n                    <th>translation<br></th>\n                </tr>\n                <tr><td><table><tr><td>0.19245009</td><td>0.41147560</td><td>-0.89087081</td></tr><tr><td>0.19245009</td><td>0.87438565</td><td>0.44543540</td></tr><tr><td>0.96225045</td><td>-0.25717225</td><td>0.08908708</td></tr></table></td><td><table><tr><td>θx</td><td>-70.89339</td></tr><tr><td>θy</td><td>-74.20683</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>-78.69007</td></tr><tr><td>θy</td><td>-62.98288</td></tr><tr><td>θz</td><td>-64.93417</td></tr></table></td><td><table><tr><td>x</td><td>3.00000</td></tr><tr><td>y</td><td>4.00000</td></tr><tr><td>z</td><td>6.00000</td></tr></table></td></tr></table>"
+      "text/plain": "&lt;geo3d.geometry.Frame at 0x23a9cae8c40&gt;",
+      "text/html": "\n            <table>\n                <tr>\n                    <th>rotation matrix</th>\n                    <th>Fixed angles<br>(xyz, extr., deg.)</th>\n                    <th>Euler angles<br>(xyz, intr., deg.)</th>\n                    <th>translation<br></th>\n                </tr>\n                <tr><td><table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>-0.00000000</td><td>-1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>-45.00000</td></tr></table></td><td><table><tr><td>x</td><td>0.00000</td></tr><tr><td>y</td><td>0.00000</td></tr><tr><td>z</td><td>0.00000</td></tr></table></td></tr></table>"
      },
      "metadata": {},
      "execution_count": 4
@@ -101,7 +105,7 @@
     {
      "output_type": "stream",
      "name": "stdout",
-     "text": "<Frame instance at 693358400>\nrotation\n[[ 0.4472136  -0.07968191 -0.89087081]\n [ 0.89442719  0.03984095  0.4454354 ]\n [ 0.         -0.99602384  0.08908708]]\nFixed angles (xyz, extrinsic, deg.)\n[-84.8889103    0.          63.43494882]\nEuler angles (XYZ, intrinsic, deg.)\n[-78.69006753 -62.98287678  10.10261179]\ntranslation\n[6 4 6]\n"
+     "text": "&lt;Frame instance at 2450760043920&gt;\nrotation\n[[ 1. -0.  0.]\n [ 0.  1.  0.]\n [ 0. -0.  1.]]\nFixed angles (xyz, extrinsic, deg.)\n[0. 0. 0.]\nEuler angles (XYZ, intrinsic, deg.)\n[0. 0. 0.]\ntranslation\n[1 1 4]\n"
     }
    ],
    "source": [
@@ -123,15 +127,15 @@
     {
      "output_type": "execute_result",
      "data": {
-      "text/plain": "<Vector at 81280400> [6 4 6]",
-      "text/html": "<table><tr><td>x</td><td>6.00000</td></tr><tr><td>y</td><td>4.00000</td></tr><tr><td>z</td><td>6.00000</td></tr></table>"
+      "text/plain": "&lt;Vector at 2452389237424&gt; [1 1 4]",
+      "text/html": "<table><tr><td>x</td><td>1.00000</td></tr><tr><td>y</td><td>1.00000</td></tr><tr><td>z</td><td>4.00000</td></tr></table>"
      },
      "metadata": {},
      "execution_count": 6
     }
    ],
    "source": [
-    "fb.translation"
+    "fc.translation"
    ]
   },
   {
@@ -142,15 +146,15 @@
     {
      "output_type": "execute_result",
      "data": {
-      "text/plain": "<geo3d.geometry.RotationMatrix at 0x16dfc4c0>",
-      "text/html": "<table><tr><td>0.44721360</td><td>-0.07968191</td><td>-0.89087081</td></tr><tr><td>0.89442719</td><td>0.03984095</td><td>0.44543540</td></tr><tr><td>0.00000000</td><td>-0.99602384</td><td>0.08908708</td></tr></table>"
+      "text/plain": "&lt;geo3d.geometry.RotationMatrix at 0x23afdca1280&gt;",
+      "text/html": "<table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>-0.00000000</td><td>-1.00000000</td></tr></table>"
      },
      "metadata": {},
      "execution_count": 7
     }
    ],
    "source": [
-    "fb.rotation"
+    "fc.rotation"
    ]
   },
   {
@@ -162,20 +166,20 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 9,
+   "execution_count": 8,
    "metadata": {},
    "outputs": [
     {
      "output_type": "execute_result",
      "data": {
-      "text/plain": "array([-84.8889103 ,   0.        ,  63.43494882])"
+      "text/plain": "array([180.,   0.,  45.])"
      },
      "metadata": {},
-     "execution_count": 9
+     "execution_count": 8
     }
    ],
    "source": [
-    "fb.euler_angles('xyz', degrees='True')"
+    "fc.euler_angles('xyz', degrees='True')"
    ]
   },
   {
@@ -194,17 +198,17 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 10,
+   "execution_count": 9,
    "metadata": {},
    "outputs": [
     {
      "output_type": "execute_result",
      "data": {
-      "text/plain": "<geo3d.geometry.Frame at 0x29471040>",
-      "text/html": "\n            <table>\n                <tr>\n                    <th>rotation matrix</th>\n                    <th>Fixed angles<br>(xyz, extr., deg.)</th>\n                    <th>Euler angles<br>(xyz, intr., deg.)</th>\n                    <th>translation<br></th>\n                </tr>\n                <tr><td><table><tr><td>0.25819889</td><td>-0.96609178</td><td>-0.00000000</td></tr><tr><td>0.96609178</td><td>0.25819889</td><td>0.00000000</td></tr><tr><td>-0.00000000</td><td>-0.00000000</td><td>1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>-0.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>75.03678</td></tr></table></td><td><table><tr><td>θx</td><td>0.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>75.03678</td></tr></table></td><td><table><tr><td>x</td><td>0.57735</td></tr><tr><td>y</td><td>1.23443</td></tr><tr><td>z</td><td>-2.67261</td></tr></table></td></tr></table>"
+      "text/plain": "&lt;geo3d.geometry.Frame at 0x23afdca1940&gt;",
+      "text/html": "\n            <table>\n                <tr>\n                    <th>rotation matrix</th>\n                    <th>Fixed angles<br>(xyz, extr., deg.)</th>\n                    <th>Euler angles<br>(xyz, intr., deg.)</th>\n                    <th>translation<br></th>\n                </tr>\n                <tr><td><table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>0.00000000</td><td>-1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>-45.00000</td></tr></table></td><td><table><tr><td>x</td><td>1.41421</td></tr><tr><td>y</td><td>0.00000</td></tr><tr><td>z</td><td>-4.00000</td></tr></table></td></tr></table>"
      },
      "metadata": {},
-     "execution_count": 10
+     "execution_count": 9
     }
    ],
    "source": [
@@ -227,21 +231,21 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 12,
+   "execution_count": 10,
    "metadata": {},
    "outputs": [
     {
      "output_type": "execute_result",
      "data": {
-      "text/plain": "<geo3d.geometry.Frame at 0x2c029640>",
-      "text/html": "\n            <table>\n                <tr>\n                    <th>rotation matrix</th>\n                    <th>Fixed angles<br>(xyz, extr., deg.)</th>\n                    <th>Euler angles<br>(xyz, intr., deg.)</th>\n                    <th>translation<br></th>\n                </tr>\n                <tr><td><table><tr><td>0.84692993</td><td>-0.38043182</td><td>0.37145838</td></tr><tr><td>-0.20829922</td><td>0.40538165</td><td>0.89009952</td></tr><tr><td>-0.48920459</td><td>-0.83122641</td><td>0.26408620</td></tr></table></td><td><table><tr><td>θx</td><td>-72.37460</td></tr><tr><td>θy</td><td>29.28831</td></tr><tr><td>θz</td><td>-13.81743</td></tr></table></td><td><table><tr><td>θx</td><td>-73.47475</td></tr><tr><td>θy</td><td>21.80559</td></tr><tr><td>θz</td><td>24.18910</td></tr></table></td><td><table><tr><td>x</td><td>3.00000</td></tr><tr><td>y</td><td>0.00000</td></tr><tr><td>z</td><td>0.00000</td></tr></table></td></tr></table>"
+      "text/plain": "&lt;geo3d.geometry.Frame at 0x23afdca1340&gt;",
+      "text/html": "\n            <table>\n                <tr>\n                    <th>rotation matrix</th>\n                    <th>Fixed angles<br>(xyz, extr., deg.)</th>\n                    <th>Euler angles<br>(xyz, intr., deg.)</th>\n                    <th>translation<br></th>\n                </tr>\n                <tr><td><table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>0.00000000</td><td>-1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>-45.00000</td></tr></table></td><td><table><tr><td>x</td><td>1.00000</td></tr><tr><td>y</td><td>1.00000</td></tr><tr><td>z</td><td>4.00000</td></tr></table></td></tr></table>"
      },
      "metadata": {},
-     "execution_count": 12
+     "execution_count": 10
     }
    ],
    "source": [
-    "transformation_between_frames(fa,fb)"
+    "transformation_between_frames(fa, fb)"
    ]
   },
   {
@@ -260,17 +264,17 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 13,
+   "execution_count": 11,
    "metadata": {},
    "outputs": [
     {
      "output_type": "execute_result",
      "data": {
-      "text/plain": "<Vector at 738522688> [-0.29436552  1.00784573 -2.98288383]",
-      "text/html": "<table><tr><td>x</td><td>-0.29437</td></tr><tr><td>y</td><td>1.00785</td></tr><tr><td>z</td><td>-2.98288</td></tr></table>"
+      "text/plain": "&lt;Vector at 2450798500736&gt; [ 2.82842712 -1.41421356  0.        ]",
+      "text/html": "<table><tr><td>x</td><td>2.82843</td></tr><tr><td>y</td><td>-1.41421</td></tr><tr><td>z</td><td>0.00000</td></tr></table>"
      },
      "metadata": {},
-     "execution_count": 13
+     "execution_count": 11
     }
    ],
    "source": [
@@ -286,36 +290,33 @@
   },
   {
    "cell_type": "code",
-   "execution_count": 14,
+   "execution_count": 12,
    "metadata": {},
    "outputs": [
     {
      "output_type": "execute_result",
      "data": {
-      "text/plain": "<Point at 738357648> [13.06331157 17.35174152 -1.12559193]",
-      "text/html": "<table><tr><td>x</td><td>13.06331</td></tr><tr><td>y</td><td>17.35174</td></tr><tr><td>z</td><td>-1.12559</td></tr></table>"
+      "text/plain": "&lt;Point at 2452389210528&gt; [  7.07106781   1.41421356 -24.        ]",
+      "text/html": "<table><tr><td>x</td><td>7.07107</td></tr><tr><td>y</td><td>1.41421</td></tr><tr><td>z</td><td>-24.00000</td></tr></table>"
      },
      "metadata": {},
-     "execution_count": 14
+     "execution_count": 12
     }
    ],
    "source": [
     "Point([5,3,20]).express_in_frame(fa, original_frame=fb)"
    ]
-  },
-  {
-   "cell_type": "code",
-   "execution_count": null,
-   "metadata": {},
-   "outputs": [],
-   "source": []
   }
  ],
  "metadata": {
   "kernelspec": {
-   "display_name": "Python 3.8.3 64-bit ('gims': venv)",
-   "language": "python",
-   "name": "python_defaultSpec_1599566723405"
+   "name": "Python 3.8.5 64-bit ('gims')",
+   "display_name": "Python 3.8.5 64-bit ('gims')",
+   "metadata": {
+    "interpreter": {
+     "hash": "4ca4fc9164954e8241c00f9782d67dac38f02a1bbc6e3221fc49530f6a5642f5"
+    }
+   }
   },
   "language_info": {
    "codemirror_mode": {
@@ -327,7 +328,7 @@
    "name": "python",
    "nbconvert_exporter": "python",
    "pygments_lexer": "ipython3",
-   "version": "3.8.3-final"
+   "version": "3.8.5-final"
   }
  },
  "nbformat": 4,

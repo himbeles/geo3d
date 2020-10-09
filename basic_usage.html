@@ -332,8 +332,12 @@ Frame(rot,vec)
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>fa = frame_wizard(Vector([1,1,5]),Vector([1,2,0]), &#39;x&#39;, &#39;y&#39;, origin=[3,4,6])
-fb = frame_wizard(Vector([1,2,0]),Vector([-1,-1,-5]), &#39;x&#39;, &#39;y&#39;, origin=[6,4,6])
+<span></span># rotation only from UnitFrame
+fa = frame_wizard(Vector([1, 1, 0]), Vector([1, -1, 0]), &quot;x&quot;, &quot;y&quot;, origin=[0, 0, 0])
+# translation only from UnitFrame
+fb = frame_wizard(Vector([1, 0, 0]), Vector([0, 1, 0]), &quot;x&quot;, &quot;y&quot;, origin=[1, 1, 4])
+# rotation and translation from UnitFrame
+fc = frame_wizard(Vector([1, 1, 0]), Vector([1, -1, 0]), &quot;x&quot;, &quot;y&quot;, origin=[1, 1, 4])
 </pre></div>
 </div>
 </div>
@@ -358,7 +362,7 @@ fb = frame_wizard(Vector([1,2,0]),Vector([-1,-1,-5]), &#39;x&#39;, &#39;y&#39;, 
         <th>Euler angles<br>(xyz, intr., deg.)</th>
         <th>translation<br></th>
     </tr>
-    <tr><td><table><tr><td>0.19245009</td><td>0.41147560</td><td>-0.89087081</td></tr><tr><td>0.19245009</td><td>0.87438565</td><td>0.44543540</td></tr><tr><td>0.96225045</td><td>-0.25717225</td><td>0.08908708</td></tr></table></td><td><table><tr><td>θx</td><td>-70.89339</td></tr><tr><td>θy</td><td>-74.20683</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>-78.69007</td></tr><tr><td>θy</td><td>-62.98288</td></tr><tr><td>θz</td><td>-64.93417</td></tr></table></td><td><table><tr><td>x</td><td>3.00000</td></tr><tr><td>y</td><td>4.00000</td></tr><tr><td>z</td><td>6.00000</td></tr></table></td></tr></table></div>
+    <tr><td><table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>-0.00000000</td><td>-1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>-45.00000</td></tr></table></td><td><table><tr><td>x</td><td>0.00000</td></tr><tr><td>y</td><td>0.00000</td></tr><tr><td>z</td><td>0.00000</td></tr></table></td></tr></table></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -374,17 +378,17 @@ fb = frame_wizard(Vector([1,2,0]),Vector([-1,-1,-5]), &#39;x&#39;, &#39;y&#39;, 
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&lt;Frame instance at 693358400&gt;
+&amp;lt;Frame instance at 2450760043920&amp;gt;
 rotation
-[[ 0.4472136  -0.07968191 -0.89087081]
- [ 0.89442719  0.03984095  0.4454354 ]
- [ 0.         -0.99602384  0.08908708]]
+[[ 1. -0.  0.]
+ [ 0.  1.  0.]
+ [ 0. -0.  1.]]
 Fixed angles (xyz, extrinsic, deg.)
-[-84.8889103    0.          63.43494882]
+[0. 0. 0.]
 Euler angles (XYZ, intrinsic, deg.)
-[-78.69006753 -62.98287678  10.10261179]
+[0. 0. 0.]
 translation
-[6 4 6]
+[1 1 4]
 </pre></div></div>
 </div>
 <p>They have a rotation and translation component:</p>
@@ -393,7 +397,7 @@ translation
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>fb.translation
+<span></span>fc.translation
 </pre></div>
 </div>
 </div>
@@ -402,14 +406,14 @@ translation
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
-<table><tr><td>x</td><td>6.00000</td></tr><tr><td>y</td><td>4.00000</td></tr><tr><td>z</td><td>6.00000</td></tr></table></div>
+<table><tr><td>x</td><td>1.00000</td></tr><tr><td>y</td><td>1.00000</td></tr><tr><td>z</td><td>4.00000</td></tr></table></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>fb.rotation
+<span></span>fc.rotation
 </pre></div>
 </div>
 </div>
@@ -418,25 +422,25 @@ translation
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
-<table><tr><td>0.44721360</td><td>-0.07968191</td><td>-0.89087081</td></tr><tr><td>0.89442719</td><td>0.03984095</td><td>0.44543540</td></tr><tr><td>0.00000000</td><td>-0.99602384</td><td>0.08908708</td></tr></table></div>
+<table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>-0.00000000</td><td>-1.00000000</td></tr></table></div>
 </div>
 <p>The rotation can be expressed as Euler angles.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>fb.euler_angles(&#39;xyz&#39;, degrees=&#39;True&#39;)
+<span></span>fc.euler_angles(&#39;xyz&#39;, degrees=&#39;True&#39;)
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-array([-84.8889103 ,   0.        ,  63.43494882])
+array([180.,   0.,  45.])
 </pre></div></div>
 </div>
 </div>
@@ -445,7 +449,7 @@ array([-84.8889103 ,   0.        ,  63.43494882])
 <h2>Frame to frame transformations<a class="headerlink" href="#Frame-to-frame-transformations" title="Permalink to this headline">¶</a></h2>
 <p>A frame can be expressed in a different frame.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -454,6 +458,31 @@ array([-84.8889103 ,   0.        ,  63.43494882])
 </div>
 </div>
 <div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<table>
+    <tr>
+        <th>rotation matrix</th>
+        <th>Fixed angles<br>(xyz, extr., deg.)</th>
+        <th>Euler angles<br>(xyz, intr., deg.)</th>
+        <th>translation<br></th>
+    </tr>
+    <tr><td><table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>0.00000000</td><td>-1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>-45.00000</td></tr></table></td><td><table><tr><td>x</td><td>1.41421</td></tr><tr><td>y</td><td>0.00000</td></tr><tr><td>z</td><td>-4.00000</td></tr></table></td></tr></table></div>
+</div>
+<p>This yields the frame-to-frame transformation from fA to fB, represented in fA.</p>
+<p>The same frame-to-frame transformation matrix, but given in the original (unit) frame is</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>transformation_between_frames(fa, fb)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
@@ -465,39 +494,14 @@ array([-84.8889103 ,   0.        ,  63.43494882])
         <th>Euler angles<br>(xyz, intr., deg.)</th>
         <th>translation<br></th>
     </tr>
-    <tr><td><table><tr><td>0.25819889</td><td>-0.96609178</td><td>-0.00000000</td></tr><tr><td>0.96609178</td><td>0.25819889</td><td>0.00000000</td></tr><tr><td>-0.00000000</td><td>-0.00000000</td><td>1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>-0.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>75.03678</td></tr></table></td><td><table><tr><td>θx</td><td>0.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>75.03678</td></tr></table></td><td><table><tr><td>x</td><td>0.57735</td></tr><tr><td>y</td><td>1.23443</td></tr><tr><td>z</td><td>-2.67261</td></tr></table></td></tr></table></div>
-</div>
-<p>This yields the frame-to-frame transformation from fA to fB, represented in fA.</p>
-<p>The same frame-to-frame transformation matrix, but given in the original (unit) frame is</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>transformation_between_frames(fa,fb)
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="output_area rendered_html docutils container">
-<table>
-    <tr>
-        <th>rotation matrix</th>
-        <th>Fixed angles<br>(xyz, extr., deg.)</th>
-        <th>Euler angles<br>(xyz, intr., deg.)</th>
-        <th>translation<br></th>
-    </tr>
-    <tr><td><table><tr><td>0.84692993</td><td>-0.38043182</td><td>0.37145838</td></tr><tr><td>-0.20829922</td><td>0.40538165</td><td>0.89009952</td></tr><tr><td>-0.48920459</td><td>-0.83122641</td><td>0.26408620</td></tr></table></td><td><table><tr><td>θx</td><td>-72.37460</td></tr><tr><td>θy</td><td>29.28831</td></tr><tr><td>θz</td><td>-13.81743</td></tr></table></td><td><table><tr><td>θx</td><td>-73.47475</td></tr><tr><td>θy</td><td>21.80559</td></tr><tr><td>θz</td><td>24.18910</td></tr></table></td><td><table><tr><td>x</td><td>3.00000</td></tr><tr><td>y</td><td>0.00000</td></tr><tr><td>z</td><td>0.00000</td></tr></table></td></tr></table></div>
+    <tr><td><table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>0.00000000</td><td>-1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>-45.00000</td></tr></table></td><td><table><tr><td>x</td><td>1.00000</td></tr><tr><td>y</td><td>1.00000</td></tr><tr><td>z</td><td>4.00000</td></tr></table></td></tr></table></div>
 </div>
 </div>
 <div class="section" id="Expression-of-vectors-and-points-in-frames">
 <h2>Expression of vectors and points in frames<a class="headerlink" href="#Expression-of-vectors-and-points-in-frames" title="Permalink to this headline">¶</a></h2>
 <p>Express a vector given in <code class="docutils literal notranslate"><span class="pre">original_frame</span></code> in a new frame.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -506,15 +510,15 @@ array([-84.8889103 ,   0.        ,  63.43494882])
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
-<table><tr><td>x</td><td>-0.29437</td></tr><tr><td>y</td><td>1.00785</td></tr><tr><td>z</td><td>-2.98288</td></tr></table></div>
+<table><tr><td>x</td><td>2.82843</td></tr><tr><td>y</td><td>-1.41421</td></tr><tr><td>z</td><td>0.00000</td></tr></table></div>
 </div>
 <p>Express a point given in <code class="docutils literal notranslate"><span class="pre">original_frame</span></code> in a new frame.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -523,20 +527,11 @@ array([-84.8889103 ,   0.        ,  63.43494882])
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
-<table><tr><td>x</td><td>13.06331</td></tr><tr><td>y</td><td>17.35174</td></tr><tr><td>z</td><td>-1.12559</td></tr></table></div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
+<table><tr><td>x</td><td>7.07107</td></tr><tr><td>y</td><td>1.41421</td></tr><tr><td>z</td><td>-24.00000</td></tr></table></div>
 </div>
 </div>
 </div>
