@@ -8,9 +8,9 @@ from typing import Union, Tuple, Sequence, Optional
 from dataclasses import dataclass
 
 RotationMatrixLike = Union[Sequence[Sequence[float]], np.ndarray, "RotationMatrix"]
-VectorLike = Union[Sequence[float], np.ndarray, "Vector", "Point"]
-QuaternionTuple = Tuple[float, float, float, float]
 VectorTuple = Tuple[float, float, float]
+VectorLike = Union[Sequence[float], VectorTuple, np.ndarray, "Vector", "Point"]
+QuaternionTuple = Tuple[float, float, float, float]
 
 from .linalg import (
     add_vec_vec,
@@ -523,12 +523,6 @@ class Point:
     It is subject to translations and rotations of frame transformations.
     """
 
-    # __array_interface__ = {
-    #     "shape": (3,),
-    #     "typestr": "|f8",
-    #     "version": 3,
-    # }
-
     def __init__(self, p: VectorLike):
         """Initialize a Point from a sequence of X,Y,Z coordinates.
 
@@ -588,7 +582,7 @@ class Point:
     def __getitem__(self, key):
         return self._a[key]
 
-    def __add__(self, other):
+    def __add__(self, other: VectorLike) -> Union[Point, np.ndarray]:
         if isinstance(other, Point):
             return Point(self._a + other._a)
         elif isinstance(other, Vector):
@@ -598,7 +592,7 @@ class Point:
 
     __radd__ = __add__
 
-    def __sub__(self, other):
+    def __sub__(self, other: VectorLike) -> Union[Vector, Point, np.ndarray]:
         if isinstance(other, Point):
             return Vector(self._a - other._a)
         elif isinstance(other, Vector):
@@ -608,7 +602,7 @@ class Point:
 
     __rsub__ = __sub__
 
-    def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
+    def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> Union[float, np.ndarray]:
         return np.dot(self._a, np.asarray(other))
 
     def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
