@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import numpy as np
 import math
 from scipy.spatial.transform import Rotation as R
@@ -579,7 +577,7 @@ class Point:
     def __array__(self):
         return self._a
 
-    def __getitem__(self, key):
+    def __getitem__(self, key: int):
         return self._a[key]
 
     def __add__(self, other: VectorLike) -> Union[Point, np.ndarray]:
@@ -588,7 +586,7 @@ class Point:
         elif isinstance(other, Vector):
             return Point(self._a + other._a)
         else:
-            return self._a + other
+            return self._a + np.array(other)
 
     __radd__ = __add__
 
@@ -598,7 +596,7 @@ class Point:
         elif isinstance(other, Vector):
             return Point(self._a - other._a)
         else:
-            return self._a - other
+            return self._a - np.array(other)
 
     __rsub__ = __sub__
 
