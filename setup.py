@@ -29,6 +29,7 @@ setup(
     name="geo3d",
     use_scm_version=True,
     setup_requires=["setuptools_scm"],
+    python_requires=">=3.7, <3.9",
     description="A python package for performing geometric calculations in 3D",
     long_description=long_description,
     long_description_content_type="text/markdown",
