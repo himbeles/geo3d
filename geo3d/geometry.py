@@ -542,7 +542,7 @@ class Point:
         if copy:
             obj._a = a.copy()  # storage as copied numpy array
         else:
-            obj._a = a  # storage as copied numpy array passed by reference
+            obj._a = a  # storage as numpy array passed by reference
         return obj
 
     def express_in_frame(
