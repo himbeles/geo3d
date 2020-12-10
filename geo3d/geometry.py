@@ -104,7 +104,7 @@ class Frame:
         p = np.eye(4)
         p[0:3, 0:3] = self._rot
         p[0:3, 3] = self._trans
-        return "\n".join([" ".join([f"{i:0.12f}"for i in l]) for l in p])
+        return "\n".join([" ".join([f"{i:0.12f}" for i in l]) for l in p])
 
     def euler_angles(self, *args, **kwargs) -> np.ndarray:
         """Frame rotation Euler angles.
@@ -601,7 +601,9 @@ class Point:
 
     __rsub__ = __sub__
 
-    def __matmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> Union[float, np.ndarray]:
+    def __matmul__(
+        self, other: Union[VectorLike, RotationMatrixLike]
+    ) -> Union[float, np.ndarray]:
         return np.dot(self._a, np.asarray(other))
 
     def __rmatmul__(self, other: Union[VectorLike, RotationMatrixLike]) -> float:
@@ -843,16 +845,14 @@ def express_point_in_frame(
         Point expressed in `new_frame`.
     """
     if original_frame is None:
-        return Point.from_array(
-            _express_point_bare(new_frame._rot, new_frame._trans, point), copy=False
+        return Point(
+            _express_point_bare(new_frame._rot, new_frame._trans, point)
         )
     else:
         new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
         return Point(
-            np.array(
-                _express_point_bare(
-                    new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, point
-                )
+            _express_point_bare(
+                new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, point
             )
         )  # multiplication to the right is the same as with transpose to the left
 
