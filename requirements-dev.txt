@@ -3,3 +3,4 @@ nbsphinx
 sphinx_copybutton
 pytest
 black
+coverage

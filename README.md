@@ -36,7 +36,12 @@ Unit tests can be run using
 ```sh
 pytest -s 
 ```
-in package root. 
+in package root.
+
+If a coverage report should be generated, run 
+```sh
+python -m coverage run -m pytest
+```
 
 
 ## Building the docs
