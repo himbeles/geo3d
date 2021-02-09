@@ -3,12 +3,13 @@ import numpy as np
 import math
 from scipy.spatial.transform import Rotation as R
 from numba import njit
-from typing import Union, Tuple, Sequence, Optional
+from typing import Any, Union, Tuple, Sequence, Optional, overload
+import numpy.typing as npt
 from dataclasses import dataclass
 
-RotationMatrixLike = Union[Sequence[Sequence[float]], np.ndarray, "RotationMatrix"]
+RotationMatrixLike = Union[Sequence[Sequence[float]], npt.ArrayLike, "RotationMatrix"]
 VectorTuple = Tuple[float, float, float]
-VectorLike = Union[Sequence[float], VectorTuple, np.ndarray, "Vector", "Point"]
+VectorLike = Union[Sequence[float], VectorTuple, npt.ArrayLike, "Vector", "Point"]
 QuaternionTuple = Tuple[float, float, float, float]
 
 from .linalg import (
@@ -139,7 +140,7 @@ class Frame:
         """
         return R.from_matrix(self._rot).as_euler(*args, **kwargs)
 
-    def extrinsic_euler_angles(self) -> Tuple[float, float, float]:
+    def extrinsic_euler_angles(self) -> np.ndarray:
         """Extrinsic xyz Euler angles (fixed rotation reference axes) of the Frame.
 
         Returns:
@@ -147,7 +148,7 @@ class Frame:
         """
         return self.euler_angles("xyz", degrees=True)
 
-    def intrinsic_euler_angles(self) -> Tuple[float, float, float]:
+    def intrinsic_euler_angles(self) -> np.ndarray:
         """Intrinsic xyz Euler angles of the Frame.
 
         Returns:
@@ -353,7 +354,7 @@ class Frame:
         trans = [dx, dy, dz]
         return cls(rot, trans)
 
-    @classmethod
+    @staticmethod
     def from_orthogonal_vectors(
         new_x: VectorLike,
         new_y: VectorLike,
@@ -374,8 +375,8 @@ class Frame:
         rot = np.stack(
             [
                 normalized_vector(np.array(new_x)),
-                normalized_vector(np.array(new_x)),
-                normalized_vector(np.array(new_x)),
+                normalized_vector(np.array(new_y)),
+                normalized_vector(np.array(new_z)),
             ],
             1,
         )
@@ -447,7 +448,15 @@ class Vector:
     def __getitem__(self, key):
         return self._a[key]
 
-    def __add__(self, other):
+    @overload
+    def __add__(self, other: Point) -> Point:
+        ...
+
+    @overload
+    def __add__(self, other: Vector) -> Vector:
+        ...
+
+    def __add__(self, other: VectorLike):
         if isinstance(other, Point):
             return Point(self._a + other._a)
         elif isinstance(other, Vector):
@@ -457,7 +466,15 @@ class Vector:
 
     __radd__ = __add__
 
-    def __sub__(self, other):
+    @overload
+    def __sub__(self, other: Point) -> Point:
+        ...
+
+    @overload
+    def __sub__(self, other: Vector) -> Vector:
+        ...
+
+    def __sub__(self, other: VectorLike):
         if isinstance(other, Point):
             return Point(self._a - other._a)
         elif isinstance(other, Vector):
@@ -581,6 +598,14 @@ class Point:
     def __getitem__(self, key: int):
         return self._a[key]
 
+    @overload
+    def __add__(self, other: Point) -> Point:
+        ...
+
+    @overload
+    def __add__(self, other: Vector) -> Point:
+        ...
+
     def __add__(self, other: VectorLike) -> Union[Point, np.ndarray]:
         if isinstance(other, Point):
             return Point(self._a + other._a)
@@ -590,6 +615,14 @@ class Point:
             return self._a + np.array(other)
 
     __radd__ = __add__
+
+    @overload
+    def __sub__(self, other: Point) -> Vector:
+        ...
+
+    @overload
+    def __sub__(self, other: Vector) -> Point:
+        ...
 
     def __sub__(self, other: VectorLike) -> Union[Vector, Point, np.ndarray]:
         if isinstance(other, Point):
@@ -649,8 +682,8 @@ class Plane:
         Returns:
             tuple (a,b,c,d)
         """
-        n = normalized_vector(self.normal.as_array())
-        return (*n, -1 * dot_vec_vec(n, self.point.as_array()))
+        n: np.ndarray = normalized_vector(self.normal.as_array())
+        return (n[0], n[1], n[2], -1 * dot_vec_vec(n, self.point.as_array()))
 
 
 class RotationMatrix:
@@ -822,7 +855,7 @@ def express_frame_in_frame(input_frame: Frame, reference_frame: Frame):
     Returns:
         Input frame expressed in reference frame
     """
-    Trot = np.transpose(reference_frame._rot).dot(input_frame._rot)
+    Trot: Any = np.transpose(reference_frame._rot).dot(input_frame._rot)
     Ttrans = (input_frame._trans - reference_frame._trans) @ reference_frame._rot
     return Frame(Trot, Ttrans)
 
@@ -845,9 +878,7 @@ def express_point_in_frame(
         Point expressed in `new_frame`.
     """
     if original_frame is None:
-        return Point(
-            _express_point_bare(new_frame._rot, new_frame._trans, point)
-        )
+        return Point(_express_point_bare(new_frame._rot, new_frame._trans, point))
     else:
         new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
         return Point(
@@ -861,7 +892,7 @@ def express_points_in_frame(
     points: Sequence[VectorLike],
     new_frame: Frame,
     original_frame: Optional[Frame] = None,
-) -> Sequence[VectorLike]:
+) -> np.ndarray:
     """Express points in a different frame.
 
     Express the `points` given in the frame `original_frame` in a different frame `new_frame`.
@@ -1119,7 +1150,7 @@ def normalized_quat(q) -> QuaternionTuple:
 
 
 @njit
-def elementary_quat(axis_idx, angle) -> QuaternionTuple:
+def elementary_quat(axis_idx, angle) -> np.ndarray:
     """Rotation quaternion for an elementary rotation around x, y, or z.
 
     Args:
@@ -1136,7 +1167,7 @@ def elementary_quat(axis_idx, angle) -> QuaternionTuple:
 
 
 @njit
-def compose_quats(p, q) -> QuaternionTuple:
+def compose_quats(p, q) -> np.ndarray:
     """Compose rotations expressed by quaternions p,q
 
     jit-compiled version of scipy _compose_quat
@@ -1158,7 +1189,9 @@ def compose_quats(p, q) -> QuaternionTuple:
 
 
 @njit
-def euler_as_quat(theta_x: float, theta_y: float, theta_z: float, intrinsic=False):
+def euler_as_quat(
+    theta_x: float, theta_y: float, theta_z: float, intrinsic=False
+) -> np.ndarray:
     """Express Euler angles composition as quaternion
 
     Args:

@@ -19,7 +19,7 @@ def fit_plane(
         Plane or tuple (Plane, fit_properties) if return_fit_props==True
     """
     centr = centroid(points).as_array()
-    svd = np.linalg.svd(points - centr)
+    svd = np.linalg.svd(np.array(points) - centr)
     normal = svd[2][-1]
     plane = Plane(Vector(normal), Point(centr))
 

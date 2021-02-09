@@ -51,7 +51,7 @@ def centroid(points: Sequence[VectorLike]) -> Point:
     Returns:
         Point: Centroid point
     """
-    return Point(np.sum(points, 0) / len(points))
+    return Point(np.sum(np.array(points), axis=0) / len(points))
 
 
 def minimize_points_to_points_distance(
