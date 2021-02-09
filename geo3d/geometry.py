@@ -3,7 +3,7 @@ import numpy as np
 import math
 from scipy.spatial.transform import Rotation as R
 from numba import njit
-from typing import Union, Tuple, Sequence, Optional
+from typing import Union, Tuple, Sequence, Optional, overload
 from dataclasses import dataclass
 
 RotationMatrixLike = Union[Sequence[Sequence[float]], np.ndarray, "RotationMatrix"]
@@ -447,7 +447,15 @@ class Vector:
     def __getitem__(self, key):
         return self._a[key]
 
-    def __add__(self, other):
+    @overload
+    def __add__(self, other: Point) -> Point:
+        ...
+
+    @overload
+    def __add__(self, other: Vector) -> Vector:
+        ...
+
+    def __add__(self, other: VectorLike):
         if isinstance(other, Point):
             return Point(self._a + other._a)
         elif isinstance(other, Vector):
@@ -457,7 +465,15 @@ class Vector:
 
     __radd__ = __add__
 
-    def __sub__(self, other):
+    @overload
+    def __sub__(self, other: Point) -> Point:
+        ...
+
+    @overload
+    def __sub__(self, other: Vector) -> Vector:
+        ...
+
+    def __sub__(self, other: VectorLike):
         if isinstance(other, Point):
             return Point(self._a - other._a)
         elif isinstance(other, Vector):
@@ -581,6 +597,14 @@ class Point:
     def __getitem__(self, key: int):
         return self._a[key]
 
+    @overload
+    def __add__(self, other: Point) -> Point:
+        ...
+
+    @overload
+    def __add__(self, other: Vector) -> Point:
+        ...
+
     def __add__(self, other: VectorLike) -> Union[Point, np.ndarray]:
         if isinstance(other, Point):
             return Point(self._a + other._a)
@@ -590,6 +614,14 @@ class Point:
             return self._a + np.array(other)
 
     __radd__ = __add__
+
+    @overload
+    def __sub__(self, other: Point) -> Vector:
+        ...
+
+    @overload
+    def __add__(self, other: Vector) -> Point:
+        ...
 
     def __sub__(self, other: VectorLike) -> Union[Vector, Point, np.ndarray]:
         if isinstance(other, Point):
@@ -845,9 +877,7 @@ def express_point_in_frame(
         Point expressed in `new_frame`.
     """
     if original_frame is None:
-        return Point(
-            _express_point_bare(new_frame._rot, new_frame._trans, point)
-        )
+        return Point(_express_point_bare(new_frame._rot, new_frame._trans, point))
     else:
         new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
         return Point(
