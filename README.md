@@ -12,7 +12,7 @@ It allows to
   - align two point groups by minimizing point-to-point distances
   - fit planes to points
 
-Requires Python 3.7 - 3.8 .
+Requires Python 3.7 or up .
 
 ## Installation 
 To install the module and its core requirements, run
