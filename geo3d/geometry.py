@@ -10,6 +10,7 @@ from dataclasses import dataclass
 RotationMatrixLike = Union[Sequence[Sequence[float]], npt.ArrayLike, "RotationMatrix"]
 VectorTuple = Tuple[float, float, float]
 VectorLike = Union[Sequence[float], VectorTuple, npt.ArrayLike, "Vector", "Point"]
+MultipleVectorLike = Union[Sequence[VectorLike], np.ndarray]
 QuaternionTuple = Tuple[float, float, float, float]
 
 from .linalg import (
@@ -889,7 +890,7 @@ def express_point_in_frame(
 
 
 def express_points_in_frame(
-    points: Sequence[VectorLike],
+    points: MultipleVectorLike,
     new_frame: Frame,
     original_frame: Optional[Frame] = None,
 ) -> np.ndarray:
@@ -985,9 +986,7 @@ def _express_points_bare(rot, trans, points):
     return np.asarray(res)
 
 
-def transform_points(
-    points: Union[VectorLike, Sequence[VectorLike]], trafo: Frame
-) -> np.ndarray:
+def transform_points(points: MultipleVectorLike, trafo: Frame) -> np.ndarray:
     return np.dot(np.asarray(points), trafo._rot.T) + trafo._trans
     # rotation can also be written as `np.einsum('ij,kj->ki', t0._rot, np.asarray(points))`
 

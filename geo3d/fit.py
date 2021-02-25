@@ -2,12 +2,26 @@ import numpy as np
 import math
 
 from .query import centroid, distances_plane_to_points
-from .geometry import Plane, Vector, Point, VectorLike
-from typing import Sequence, Union, Dict, Tuple
+from .geometry import MultipleVectorLike, Plane, Vector, Point, VectorLike
+from typing import Literal, Sequence, Union, Dict, Tuple, overload
+
+
+@overload
+def fit_plane(
+    points: MultipleVectorLike, return_fit_props: Literal[False] = False
+) -> Plane:
+    ...
+
+
+@overload
+def fit_plane(
+    points: MultipleVectorLike, return_fit_props: Literal[True] = True
+) -> Tuple[Plane, Dict]:
+    ...
 
 
 def fit_plane(
-    points: Sequence[VectorLike], return_fit_props=False
+    points: MultipleVectorLike, return_fit_props: bool = False
 ) -> Union[Plane, Tuple[Plane, Dict]]:
     """Fit plane to points
 

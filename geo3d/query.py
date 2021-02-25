@@ -1,6 +1,6 @@
 import numpy as np
 
-from .geometry import Frame, Point, norm_L2, VectorLike, Plane
+from .geometry import Frame, MultipleVectorLike, Point, norm_L2, VectorLike, Plane
 from .linalg import dot_vec_vec, norm_L2
 
 from scipy.optimize import minimize
@@ -22,7 +22,7 @@ def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
     return norm_L2(np.asarray(pointA) - np.asarray(pointB))
 
 
-def distances_plane_to_points(plane: Plane, points: Sequence[VectorLike]) -> np.ndarray:
+def distances_plane_to_points(plane: Plane, points: MultipleVectorLike) -> np.ndarray:
     """Shortest distances between plane and points
 
     The distances are given from the plane to the points, along the plane normal.
@@ -42,7 +42,7 @@ def distances_plane_to_points(plane: Plane, points: Sequence[VectorLike]) -> np.
     return (np.dot(points, normal) - cartesian_d) / normal_length
 
 
-def centroid(points: Sequence[VectorLike]) -> Point:
+def centroid(points: MultipleVectorLike) -> Point:
     """Centroid for a sequence of points
 
     Args:
@@ -55,8 +55,8 @@ def centroid(points: Sequence[VectorLike]) -> Point:
 
 
 def minimize_points_to_points_distance(
-    groupA: Sequence[VectorLike],
-    groupB: Sequence[VectorLike],
+    groupA: MultipleVectorLike,
+    groupB: MultipleVectorLike,
     return_report=False,
     method="Powell",
     tol=1e-6,
@@ -75,6 +75,9 @@ def minimize_points_to_points_distance(
     Returns:
         Transformation, or tuple of transformation and minimization report if return_report==True
     """
+    assert len(np.array(groupA)) >= 3, "Point list A is too short."
+    assert len(np.array(groupB)) >= 3, "Point list B is too short."
+
     # return transform that maps groupA onto groupB with minimum point-to-point distance
     def cost(x):
         [r1, r2, r3, t1, t2, t3] = x
