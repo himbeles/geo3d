@@ -4,19 +4,22 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Multi-Object Queries &#8212; geo3d  documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -293,7 +296,7 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Multi-Object-Queries">
+<section id="Multi-Object-Queries">
 <h1>Multi-Object Queries<a class="headerlink" href="#Multi-Object-Queries" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
@@ -305,7 +308,7 @@ from geo3d import Point, Plane, Vector
 </pre></div>
 </div>
 </div>
-<div class="section" id="Point-to-Point-Distance">
+<section id="Point-to-Point-Distance">
 <h2>Point-to-Point Distance<a class="headerlink" href="#Point-to-Point-Distance" title="Permalink to this headline">¶</a></h2>
 <p>The distance between points can be queried as</p>
 <div class="nbinput docutils container">
@@ -328,8 +331,8 @@ distance_between_points(pointA, pointB)
 3.0
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Plane-to-Points-Distance">
+</section>
+<section id="Plane-to-Points-Distance">
 <h2>Plane-to-Points Distance<a class="headerlink" href="#Plane-to-Points-Distance" title="Permalink to this headline">¶</a></h2>
 <p>The distance from a plane to an array of points, positive along the plane normal vector.</p>
 <div class="nbinput docutils container">
@@ -355,8 +358,8 @@ distances_plane_to_points(plane, points)
 array([-3., -6.])
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Transformation-minimizing-group-to-group-distance">
+</section>
+<section id="Transformation-minimizing-group-to-group-distance">
 <h2>Transformation minimizing group-to-group distance<a class="headerlink" href="#Transformation-minimizing-group-to-group-distance" title="Permalink to this headline">¶</a></h2>
 <p>For two point groups, find the transformation – applied to the first group – that minimizes the RMS distance between the corresponding points in the two groups:</p>
 <p>Here, we extract a rotation of 90 degrees between the point groups, that is, <code class="docutils literal notranslate"><span class="pre">groupA</span></code> needs to be rotated by 90 degrees to coincide with <code class="docutils literal notranslate"><span class="pre">groupB</span></code>.</p>
@@ -385,8 +388,8 @@ minimize_points_to_points_distance(groupA, groupB)
     </tr>
     <tr><td><table><tr><td>-0.00000000</td><td>-1.00000000</td><td>0.00000000</td></tr><tr><td>1.00000000</td><td>-0.00000000</td><td>-0.00000000</td></tr><tr><td>0.00000000</td><td>0.00000000</td><td>1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>0.00000</td></tr><tr><td>θy</td><td>-0.00000</td></tr><tr><td>θz</td><td>90.00000</td></tr></table></td><td><table><tr><td>θx</td><td>0.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>90.00000</td></tr></table></td><td><table><tr><td>x</td><td>0.00000</td></tr><tr><td>y</td><td>0.00000</td></tr><tr><td>z</td><td>0.00000</td></tr></table></td></tr></table></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
             <div class="clearer"></div>
@@ -422,7 +425,7 @@ minimize_points_to_points_distance(groupA, groupB)
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -450,7 +453,7 @@ minimize_points_to_points_distance(groupA, groupB)
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Luis R..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
   </body>
 </html>

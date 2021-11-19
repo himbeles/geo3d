@@ -4,19 +4,22 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
     <title>Basic usage of geo3d &#8212; geo3d  documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -293,7 +296,7 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
-<div class="section" id="Basic-usage-of-geo3d">
+<section id="Basic-usage-of-geo3d">
 <h1>Basic usage of geo3d<a class="headerlink" href="#Basic-usage-of-geo3d" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -305,9 +308,9 @@ import numpy as np
 </pre></div>
 </div>
 </div>
-<div class="section" id="Frame-creation">
+<section id="Frame-creation">
 <h2>Frame creation<a class="headerlink" href="#Frame-creation" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Manual-Frame-cration">
+<section id="Manual-Frame-cration">
 <h3>Manual Frame cration<a class="headerlink" href="#Manual-Frame-cration" title="Permalink to this headline">¶</a></h3>
 <p>Manually create frame from given rotation Euler angles and translation vector.</p>
 <div class="nbinput docutils container">
@@ -335,8 +338,8 @@ Frame(rot,vec)
     </tr>
     <tr><td><table><tr><td>0.19245009</td><td>0.41147560</td><td>-0.89087081</td></tr><tr><td>0.19245009</td><td>0.87438565</td><td>0.44543540</td></tr><tr><td>0.96225045</td><td>-0.25717225</td><td>0.08908708</td></tr></table></td><td><table><tr><td>θx</td><td>-70.89339</td></tr><tr><td>θy</td><td>-74.20683</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>-78.69007</td></tr><tr><td>θy</td><td>-62.98288</td></tr><tr><td>θz</td><td>-64.93417</td></tr></table></td><td><table><tr><td>x</td><td>3.00000</td></tr><tr><td>y</td><td>4.00000</td></tr><tr><td>z</td><td>6.00000</td></tr></table></td></tr></table></div>
 </div>
-</div>
-<div class="section" id="The-Frame-Wizard">
+</section>
+<section id="The-Frame-Wizard">
 <h3>The Frame Wizard<a class="headerlink" href="#The-Frame-Wizard" title="Permalink to this headline">¶</a></h3>
 <p>Create two frames using a Frame Wizard (comparable to the one in Spatial Analyzer). Frames are defined as transformations starting from a unit frame (no translation and rotation).</p>
 <div class="nbinput nblast docutils container">
@@ -455,8 +458,8 @@ translation
 array([180.,   0.,  45.])
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Frame-from-4x4-matrix-string">
+</section>
+<section id="Frame-from-4x4-matrix-string">
 <h3>Frame from 4x4 matrix string<a class="headerlink" href="#Frame-from-4x4-matrix-string" title="Permalink to this headline">¶</a></h3>
 <p>Construct Frame from 4x4 matrix (SA style)</p>
 <div class="nbinput docutils container">
@@ -506,9 +509,9 @@ frame_from_SA
 0.000000000000 0.000000000000 0.000000000000 1.000000000000
 </pre></div></div>
 </div>
-</div>
-</div>
-<div class="section" id="Frame-to-frame-transformations">
+</section>
+</section>
+<section id="Frame-to-frame-transformations">
 <h2>Frame to frame transformations<a class="headerlink" href="#Frame-to-frame-transformations" title="Permalink to this headline">¶</a></h2>
 <p>A frame can be expressed in a different frame.</p>
 <div class="nbinput docutils container">
@@ -559,8 +562,8 @@ frame_from_SA
     </tr>
     <tr><td><table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>0.00000000</td><td>-1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>-45.00000</td></tr></table></td><td><table><tr><td>x</td><td>1.00000</td></tr><tr><td>y</td><td>1.00000</td></tr><tr><td>z</td><td>4.00000</td></tr></table></td></tr></table></div>
 </div>
-</div>
-<div class="section" id="Expression-of-vectors-and-points-in-frames">
+</section>
+<section id="Expression-of-vectors-and-points-in-frames">
 <h2>Expression of vectors and points in frames<a class="headerlink" href="#Expression-of-vectors-and-points-in-frames" title="Permalink to this headline">¶</a></h2>
 <p>Express a vector given in <code class="docutils literal notranslate"><span class="pre">original_frame</span></code> in a new frame.</p>
 <div class="nbinput docutils container">
@@ -596,8 +599,8 @@ frame_from_SA
 <div class="output_area rendered_html docutils container">
 <table><tr><td>x</td><td>7.07107</td></tr><tr><td>y</td><td>1.41421</td></tr><tr><td>z</td><td>-24.00000</td></tr></table></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
             <div class="clearer"></div>
@@ -638,7 +641,7 @@ frame_from_SA
   <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <input type="submit" value="Go" />
     </form>
     </div>
@@ -666,7 +669,7 @@ frame_from_SA
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Luis R..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
     </div>
   </body>
 </html>
