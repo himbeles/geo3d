@@ -879,14 +879,15 @@ def express_point_in_frame(
         Point expressed in `new_frame`.
     """
     if original_frame is None:
-        return Point(_express_point_bare(new_frame._rot, new_frame._trans, point))
+        new_frame_in_orig_frame = new_frame
     else:
         new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
-        return Point(
-            _express_point_bare(
-                new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, point
-            )
-        )  # multiplication to the right is the same as with transpose to the left
+
+    return Point(
+        _express_point_bare(
+            new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, point
+        )
+    )
 
 
 def express_points_in_frame(
@@ -900,19 +901,41 @@ def express_points_in_frame(
 
     Args:
         points: Sequence of points.
-        new_frame: Frame to express this point in.
-        original_frame: Reference frame where the point is specified in. Defaults to UnitFrame.
+        new_frame: Frame to express these points in.
+        original_frame: Reference frame where the point are specified in. Defaults to UnitFrame.
 
     Returns:
         Points expressed in `new_frame`.
     """
     if original_frame is None:
-        return _express_points_bare(new_frame._rot, new_frame._trans, points)
+        new_frame_in_orig_frame = new_frame
     else:
         new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
-        return (
-            np.asarray(points) - new_frame_in_orig_frame._trans
-        ) @ new_frame_in_orig_frame._rot  # multiplication to the right is the same as with transpose to the left
+    return _express_points_bare(new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, points)
+
+
+def express_vectors_in_frame(
+    vectors: MultipleVectorLike,
+    new_frame: Frame,
+    original_frame: Optional[Frame] = None,
+) -> np.ndarray:
+    """Express vectors in a different frame.
+
+    Express the `vectors` given in the frame `original_frame` in a different frame `new_frame`.
+
+    Args:
+        vectors: Sequence of vectors.
+        new_frame: Frame to express these vectors in.
+        original_frame: Reference frame where the vectors are specified in. Defaults to UnitFrame.
+
+    Returns:
+        Vectors expressed in `new_frame`.
+    """
+    if original_frame is None:
+        new_frame_in_orig_frame = new_frame
+    else:
+        new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
+    return _express_vectors_bare(new_frame_in_orig_frame._rot, vectors)
 
 
 def express_vector_in_frame(
@@ -936,8 +959,12 @@ def express_vector_in_frame(
         trafo = new_frame
     else:
         trafo = express_frame_in_frame(new_frame, original_frame)
-    return Vector(np.asarray(vector) @ trafo._rot)
 
+    return Vector(
+        _express_vector_bare(
+            new_frame_in_orig_frame._rot, vector
+        )
+    )
 
 def rotate_vector(vec: VectorLike, rot: RotationMatrixLike) -> Vector:
     """Rotate vector using a given rotation matrix.
@@ -976,6 +1003,9 @@ def _transform_point_bare(rot, trans, p):
 def _express_point_bare(rot, trans, p) -> VectorTuple:
     return mult_vec_mat(sub_vec_vec(p, trans), rot)
 
+@njit
+def _express_vector_bare(rot, v) -> VectorTuple:
+    return mult_vec_mat(v, rot)
 
 @njit
 def _express_points_bare(rot, trans, points):
@@ -983,6 +1013,14 @@ def _express_points_bare(rot, trans, points):
     res = np.empty((dim, 3))
     for i in range(dim):
         res[i] = _express_point_bare(rot, trans, points[i])
+    return np.asarray(res)
+
+@njit
+def _express_vectors_bare(rot, vectors):
+    dim = len(vectors)
+    res = np.empty((dim, 3))
+    for i in range(dim):
+        res[i] = _express_vector_bare(rot, vectors[i])
     return np.asarray(res)
 
 
