@@ -502,13 +502,14 @@ class Vector:
     def transform(self, transformation: Frame) -> Vector:
         """Transform this vector by a given transformation frame.
 
-        Apply a transformation to a vector (rotate it), and express it still in the original frame. Basically the inverse of "express vector in frame".
+        Apply a transformation to a vector (rotate it), and express it still in the original frame. 
+        This performs the inverse operation to a vector compared to `express_vector_in_frame`.
 
         Args:
             transformation: Transformation frame
 
         Returns:
-            vector expressed in the original frame, but transformed.
+            vector expressed in the original frame, but transformed by `transformation`.
         """
 
         # return rotate_vector(self._a, transformation._rot)
