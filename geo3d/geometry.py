@@ -911,7 +911,9 @@ def express_points_in_frame(
         new_frame_in_orig_frame = new_frame
     else:
         new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
-    return _express_points_bare(new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, points)
+    return _express_points_bare(
+        new_frame_in_orig_frame._rot, new_frame_in_orig_frame._trans, points
+    )
 
 
 def express_vectors_in_frame(
@@ -956,15 +958,12 @@ def express_vector_in_frame(
         Vector expressed in `new_frame`.
     """
     if original_frame is None:
-        trafo = new_frame
+        new_frame_in_orig_frame = new_frame
     else:
-        trafo = express_frame_in_frame(new_frame, original_frame)
+        new_frame_in_orig_frame = express_frame_in_frame(new_frame, original_frame)
 
-    return Vector(
-        _express_vector_bare(
-            new_frame_in_orig_frame._rot, vector
-        )
-    )
+    return Vector(_express_vector_bare(new_frame_in_orig_frame._rot, vector))
+
 
 def rotate_vector(vec: VectorLike, rot: RotationMatrixLike) -> Vector:
     """Rotate vector using a given rotation matrix.
@@ -1003,9 +1002,11 @@ def _transform_point_bare(rot, trans, p):
 def _express_point_bare(rot, trans, p) -> VectorTuple:
     return mult_vec_mat(sub_vec_vec(p, trans), rot)
 
+
 @njit
 def _express_vector_bare(rot, v) -> VectorTuple:
     return mult_vec_mat(v, rot)
+
 
 @njit
 def _express_points_bare(rot, trans, points):
@@ -1014,6 +1015,7 @@ def _express_points_bare(rot, trans, points):
     for i in range(dim):
         res[i] = _express_point_bare(rot, trans, points[i])
     return np.asarray(res)
+
 
 @njit
 def _express_vectors_bare(rot, vectors):
