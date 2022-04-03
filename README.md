@@ -1,4 +1,4 @@
-[![Publish on PyPI](https://github.com/himbeles/geo3d/actions/workflows/pypi-publish.yml/badge.svg)](https://github.com/himbeles/geo3d/actions/workflows/pypi-publish.yml)
+[![pypi](https://img.shields.io/pypi/v/geo3d.svg)](https://pypi.python.org/pypi/geo3d)
 [![Test package](https://github.com/himbeles/geo3d/workflows/Test%20package/badge.svg)](https://github.com/himbeles/geo3d/actions?query=workflow%3A%22Test+package%22)
 
 # geo3d
