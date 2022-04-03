@@ -1,13 +1,19 @@
-import numpy as np
 import math
+from typing import Any, Dict, Tuple, Union, overload
 
+import numpy as np
+
+from .plane import Plane
+from .point import Point
 from .query import centroid, distances_plane_to_points
-from .geometry import MultipleVectorLike, Plane, Vector, Point
-from typing import Union, Dict, Tuple, overload, Any
+from .types import MultipleVectorLike
+from .vector import Vector
+
 try:
     from typing import Literal
 except ImportError:
     from typing_extensions import Literal
+
 
 @overload
 def fit_plane(
@@ -47,7 +53,7 @@ def fit_plane(
 
     if return_fit_props:
         fit_props = {
-            "rms_error": math.sqrt(np.sum(residuals ** 2) / len(points)),
+            "rms_error": math.sqrt(np.sum(residuals**2) / len(points)),
             "residuals": residuals,
             "residuals_min": residuals_min,
             "residuals_max": residuals_max,

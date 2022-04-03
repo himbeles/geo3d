@@ -1,5 +1,4 @@
-from geo3d.geometry import euler_as_quat
-from geo3d import R, normalized_quat, matrix_as_quat, quat_as_matrix
+from geo3d import R, normalized_quat, matrix_as_quat, quat_as_matrix, euler_as_quat
 import numpy as np
 
 

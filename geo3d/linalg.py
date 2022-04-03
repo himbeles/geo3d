@@ -1,7 +1,9 @@
-from numba import njit
-import numpy as np
 from math import sqrt
-from .geometry import VectorTuple
+
+import numpy as np
+from numba import njit
+
+from .types import VectorTuple
 
 
 @njit
@@ -60,5 +62,5 @@ def cast_vec_to_array(vec) -> np.ndarray:
 def norm_L2(vec) -> float:
     s = 0
     for v in vec:
-        s += v ** 2
+        s += v**2
     return sqrt(s)

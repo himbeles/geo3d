@@ -1,12 +1,12 @@
 import numpy as np
-
-from .geometry import Frame, MultipleVectorLike, Point, norm_L2, VectorLike, Plane
-from .linalg import dot_vec_vec, norm_L2
-
 from scipy.optimize import minimize
 from scipy.spatial.transform import Rotation as R
 
-from typing import Sequence
+from .frame import Frame
+from .linalg import dot_vec_vec, norm_L2
+from .plane import Plane
+from .point import Point
+from .types import MultipleVectorLike, VectorLike
 
 
 def distance_between_points(pointA: VectorLike, pointB: VectorLike) -> float:
