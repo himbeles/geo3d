@@ -18,8 +18,8 @@
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -258,7 +258,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
+.prompt .copybtn {
     display: none;
 }
 
@@ -302,8 +302,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>from geo3d.query import distance_between_points, minimize_points_to_points_distance, distances_plane_to_points
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from geo3d.query import distance_between_points, minimize_points_to_points_distance, distances_plane_to_points
 from geo3d import Point, Plane, Vector
 </pre></div>
 </div>
@@ -315,8 +314,7 @@ from geo3d import Point, Plane, Vector
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>pointA = Point([1,2,3])
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>pointA = Point([1,2,3])
 pointB = Point([1,2,6])
 distance_between_points(pointA, pointB)
 </pre></div>
@@ -339,8 +337,7 @@ distance_between_points(pointA, pointB)
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>plane = Plane(
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>plane = Plane(
     normal=Vector([0,0,-1]),
     point=Point([1,2,0])
 )
@@ -367,8 +364,7 @@ array([-3., -6.])
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>groupA = [[1,0,0], [0,1,0], [-1,0,0], [0,-1,0], [0,0,1], [0,0,-1]]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>groupA = [[1,0,0], [0,1,0], [-1,0,0], [0,-1,0], [0,0,1], [0,0,-1]]
 groupB = [[0,1,0], [-1,0,0], [0,-1,0], [1,0,0], [0,0,1], [0,0,-1]]
 minimize_points_to_points_distance(groupA, groupB)
 </pre></div>
@@ -398,8 +394,9 @@ minimize_points_to_points_distance(groupA, groupB)
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Multi-Object Queries</a><ul>
 <li><a class="reference internal" href="#Point-to-Point-Distance">Point-to-Point Distance</a></li>
 <li><a class="reference internal" href="#Plane-to-Points-Distance">Plane-to-Points Distance</a></li>
@@ -408,12 +405,17 @@ minimize_points_to_points_distance(groupA, groupB)
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="basic_usage.html"
-                        title="previous chapter">Basic usage of geo3d</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="fit.html"
-                        title="next chapter">Fitting</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="basic_usage.html"
+                          title="previous chapter">Basic usage of geo3d</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="fit.html"
+                          title="next chapter">Fitting</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -453,7 +455,7 @@ minimize_points_to_points_distance(groupA, groupB)
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Luis R..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>

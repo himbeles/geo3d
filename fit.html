@@ -18,8 +18,8 @@
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -254,7 +254,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
+.prompt .copybtn {
     display: none;
 }
 
@@ -298,8 +298,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>from geo3d.fit import fit_plane
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from geo3d.fit import fit_plane
 from geo3d import Point, Plane, Vector
 </pre></div>
 </div>
@@ -311,8 +310,7 @@ from geo3d import Point, Plane, Vector
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>points = [[1,0,0], [0,1,0], [-1,0,0]]
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>points = [[1,0,0], [0,1,0], [-1,0,0]]
 plane = fit_plane(points)
 plane
 </pre></div>
@@ -332,8 +330,7 @@ Plane(normal=&amp;lt;Vector at 2697000856352&amp;gt; [0. 0. 1.], point=&amp;lt;P
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>(a,b,c,d) = plane.as_abcd()
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>(a,b,c,d) = plane.as_abcd()
 (a,b,c,d)
 </pre></div>
 </div>
@@ -357,17 +354,21 @@ Plane(normal=&amp;lt;Vector at 2697000856352&amp;gt; [0. 0. 1.], point=&amp;lt;P
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Fitting</a><ul>
 <li><a class="reference internal" href="#Plane-Fit-to-Points">Plane Fit to Points</a></li>
 </ul>
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="queries.html"
-                        title="previous chapter">Multi-Object Queries</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="queries.html"
+                          title="previous chapter">Multi-Object Queries</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -404,7 +405,7 @@ Plane(normal=&amp;lt;Vector at 2697000856352&amp;gt; [0. 0. 1.], point=&amp;lt;P
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Luis R..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>

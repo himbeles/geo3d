@@ -18,8 +18,8 @@
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -258,7 +258,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
+.prompt .copybtn {
     display: none;
 }
 
@@ -299,12 +299,10 @@ div.rendered_html tbody tr:hover {
 <section id="Basic-usage-of-geo3d">
 <h1>Basic usage of geo3d<a class="headerlink" href="#Basic-usage-of-geo3d" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>from geo3d import frame_wizard, Vector, Point, RotationMatrix, Frame, transformation_between_frames
-import numpy as np
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from geo3d import frame_wizard, Vector, Point, RotationMatrix, Frame, transformation_between_frames
 </pre></div>
 </div>
 </div>
@@ -314,18 +312,17 @@ import numpy as np
 <h3>Manual Frame cration<a class="headerlink" href="#Manual-Frame-cration" title="Permalink to this headline">¶</a></h3>
 <p>Manually create frame from given rotation Euler angles and translation vector.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>rot = RotationMatrix.from_euler_angles(&#39;xyz&#39;, [-70.89339465, -74.20683095,  45], degrees=True)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rot = RotationMatrix.from_euler_angles(&#39;xyz&#39;, [-70.89339465, -74.20683095,  45], degrees=True)
 vec = Vector([3,4,6])
 Frame(rot,vec)
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -343,11 +340,10 @@ Frame(rot,vec)
 <h3>The Frame Wizard<a class="headerlink" href="#The-Frame-Wizard" title="Permalink to this headline">¶</a></h3>
 <p>Create two frames using a Frame Wizard (comparable to the one in Spatial Analyzer). Frames are defined as transformations starting from a unit frame (no translation and rotation).</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span># rotation only from UnitFrame
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># rotation only from UnitFrame
 fa = frame_wizard(Vector([1, 1, 0]), Vector([1, -1, 0]), &quot;x&quot;, &quot;y&quot;, origin=[0, 0, 0])
 # translation only from UnitFrame
 fb = frame_wizard(Vector([1, 0, 0]), Vector([0, 1, 0]), &quot;x&quot;, &quot;y&quot;, origin=[1, 1, 4])
@@ -357,16 +353,15 @@ fc = frame_wizard(Vector([1, 1, 0]), Vector([1, -1, 0]), &quot;x&quot;, &quot;y&
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>fa
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fa
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -380,11 +375,10 @@ fc = frame_wizard(Vector([1, 1, 0]), Vector([1, -1, 0]), &quot;x&quot;, &quot;y&
     <tr><td><table><tr><td>0.70710678</td><td>0.70710678</td><td>0.00000000</td></tr><tr><td>0.70710678</td><td>-0.70710678</td><td>0.00000000</td></tr><tr><td>0.00000000</td><td>-0.00000000</td><td>-1.00000000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>45.00000</td></tr></table></td><td><table><tr><td>θx</td><td>180.00000</td></tr><tr><td>θy</td><td>0.00000</td></tr><tr><td>θz</td><td>-45.00000</td></tr></table></td><td><table><tr><td>x</td><td>0.00000</td></tr><tr><td>y</td><td>0.00000</td></tr><tr><td>z</td><td>0.00000</td></tr></table></td></tr></table></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>print(fb)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(fb)
 </pre></div>
 </div>
 </div>
@@ -393,7 +387,7 @@ fc = frame_wizard(Vector([1, 1, 0]), Vector([1, -1, 0]), &quot;x&quot;, &quot;y&
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-&amp;lt;Frame instance at 2450760043920&amp;gt;
+&lt;Frame instance at 4508522128&gt;
 rotation
 [[ 1. -0.  0.]
  [ 0.  1.  0.]
@@ -408,32 +402,30 @@ translation
 </div>
 <p>They have a rotation and translation component:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>fc.translation
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fc.translation
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
 <table><tr><td>x</td><td>1.00000</td></tr><tr><td>y</td><td>1.00000</td></tr><tr><td>z</td><td>4.00000</td></tr></table></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>fc.rotation
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fc.rotation
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -441,16 +433,15 @@ translation
 </div>
 <p>The rotation can be expressed as Euler angles.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>fc.euler_angles(&#39;xyz&#39;, degrees=&#39;True&#39;)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fc.euler_angles(&#39;xyz&#39;, degrees=&#39;True&#39;)
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -463,11 +454,10 @@ array([180.,   0.,  45.])
 <h3>Frame from 4x4 matrix string<a class="headerlink" href="#Frame-from-4x4-matrix-string" title="Permalink to this headline">¶</a></h3>
 <p>Construct Frame from 4x4 matrix (SA style)</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>frame_from_SA = Frame.from_SA_pastable_string(
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>frame_from_SA = Frame.from_SA_pastable_string(
     &quot;0.0000000344 0.0000002614 -1.0000000000 634.9997932029 -0.1305702435 -0.9914390609 -0.0000002637 784.0319609308 -0.9914390609 0.1305702435 0.0000000000 747.5060850385 0.0000000000 0.0000000000 0.0000000000 1.0000000000 &quot;
 )
 frame_from_SA
@@ -475,7 +465,7 @@ frame_from_SA
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -490,11 +480,10 @@ frame_from_SA
 </div>
 <p>Convert Frame back to 4x4 matrix string</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>print(frame_from_SA.SA_pastable_string())
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(frame_from_SA.SA_pastable_string())
 </pre></div>
 </div>
 </div>
@@ -515,16 +504,15 @@ frame_from_SA
 <h2>Frame to frame transformations<a class="headerlink" href="#Frame-to-frame-transformations" title="Permalink to this headline">¶</a></h2>
 <p>A frame can be expressed in a different frame.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>fb.express_in_frame(fa)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>fb.express_in_frame(fa)
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -540,16 +528,15 @@ frame_from_SA
 <p>This yields the frame-to-frame transformation from fA to fB, represented in fA.</p>
 <p>The same frame-to-frame transformation matrix, but given in the original (unit) frame is</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>transformation_between_frames(fa, fb)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>transformation_between_frames(fa, fb)
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -567,16 +554,15 @@ frame_from_SA
 <h2>Expression of vectors and points in frames<a class="headerlink" href="#Expression-of-vectors-and-points-in-frames" title="Permalink to this headline">¶</a></h2>
 <p>Express a vector given in <code class="docutils literal notranslate"><span class="pre">original_frame</span></code> in a new frame.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>Vector([1,3,0]).express_in_frame(fa, original_frame=fb)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Vector([1,3,0]).express_in_frame(fa, original_frame=fb)
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -584,20 +570,27 @@ frame_from_SA
 </div>
 <p>Express a point given in <code class="docutils literal notranslate"><span class="pre">original_frame</span></code> in a new frame.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>Point([5,3,20]).express_in_frame(fa, original_frame=fb)
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>Point([5,3,20]).express_in_frame(fa, original_frame=fb)
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
 <table><tr><td>x</td><td>7.07107</td></tr><tr><td>y</td><td>1.41421</td></tr><tr><td>z</td><td>-24.00000</td></tr></table></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
 </div>
 </section>
 </section>
@@ -609,8 +602,9 @@ frame_from_SA
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table of Contents</a></h3>
-  <ul>
+  <div>
+    <h3><a href="index.html">Table of Contents</a></h3>
+    <ul>
 <li><a class="reference internal" href="#">Basic usage of geo3d</a><ul>
 <li><a class="reference internal" href="#Frame-creation">Frame creation</a><ul>
 <li><a class="reference internal" href="#Manual-Frame-cration">Manual Frame cration</a></li>
@@ -624,12 +618,17 @@ frame_from_SA
 </li>
 </ul>
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="index.html"
-                        title="previous chapter">Welcome to geo3d’s documentation!</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="queries.html"
-                        title="next chapter">Multi-Object Queries</a></p>
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="index.html"
+                          title="previous chapter">Welcome to geo3d’s documentation!</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="queries.html"
+                          title="next chapter">Multi-Object Queries</a></p>
+  </div>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -669,7 +668,7 @@ frame_from_SA
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Luis R..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.3.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
     </div>
   </body>
 </html>
