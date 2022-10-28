@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Multi-Object Queries &#8212; geo3d  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -14,7 +14,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -263,6 +265,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -271,10 +274,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -286,18 +293,21 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
 <section id="Multi-Object-Queries">
-<h1>Multi-Object Queries<a class="headerlink" href="#Multi-Object-Queries" title="Permalink to this headline">¶</a></h1>
+<h1>Multi-Object Queries<a class="headerlink" href="#Multi-Object-Queries" title="Permalink to this heading">¶</a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -308,7 +318,7 @@ from geo3d import Point, Plane, Vector
 </div>
 </div>
 <section id="Point-to-Point-Distance">
-<h2>Point-to-Point Distance<a class="headerlink" href="#Point-to-Point-Distance" title="Permalink to this headline">¶</a></h2>
+<h2>Point-to-Point Distance<a class="headerlink" href="#Point-to-Point-Distance" title="Permalink to this heading">¶</a></h2>
 <p>The distance between points can be queried as</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
@@ -331,7 +341,7 @@ distance_between_points(pointA, pointB)
 </div>
 </section>
 <section id="Plane-to-Points-Distance">
-<h2>Plane-to-Points Distance<a class="headerlink" href="#Plane-to-Points-Distance" title="Permalink to this headline">¶</a></h2>
+<h2>Plane-to-Points Distance<a class="headerlink" href="#Plane-to-Points-Distance" title="Permalink to this heading">¶</a></h2>
 <p>The distance from a plane to an array of points, positive along the plane normal vector.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
@@ -357,7 +367,7 @@ array([-3., -6.])
 </div>
 </section>
 <section id="Transformation-minimizing-group-to-group-distance">
-<h2>Transformation minimizing group-to-group distance<a class="headerlink" href="#Transformation-minimizing-group-to-group-distance" title="Permalink to this headline">¶</a></h2>
+<h2>Transformation minimizing group-to-group distance<a class="headerlink" href="#Transformation-minimizing-group-to-group-distance" title="Permalink to this heading">¶</a></h2>
 <p>For two point groups, find the transformation – applied to the first group – that minimizes the RMS distance between the corresponding points in the two groups:</p>
 <p>Here, we extract a rotation of 90 degrees between the point groups, that is, <code class="docutils literal notranslate"><span class="pre">groupA</span></code> needs to be rotated by 90 degrees to coincide with <code class="docutils literal notranslate"><span class="pre">groupB</span></code>.</p>
 <div class="nbinput docutils container">
@@ -432,7 +442,7 @@ minimize_points_to_points_distance(groupA, groupB)
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -455,7 +465,7 @@ minimize_points_to_points_distance(groupA, groupB)
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Luis R..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>

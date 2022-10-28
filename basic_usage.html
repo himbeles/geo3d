@@ -1,10 +1,10 @@
 
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Basic usage of geo3d &#8212; geo3d  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -14,7 +14,9 @@
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -263,6 +265,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -271,10 +274,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -286,18 +293,21 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
 <section id="Basic-usage-of-geo3d">
-<h1>Basic usage of geo3d<a class="headerlink" href="#Basic-usage-of-geo3d" title="Permalink to this headline">¶</a></h1>
+<h1>Basic usage of geo3d<a class="headerlink" href="#Basic-usage-of-geo3d" title="Permalink to this heading">¶</a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -307,9 +317,9 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <section id="Frame-creation">
-<h2>Frame creation<a class="headerlink" href="#Frame-creation" title="Permalink to this headline">¶</a></h2>
+<h2>Frame creation<a class="headerlink" href="#Frame-creation" title="Permalink to this heading">¶</a></h2>
 <section id="Manual-Frame-cration">
-<h3>Manual Frame cration<a class="headerlink" href="#Manual-Frame-cration" title="Permalink to this headline">¶</a></h3>
+<h3>Manual Frame cration<a class="headerlink" href="#Manual-Frame-cration" title="Permalink to this heading">¶</a></h3>
 <p>Manually create frame from given rotation Euler angles and translation vector.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -337,7 +347,7 @@ Frame(rot,vec)
 </div>
 </section>
 <section id="The-Frame-Wizard">
-<h3>The Frame Wizard<a class="headerlink" href="#The-Frame-Wizard" title="Permalink to this headline">¶</a></h3>
+<h3>The Frame Wizard<a class="headerlink" href="#The-Frame-Wizard" title="Permalink to this heading">¶</a></h3>
 <p>Create two frames using a Frame Wizard (comparable to the one in Spatial Analyzer). Frames are defined as transformations starting from a unit frame (no translation and rotation).</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -451,7 +461,7 @@ array([180.,   0.,  45.])
 </div>
 </section>
 <section id="Frame-from-4x4-matrix-string">
-<h3>Frame from 4x4 matrix string<a class="headerlink" href="#Frame-from-4x4-matrix-string" title="Permalink to this headline">¶</a></h3>
+<h3>Frame from 4x4 matrix string<a class="headerlink" href="#Frame-from-4x4-matrix-string" title="Permalink to this heading">¶</a></h3>
 <p>Construct Frame from 4x4 matrix (SA style)</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -501,7 +511,7 @@ frame_from_SA
 </section>
 </section>
 <section id="Frame-to-frame-transformations">
-<h2>Frame to frame transformations<a class="headerlink" href="#Frame-to-frame-transformations" title="Permalink to this headline">¶</a></h2>
+<h2>Frame to frame transformations<a class="headerlink" href="#Frame-to-frame-transformations" title="Permalink to this heading">¶</a></h2>
 <p>A frame can be expressed in a different frame.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
@@ -551,7 +561,7 @@ frame_from_SA
 </div>
 </section>
 <section id="Expression-of-vectors-and-points-in-frames">
-<h2>Expression of vectors and points in frames<a class="headerlink" href="#Expression-of-vectors-and-points-in-frames" title="Permalink to this headline">¶</a></h2>
+<h2>Expression of vectors and points in frames<a class="headerlink" href="#Expression-of-vectors-and-points-in-frames" title="Permalink to this heading">¶</a></h2>
 <p>Express a vector given in <code class="docutils literal notranslate"><span class="pre">original_frame</span></code> in a new frame.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
@@ -645,7 +655,7 @@ frame_from_SA
     </form>
     </div>
 </div>
-<script>$('#searchbox').show(0);</script>
+<script>document.getElementById('searchbox').style.display = "block"</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -668,7 +678,7 @@ frame_from_SA
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2020, Luis R..
-      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>
 </html>
