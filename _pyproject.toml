@@ -1,7 +1,0 @@
-[build-system]
-requires = ["maturin>=0.12,<0.13"]
-build-backend = "maturin"
-
-[project]
-name = "geo3d"
-dependencies = ["numpy>=1.1.0", "scipy>=0.10.0", "numba>=0.53.0"]

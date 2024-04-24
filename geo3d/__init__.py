@@ -1,5 +1,3 @@
-import pkg_resources
-
 from .fit import *
 from .plane import *
 from .frame import *
@@ -9,7 +7,12 @@ from .query import *
 from .rotation import *
 from .vector import *
 
-__version__ = pkg_resources.get_distribution("geo3d").version
+from importlib.metadata import version, PackageNotFoundError
 
+try:
+    __version__ = version("geo3d")
+except PackageNotFoundError:
+    # package is not installed
+    pass
 
 UnitFrame = Frame.create_unit_frame()
