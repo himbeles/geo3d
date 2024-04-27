@@ -33,7 +33,7 @@ jobs:
       - name: Build the Sphinx Docs
         run: |
           python -m pip install -U pip
-          python -m pip install -r requirements-dev.txt
+          python -m pip install sphinx nbsphinx sphinx_copybutton
           sudo apt-get install pandoc
           cd docs && make html
 
