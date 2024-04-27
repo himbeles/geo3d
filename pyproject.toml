@@ -30,7 +30,8 @@ dev = [
     "pytest",
     "black",
     "coverage",
-    "build"
+    "build",
+    "twine"
 ]
 
 [tool.setuptools_scm]
