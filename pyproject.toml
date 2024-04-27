@@ -29,7 +29,8 @@ dev = [
     "sphinx_copybutton",
     "pytest",
     "black",
-    "coverage"
+    "coverage",
+    "build"
 ]
 
 [tool.setuptools_scm]
