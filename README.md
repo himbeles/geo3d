@@ -14,17 +14,17 @@ It allows to
 
 Requires Python 3.7 or up .
 
-## Installation 
+## Installation
+
 To install the module and its core requirements, run
 ```sh
-pip install --user -e .
+pip install geo3d
 ```
-within the base directory. 
 
-To install all requirements, including the ones for unit testing and documentation.
+Maintainers should install in editable mode, including all additional requirements for unit testing and documentation:
 
 ```sh
-pip install --user -e .[dev]
+pip install -e .[dev]
 ```
 
 ## Usage 

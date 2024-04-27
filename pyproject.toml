@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geo3d"
+description = "A python package for performing geometric calculations in 3D"
+readme = "README.md"
+authors = [{name = "L. Riegger", email = "lri@me.com"}]
+license = {file = "LICENSE.txt"}
+keywords = ["geometry"]
+requires-python = ">=3.11"
+dynamic = ["version"]
+dependencies = [
+    "numpy>=1.20",
+    "scipy>=1.6",
+    "numba>=0.53.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/himbeles/geo3d"
+Repository = "https://github.com/himbeles/geo3d.git"
+Documentation = "https://himbeles.github.io/geo3d/"
+
+[project.optional-dependencies]
+dev = [
+    "sphinx",
+    "nbsphinx",
+    "sphinx_copybutton",
+    "pytest",
+    "black",
+    "coverage"
+]
+
+[tool.setuptools_scm]
+# Configuration for setuptools_scm
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src/geo3d"]
