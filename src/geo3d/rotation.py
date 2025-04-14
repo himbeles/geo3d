@@ -36,8 +36,11 @@ class RotationMatrix:
     def as_array(self):
         return self._a
 
-    def __array__(self):
-        return self._a
+    def __array__(self, copy=None):
+        if copy in [None, False]:
+            return self._a
+        else :
+            return self._a.copy()
 
     def __getitem__(self, key):
         return self._a[key]

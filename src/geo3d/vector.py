@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional, Union, overload
+from typing import Optional, Union, overload
 
 import numpy as np
 import numpy.typing as npt
@@ -71,8 +71,11 @@ class Vector:
     def as_array(self):
         return self._a
 
-    def __array__(self):
-        return self._a
+    def __array__(self, copy=None):
+        if copy in [None, False]:
+            return self._a
+        else :
+            return self._a.copy()
 
     def __getitem__(self, key):
         return self._a[key]
