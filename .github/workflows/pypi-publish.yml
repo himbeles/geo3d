@@ -19,6 +19,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        clean: true
+        fetch-depth: 0
 
     - name: Install uv and set the python version
       uses: astral-sh/setup-uv@v5
