@@ -13,6 +13,10 @@ jobs:
 
     runs-on: ubuntu-latest
     environment: release
+
+    permissions:
+      id-token: write
+
     steps:
     - uses: actions/checkout@v4
 
@@ -23,6 +27,6 @@ jobs:
 
     - name: Build package
       run: uv build
-      
+
     - name: Publish
       run: uv publish
