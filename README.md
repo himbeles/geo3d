@@ -17,14 +17,17 @@ Requires Python 3.11 or up.
 ## Installation
 
 To install the module and its core requirements, run
+
 ```sh
 pip install geo3d
 ```
 
-Maintainers should install in editable mode, including all additional requirements for unit testing and documentation:
+## Development
+
+Maintainers can set up a development environment, including additional requirements for unit testing and documentation:
 
 ```sh
-pip install -e .[dev]
+uv sync
 ```
 
 ## Usage 
@@ -42,7 +45,6 @@ If a coverage report should be generated, run
 ```sh
 python -m coverage run -m pytest
 ```
-
 
 ## Building the docs
 The documentation can be built from the `.ipynb` documents in the `/docs` folder by running

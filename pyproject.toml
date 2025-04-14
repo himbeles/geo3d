@@ -22,16 +22,13 @@ Homepage = "https://github.com/himbeles/geo3d"
 Repository = "https://github.com/himbeles/geo3d.git"
 Documentation = "https://himbeles.github.io/geo3d/"
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "sphinx",
     "nbsphinx",
     "sphinx_copybutton",
     "pytest",
-    "black",
     "coverage",
-    "build",
-    "twine"
 ]
 
 [tool.setuptools_scm]
